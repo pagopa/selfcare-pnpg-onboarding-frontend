@@ -1,0 +1,88 @@
+{
+  "name": "selfcare-pnpg-onboarding-frontend",
+  "version": "1.0.0",
+  "homepage": "pnpg-onboarding",
+  "private": true,
+  "dependencies": {
+    "@mui/lab": "^5.0.0-alpha.74",
+    "@pagopa/mui-italia": "^0.7.1",
+    "@pagopa/selfcare-common-frontend": "^1.12.6",
+    "@types/react": "^17.0.18",
+    "@types/react-dom": "^17.0.9",
+    "axios": "^0.21.1",
+    "debounce": "^1.2.1",
+    "formik": "^2.2.9",
+    "query-string": "^4.3.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-dropzone": "^11.4.2",
+    "react-scripts": "5.0.0",
+    "typescript": "^4.3.5",
+    "web-vitals": "^1.1.2"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test -i",
+    "test:coverage": "craco test -i --coverage",
+    "eject": "craco eject",
+    "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
+    "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx ",
+    "prettify": "prettier --write \"./**/*.{ts,tsx}\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "ie 11",
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^6.4.3",
+    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/react": "12.1.2",
+    "@testing-library/user-event": "^14.0.4",
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "7.11.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-functional": "^3.7.2",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-sonarjs": "^0.10.0",
+    "prettier": "^2.4.1"
+  },
+  "jest": {
+    "restoreMocks": true,
+    "clearMocks": true,
+    "resetMocks": true,
+    "transform": {
+      "node_modules/crypto-random-string/index.js": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!crypto-random-string/.*)"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/index.tsx",
+      "src/reportWebVitals.ts",
+      "src/utils/constants.ts"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.(css|less|scss)$": "babel-jest"
+    }
+  }
+}
