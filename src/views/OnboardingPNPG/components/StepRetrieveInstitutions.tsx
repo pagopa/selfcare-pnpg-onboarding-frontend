@@ -65,7 +65,7 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions }: Props) {
       {
         endpoint: 'GET_INSTITUTIONS_BY_USER_ID',
         endpointParams: {
-          userId: '654321',
+          userId: '123456',
         },
       },
       {
