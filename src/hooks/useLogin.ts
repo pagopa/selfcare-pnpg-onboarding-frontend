@@ -6,7 +6,7 @@ import { ENV } from '../utils/env';
 import { UserContext } from '../lib/context';
 
 const testToken =
-  'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imp3dF9kZjplNjoxOTplYToxZTpjZTplNjo3Yjo3MDo0MjoyYzphMjpjZDo4Yjo1MjowYiJ9.eyJlbWFpbCI6ImZ1cmlvdml0YWxlQG1hcnRpbm8uaXQiLCJmYW1pbHlfbmFtZSI6IlNhcnRvcmkiLCJmaXNjYWxfbnVtYmVyIjoiU1JUTkxNMDlUMDZHNjM1UyIsIm5hbWUiOiJBbnNlbG1vIiwiZnJvbV9hYSI6ZmFsc2UsInVpZCI6IjUwOTZlNGM2LTI1YTEtNDVkNS05YmRmLTJmYjk3NGE3YzFjOCIsImxldmVsIjoiTDIiLCJpYXQiOjE2NTMwNDA1MzQsImF1ZCI6ImFwaS5kZXYuc2VsZmNhcmUucGFnb3BhLml0IiwiaXNzIjoiU1BJRCIsImp0aSI6IjAxRzNHRTlOQ1ZSVldEUjlHVERGU0MxQjZWIn0.gMnrecCaAZb5F-NRjMcPCM2eJcEIP89Hv6KWbz3PCIAcVb9g9tBl_c_llv90P_yQn50F8N9nhcaD3MrKpeKkdVSFkYrkZQycpz0vSUpxrriS85UN48iHM_dGDZaZm7zo1Funb6eRVx7M49e_bJRPIzBqF8SuwVhYN05KwivZyGHiVtBL4UmC-4A2kGQTCCOp4ECYMNFjEIetfRbpy3-FmWgQzArj9wAxG0x_Qd2YI3AI8RvVH4jeoc77K_bHxBe_mRj73BQPT1wHAFW8ztBaTD2o2V2br4qgozHqOvx1C_dvXYjvKVCNHgcsa_aKaY0cuYaBMkwfTfknHMMcVGuSzQ';
+  'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imp3dF9kZjplNjoxOTplYToxZTpjZTplNjo3Yjo3MDo0MjoyYzphMjpjZDo4Yjo1MjowYiJ9.eyJlbWFpbCI6ImQuZGVsbGF2YWxsZUB0ZXN0Lml0IiwiZmFtaWx5X25hbWUiOiJEZWxsYSBWYWxsZSIsImZpc2NhbF9udW1iZXIiOiJETExER0k1M1QzMEkzMjRFIiwibmFtZSI6IkRpZWdvIiwiZnJvbV9hYSI6ZmFsc2UsInVpZCI6ImQwYWFjYzYxLWU2YzgtNDcxMy05MjdlLTY0MThmMDFiMTMwYiIsImxldmVsIjoiTDIiLCJpYXQiOjE2NDAyNTU2ODMsImF1ZCI6ImFwaS5kZXYuc2VsZmNhcmUucGFnb3BhLml0IiwiaXNzIjoiU1BJRCIsImp0aSI6IjAxRlFLRFBaMTVHVDRTVENRQUU1RVhCVlZNIn0.JAZDi2oIwZC-jqTATFCbDIP0EDgVmeAJvz7rbKX3FhdLP-hTGAicF-KYNj1p69h2B8x0tlivZmph2OWZWlJ7O-UkGjFW-koBm2TYh8hllm6A42Hv1XAeiAo657j-kBLpuVBTwHpk9I93xRBgmacqMLQwrbNaW6oPyn2eA4mY5nyDF9s0RHFAo9VaZyH1gZSnGm33CbZ2sFblfnSY4FopbUed1Fiedu-AthdlpWBPQAYfO3Km1Lkv-S4csk34SG3mzY8MqDf9Fv94XHoGsIBGETh2xqnD7OGKwqbIuMVQjtZchwsuywuOVqwc1MnH7xjxg70B5WZ8cqBLPTBLFdoDCQ';
 
 export const useLogin = () => {
   const { setUser } = useContext(UserContext);
@@ -35,7 +35,7 @@ export const useLogin = () => {
     if (isEmpty(sessionStorageUser)) {
       // Remove any partial data that might have remained, just for safety
       storageUserOps.delete();
-      const onSuccessEncoded= encodeURIComponent(location.pathname + location.search);
+      const onSuccessEncoded = encodeURIComponent(location.pathname + location.search);
       // Go to the login view
       window.location.assign(ENV.URL_FE.LOGIN + '?onSuccess=' + onSuccessEncoded);
       // This return is necessary
