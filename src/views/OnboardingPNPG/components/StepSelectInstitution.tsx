@@ -9,10 +9,9 @@ import { useHistoryState } from '../../../components/useHistoryState';
 
 type Props = {
   retrievedInstitutions?: InstitutionsPnPG;
-  setSelectedInstitution: React.Dispatch<React.SetStateAction<BusinessPnpg | undefined>>;
 } & StepperStepComponentProps;
 
-function StepSelectInstitution({ forward, retrievedInstitutions, setSelectedInstitution }: Props) {
+function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
   const { t } = useTranslation();
 
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
@@ -118,7 +117,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setSelectedInst
               label: moreThanTwoInstitutions
                 ? t('selectFromAgencyList.registerAgency')
                 : t('selectInstitutionReleated.enter'),
-              disabled: !selected, // Todo FixMe
+              disabled: !selectedInstitution,
             }}
           />
         </Grid>
