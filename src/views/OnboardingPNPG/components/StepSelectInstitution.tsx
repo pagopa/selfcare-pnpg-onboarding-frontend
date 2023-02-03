@@ -8,12 +8,13 @@ import { OnboardingStepActions } from '../../../components/OnboardingStepActions
 
 type Props = {
   retrievedInstitutions?: InstitutionsPnPG;
+  setSelectedInstitution: React.Dispatch<React.SetStateAction<BusinessPnpg | undefined>>;
 } & StepperStepComponentProps;
 
-function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
+function StepSelectInstitution({ forward, retrievedInstitutions, setSelectedInstitution }: Props) {
   const { t } = useTranslation();
 
-  const [selectedInstitution, setSelectedInstitution] = useState<BusinessPnpg>();
+  const [selected, setSelected] = useState<BusinessPnpg>(); // TODO FixMe
 
   useEffect(() => {
     if (retrievedInstitutions?.businesses.length === 1) {
@@ -29,7 +30,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
     retrievedInstitutions && retrievedInstitutions.businesses.length >= 2;
 
   return (
-    <Grid container direction="column">
+    <Grid container direction="column" my={16}>
       <Grid container item justifyContent="center">
         <Grid item xs={12}>
           <Typography variant="h3" component="h2" align="center" color={theme.palette.text.primary}>
@@ -81,13 +82,14 @@ function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
                   backgroundColor: 'background.paper',
                   borderRadius: theme.spacing(2),
                   border:
-                    selectedInstitution?.businessTaxId === a.businessTaxId
-                      ? 'solid 3px #0073E6'
-                      : undefined,
+                    a.businessTaxId === selected?.businessTaxId ? 'solid 3px #0073E6' : undefined,
                   boxShadow:
                     '0px 8px 10px -5px rgba(0, 43, 85, 0.1), 0px 16px 24px 2px rgba(0, 43, 85, 0.05), 0px 6px 30px 5px rgba(0, 43, 85, 0.1)',
                 }}
-                onClick={() => setSelectedInstitution(a)}
+                onClick={() => {
+                  setSelectedInstitution(a);
+                  setSelected(a);
+                }}
               >
                 <PartyAccountItem
                   aria-label={a.businessName}
@@ -108,7 +110,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
               label: moreThanTwoInstitutions
                 ? t('selectFromAgencyList.registerAgency')
                 : t('selectInstitutionReleated.enter'),
-              disabled: !selectedInstitution,
+              disabled: !selected, // Todo FixMe
             }}
           />
         </Grid>

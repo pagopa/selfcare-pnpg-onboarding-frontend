@@ -4,29 +4,88 @@ import { EndingPage } from '@pagopa/selfcare-common-frontend';
 import { IllusError, theme } from '@pagopa/mui-italia';
 import { AxiosResponse } from 'axios';
 import { Link, Typography } from '@mui/material';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
-import { InstitutionsPnPG, RequestOutcomeMessage } from '../../../../types';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { useTranslation } from 'react-i18next';
+import { InstitutionsPnPG } from '../../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { UserContext } from '../../../lib/context';
 import { fetchWithLogs } from '../../../lib/api-utils';
 import { getFetchOutcome } from '../../../lib/error-utils';
 
-export const institutionsNotFound: RequestOutcomeMessage = {
-  title: '',
-  description: [
+type Props = {
+  retrievedInstitutions?: InstitutionsPnPG;
+  setRetrievedInstitutions: React.Dispatch<React.SetStateAction<InstitutionsPnPG | undefined>>;
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+};
+
+function StepRetrieveInstitutions({
+  retrievedInstitutions,
+  setRetrievedInstitutions,
+  setActiveStep,
+}: Props) {
+  const { t } = useTranslation();
+  const [_loading, setLoading] = useState<boolean>(false);
+  const { setRequiredLogin } = useContext(UserContext);
+
+  const retrieveInstitutionsUsingId = async () => {
+    setLoading(true);
+
+    const searchResponse = await fetchWithLogs(
+      {
+        endpoint: 'GET_INSTITUTIONS_BY_USER_ID',
+      },
+      {
+        method: 'POST',
+        data: {
+          taxCode: 'DLLDGI53T30I324E',
+          name: 'Diego',
+          surname: 'Della Valle',
+          email: 'd.dellavalle@test.it',
+          role: 'MANAGER',
+        },
+      },
+      () => setRequiredLogin(true)
+    );
+
+    setLoading(true);
+
+    const outcome = getFetchOutcome(searchResponse);
+
+    if (outcome === 'success') {
+      const retrievedInstitutions = (searchResponse as AxiosResponse).data;
+      setRetrievedInstitutions(retrievedInstitutions);
+      setActiveStep(1);
+    } else {
+      trackEvent('NOT_RETRIEVED_ENTITIES', {});
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    retrieveInstitutionsUsingId().catch((e) => console.log(e));
+  }, []);
+
+  return !retrievedInstitutions ? (
     <>
       <EndingPage
-        icon={<IllusError />}
-        title={i18n.t('institutionsNotFound.title')}
-        description={i18n.t('institutionsNotFound.message')}
+        icon={<IllusError size={60} />}
+        title={t('institutionsNotFound.title')}
+        description={
+          <Trans i18nKey="institutionsNotFound.message">
+            Per accedere alle notifiche, l’azienda deve essere registrata <br /> dal Legale
+            Rappresentante.
+          </Trans>
+        }
         variantTitle={'h4'}
         variantDescription={'body1'}
-        buttonLabel={i18n.t('institutionsNotFound.backToAccess')}
-        onButtonClick={() => {}} // TODO Redirect to access
+        buttonLabel={t('institutionsNotFound.backToAccess')}
+        onButtonClick={() => {}} // TODO Redirect
       />
       <Typography
         sx={{
           textAlign: 'center',
+          display: 'block',
+          marginTop: 4,
         }}
         variant="caption"
         color={theme.palette.text.primary}
@@ -39,59 +98,10 @@ export const institutionsNotFound: RequestOutcomeMessage = {
           </Link>
         </Trans>
       </Typography>
-    </>,
-  ],
-};
-
-type Props = {
-  setRetrievedInstitutions: React.Dispatch<React.SetStateAction<InstitutionsPnPG | undefined>>;
-};
-
-function StepRetrieveInstitutions({ setRetrievedInstitutions }: Props) {
-  const [outcome, setOutcome] = useState<RequestOutcomeMessage>();
-  const [_loading, setLoading] = useState<boolean>(false);
-  const { setRequiredLogin } = useContext(UserContext);
-
-  const retrieveInstitutionsUsingId = async () => {
-    setLoading(true);
-
-    {
-      /* userId: '123456' --> 2 parties 
-             userId: '654321' --> 1 party
-             userId: 'randomId' ---> no parties   */
-    }
-
-    const searchResponse = await fetchWithLogs(
-      {
-        endpoint: 'GET_INSTITUTIONS_BY_USER_ID',
-        endpointParams: {
-          userId: '123456',
-        },
-      },
-      {
-        method: 'GET',
-      },
-      () => setRequiredLogin(true)
-    );
-
-    setLoading(true);
-
-    const outcome = getFetchOutcome(searchResponse);
-
-    if (outcome === 'success') {
-      const retrievedInstitutions = (searchResponse as AxiosResponse).data;
-      setRetrievedInstitutions(retrievedInstitutions);
-    } else {
-      setOutcome(institutionsNotFound);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    retrieveInstitutionsUsingId().catch((e) => console.log(e));
-  }, []);
-
-  return outcome ? <EndingPage {...outcome} /> : <></>;
+    </>
+  ) : (
+    <></>
+  );
 }
 
 export default withLogin(StepRetrieveInstitutions);

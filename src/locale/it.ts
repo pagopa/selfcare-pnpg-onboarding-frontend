@@ -21,16 +21,43 @@ export default {
   },
   outcome: {
     success: {
-      title: 'La registrazione è avvenuta con successo',
+      title: 'La registrazione è avvenuta con <1 />successo',
       description:
-        'La tua azienda è su Piattaforma Notifiche. Puoi entrare per vedere le notifiche e per gestire i permessi di altri utenti.',
+        'La tua azienda è su Piattaforma Notifiche. Puoi entrare per <1 />vedere le notifiche e per gestire i permessi di altri utenti.',
       enterButton: 'Entra',
     },
     error: {
       title: 'Qualcosa è andato storto',
       description:
-        'A causa di un errore del sistema non è possibile completare la procedura. Ti chiediamo di riprovare più tardi.',
+        'A causa di un errore del sistema non è possibile completare <1 />la procedura. Ti chiediamo di riprovare più tardi.',
       backToHome: 'Torna all’accesso',
+    },
+  },
+  dashboard: {
+    title: 'Panoramica',
+    subTitle:
+      'Qui puoi vedere un riepilogo dei dati di {{businessName}} lorem ipsum dolor sit amet.',
+    partyLogo: {
+      upload: 'Carica il logo dell’azienda',
+      modify: 'Modifica il logo dell’azienda',
+      info: 'Inserisci solo il logo della tua azienda. <1 />Sarai responsabile dell’inserimento di immagini diverse da quella indicata.',
+    },
+    infoOverview: {
+      typology: 'Tipologia',
+      category: 'Categoria',
+      businessName: 'Ragione sociale',
+      fiscalCode: 'Codice Fiscale',
+      primaryPecEmail: 'Indirizzo PEC primario',
+      registeredOffice: 'Sede legale',
+    },
+    sideMenu: {
+      overview: 'Panoramica',
+      users: 'Utenti',
+      groups: 'Gruppi',
+    },
+    notificationArea: 'Area notifiche',
+    productCard: {
+      title: 'Vai alle <1 />notifiche',
     },
   },
   app: {

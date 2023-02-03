@@ -4,8 +4,8 @@ import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
 import { logAction } from '../lib/action-log';
 import { ENV } from '../utils/env';
-import { Main } from './Main';
 import { HeaderContext, UserContext } from './../lib/context';
+import { Main } from './Main';
 
 export function BodyLogger() {
   const { user } = useContext(UserContext);
@@ -14,11 +14,11 @@ export function BodyLogger() {
   const [onExit, setOnExit] = useState<((exitAction: () => void) => void) | undefined>();
   const [enableLogin, setEnableLogin] = useState<boolean>(true);
 
-  /*
-   * Handle data logging (now console.log, in the future might be Analytics)
-   */
   useEffect(() => {
     logAction('Route change', location);
+    if (location.pathname === '/dashboard') {
+      setSubHeaderVisible(true);
+    }
   }, [location]);
 
   return (
@@ -54,9 +54,27 @@ export function BodyLogger() {
                 }
               : false
           }
+          selectedProductId={'prod-pn-pg'}
+          selectedPartyId={'test01'}
+          partyList={[
+            {
+              logoUrl: '',
+              id: 'test01',
+              name: 'Ragione Sociale Test 1',
+              productRole: '00000000000',
+            },
+          ]}
+          productsList={[
+            {
+              id: 'prod-pn-pg',
+              title: 'La tua azienda',
+              productUrl: '',
+              linkType: 'external',
+            },
+          ]}
         />
         <Main />
-        <Box mt={16}>
+        <Box>
           <Footer loggedUser={!!user} onExit={onExit} />
         </Box>
       </HeaderContext.Provider>
