@@ -20,8 +20,6 @@ export function BodyLogger() {
     undefined
   )[0];
 
-  console.log('selectedInstitution: ', selectedInstitution);
-
   const product = {
     id: 'prod-pn-pg',
     title: 'La tua azienda',
