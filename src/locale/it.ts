@@ -21,9 +21,9 @@ export default {
   },
   outcome: {
     success: {
-      title: 'La registrazione è avvenuta con <1 />successo',
+      title: 'La registrazione è avvenuta con <1 /><1 />successo',
       description:
-        'La tua azienda è su Piattaforma Notifiche. Puoi entrare per <1 />vedere le notifiche e per gestire i permessi di altri utenti.',
+        'La tua azienda è su Piattaforma Notifiche. Puoi entrare per <1 /><1 />vedere le notifiche e per gestire i permessi di altri utenti.',
       enterButton: 'Entra',
     },
     error: {
