@@ -35,11 +35,10 @@ export default {
   },
   dashboard: {
     title: 'Panoramica',
-    subTitle:
-      'Qui puoi vedere un riepilogo dei dati di {{businessName}} lorem ipsum dolor sit amet.',
+    subTitle: 'Qui puoi vedere un riepilogo dei dati di {{businessName}}.',
     partyLogo: {
       upload: 'Carica il logo dell’azienda',
-      modify: 'Modifica il logo dell’azienda',
+      modify: 'Carica il logo dell’azienda',
       info: 'Inserisci solo il logo della tua azienda. <1 />Sarai responsabile dell’inserimento di immagini diverse da quella indicata.',
     },
     infoOverview: {

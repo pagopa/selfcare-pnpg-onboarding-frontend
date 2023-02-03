@@ -21,6 +21,8 @@ function StepSubmit({ forward, setLoading, selectedInstitution }: Props) {
   const { setOnExit } = useContext(HeaderContext);
   const { setRequiredLogin } = useContext(UserContext);
 
+  const productId = 'prod-pn-pg';
+
   useEffect(() => {
     if (!error) {
       setLoading(true);
@@ -35,14 +37,13 @@ function StepSubmit({ forward, setLoading, selectedInstitution }: Props) {
     }
   }, []);
 
-  // TODO Fix ProductId
   const submit = async () => {
     const submitResponse = await fetchWithLogs(
       {
         endpoint: 'ONBOARDING_PNPG_SUBMIT',
         endpointParams: {
           externalInstitutionId: selectedInstitution?.businessTaxId,
-          productId: 'prod-pn-pg',
+          productId,
         },
       },
       {

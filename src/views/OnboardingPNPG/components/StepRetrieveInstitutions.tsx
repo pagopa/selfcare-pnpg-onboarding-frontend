@@ -47,8 +47,6 @@ function StepRetrieveInstitutions({
       () => setRequiredLogin(true)
     );
 
-    setLoading(true);
-
     const outcome = getFetchOutcome(searchResponse);
 
     if (outcome === 'success') {
@@ -62,10 +60,10 @@ function StepRetrieveInstitutions({
   };
 
   useEffect(() => {
-    retrieveInstitutionsUsingId().catch((e) => console.log(e));
+    retrieveInstitutionsUsingId().catch((e) => e);
   }, []);
 
-  return !retrievedInstitutions ? (
+  return retrievedInstitutions && retrievedInstitutions.businesses.length === 0 ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}

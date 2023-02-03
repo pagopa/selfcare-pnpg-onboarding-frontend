@@ -7,6 +7,7 @@ type Props = {
   urlLogo: string;
   btnAction?: () => void;
 };
+
 export default function ActiveProductCard({ cardTitle, urlLogo, btnAction }: Props) {
   const theme = useTheme();
 

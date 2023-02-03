@@ -5,12 +5,13 @@ import { AxiosResponse } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
-import { PnPGInstitutionResource } from '../../../types';
+import { BusinessPnpg, PnPGInstitutionResource } from '../../../types';
 import { withLogin } from '../../components/withLogin';
 import { fetchWithLogs } from '../../lib/api-utils';
 import { UserContext } from '../../lib/context';
 import { getFetchOutcome } from '../../lib/error-utils';
 import PnIcon from '../OnboardingPNPG/assets/pn.svg';
+import { useHistoryState } from '../../components/useHistoryState';
 import WelcomeDashboard from './components/WelcomeDashboard';
 import ActiveProductCard from './components/ActiveProductCard';
 import PartyInfoOverview from './components/PartyInfoOverview';
@@ -21,11 +22,42 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const { setRequiredLogin } = useContext(UserContext);
   const [party, setParty] = useState<PnPGInstitutionResource>();
+  const selectedInstitution = useHistoryState<BusinessPnpg | undefined>(
+    'selected_institution',
+    undefined
+  )[0];
 
   useEffect(() => {
-    retrieveInstitutionInfos().catch((e) => console.log(e));
+    retrieveInstitutionsInfos().catch((e) => e);
   }, []);
 
+  const retrieveInstitutionsInfos = async () => {
+    const response = await fetchWithLogs(
+      {
+        endpoint: 'DASHBOARD_GET_INSTITUTIONS',
+      },
+      {
+        method: 'GET',
+      },
+      () => setRequiredLogin(true)
+    );
+
+    const outcome = getFetchOutcome(response);
+
+    if (outcome === 'success') {
+      trackEvent('DASHBOARD_PNPG_RETRIEVED_SUCCESS', {});
+      const retrievedInstitutionsInfos = (response as AxiosResponse)
+        .data as Array<PnPGInstitutionResource>;
+      const selectedParty = retrievedInstitutionsInfos.find(
+        (p) => p.fiscalCode === selectedInstitution?.businessTaxId
+      );
+      setParty(selectedParty);
+    } else {
+      trackEvent('DASHBOARD_PNPG_RETRIEVED_ERROR', {});
+    }
+  };
+
+  /* 
   const retrieveInstitutionInfos = async () => {
     const response = await fetchWithLogs(
       {
@@ -50,6 +82,30 @@ const Dashboard = () => {
       trackEvent('DASHBOARD_PNPG_RETRIEVED_ERROR', {});
     }
   };
+  */
+
+  const handleClick = async () => {
+    const response = await fetchWithLogs(
+      {
+        endpoint: 'DASHBOARD_RETRIEVE_BACK_OFFICE_URL',
+        endpointParams: { productId: 'prod-pn' },
+      },
+      {
+        method: 'GET',
+        params: { institutionId: 'bf4dcdb6-f223-4996-bfbc-326b119dd101' },
+      },
+      () => setRequiredLogin(true)
+    );
+
+    const outcome = getFetchOutcome(response);
+
+    if (outcome === 'success') {
+      const backOfficeUrl = (response as AxiosResponse).data;
+      window.location.assign(backOfficeUrl);
+    } else {
+      console.log('error'); // TODO
+    }
+  };
 
   return (
     <>
@@ -57,15 +113,15 @@ const Dashboard = () => {
         <DashboardSideMenu /> {/* Todo Agency selected */}
       </Grid>
       <Box p={3} sx={{ width: '100%' }}>
-        <WelcomeDashboard businessName={party?.name} />
+        <WelcomeDashboard businessName={selectedInstitution?.businessName} />
         <Grid container direction="row" justifyContent={'center'} alignItems="center" mb={2}>
           <Grid item xs={6} display="flex" alignItems="center">
             <Typography variant="h6" sx={{ fontWeight: '700' }}>
-              {party?.name}
+              {selectedInstitution?.businessName}
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            <PartyLogoUploader partyId={'12212121'} />
+            <PartyLogoUploader partyId={party?.id} />
           </Grid>
         </Grid>
         <Grid item xs={12}>
@@ -86,7 +142,7 @@ const Dashboard = () => {
                 </Trans>
               }
               urlLogo={PnIcon}
-              btnAction={() => {}}
+              btnAction={handleClick}
               // party={party}     TODO
               // product={product} TODO
             />
