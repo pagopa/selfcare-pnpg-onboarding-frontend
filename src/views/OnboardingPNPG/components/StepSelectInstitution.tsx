@@ -1,22 +1,25 @@
 import { Button, Grid, Typography, Box, Link } from '@mui/material';
 import { PartyAccountItem, theme } from '@pagopa/mui-italia';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { BusinessPnpg, InstitutionsPnPG, StepperStepComponentProps } from '../../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
+import { useHistoryState } from '../../../components/useHistoryState';
 
 type Props = {
   retrievedInstitutions?: InstitutionsPnPG;
-  setSelectedInstitution: React.Dispatch<React.SetStateAction<BusinessPnpg | undefined>>;
 } & StepperStepComponentProps;
 
-function StepSelectInstitution({ forward, retrievedInstitutions, setSelectedInstitution }: Props) {
+function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
   const { t } = useTranslation();
 
-  const [selected, setSelected] = useState<BusinessPnpg>(); // TODO FixMe
+  const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
+    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
 
   useEffect(() => {
+    setSelectedInstitution(undefined);
+    setSelectedInstitutionHistory(undefined);
     if (retrievedInstitutions?.businesses.length === 1) {
       setSelectedInstitution(retrievedInstitutions.businesses[0]);
     }
@@ -82,13 +85,14 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setSelectedInst
                   backgroundColor: 'background.paper',
                   borderRadius: theme.spacing(2),
                   border:
-                    a.businessTaxId === selected?.businessTaxId ? 'solid 3px #0073E6' : undefined,
+                    a.businessTaxId === selectedInstitution?.businessTaxId
+                      ? 'solid 3px #0073E6'
+                      : undefined,
                   boxShadow:
                     '0px 8px 10px -5px rgba(0, 43, 85, 0.1), 0px 16px 24px 2px rgba(0, 43, 85, 0.05), 0px 6px 30px 5px rgba(0, 43, 85, 0.1)',
                 }}
                 onClick={() => {
                   setSelectedInstitution(a);
-                  setSelected(a);
                 }}
               >
                 <PartyAccountItem
@@ -106,11 +110,14 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setSelectedInst
         <Grid container mt={6}>
           <OnboardingStepActions
             forward={{
-              action: onForwardAction,
+              action: () => {
+                setSelectedInstitutionHistory(selectedInstitution);
+                onForwardAction();
+              },
               label: moreThanTwoInstitutions
                 ? t('selectFromAgencyList.registerAgency')
                 : t('selectInstitutionReleated.enter'),
-              disabled: !selected, // Todo FixMe
+              disabled: !selectedInstitution,
             }}
           />
         </Grid>

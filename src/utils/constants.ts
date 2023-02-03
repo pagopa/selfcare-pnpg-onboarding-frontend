@@ -36,6 +36,15 @@ export const API = {
       '/pnPGInstitutions/{{externalInstitutionId}}/products/{{productId}}/onboarding',
   },
   DASHBOARD_PNPG_RETRIEVE_PARTY_INFOS: {
-    URL: 'https://api.dev.selfcare.pagopa.it/dashboard/v1/pnPGInstitutions/{{externalId}}',
+    URL: ENV.URL_API.DASHBOARD + 'pnPGInstitutions/{{externalId}}',
+  },
+  DASHBOARD_RETRIEVE_BACK_OFFICE_URL: {
+    URL: ENV.URL_API.DASHBOARD + 'products/{{productId}}/back-office',
+  },
+  DASHBOARD_SAVE_INSTITUTION_LOGO: {
+    URL: ENV.URL_API.DASHBOARD + 'institutions/{{institutionId}}/logo',
+  },
+  DASHBOARD_GET_INSTITUTIONS: {
+    URL: ENV.URL_API.DASHBOARD + 'pnPGInstitutions',
   },
 };

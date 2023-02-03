@@ -4,8 +4,10 @@ import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
 import { logAction } from '../lib/action-log';
 import { ENV } from '../utils/env';
+import { BusinessPnpg } from '../../types';
 import { HeaderContext, UserContext } from './../lib/context';
 import { Main } from './Main';
+import { useHistoryState } from './useHistoryState';
 
 export function BodyLogger() {
   const { user } = useContext(UserContext);
@@ -13,6 +15,17 @@ export function BodyLogger() {
   const [subHeaderVisible, setSubHeaderVisible] = useState<boolean>(false);
   const [onExit, setOnExit] = useState<((exitAction: () => void) => void) | undefined>();
   const [enableLogin, setEnableLogin] = useState<boolean>(true);
+  const selectedInstitution = useHistoryState<BusinessPnpg | undefined>(
+    'selected_institution',
+    undefined
+  )[0];
+
+  console.log('selectedInstitution: ', selectedInstitution);
+
+  const product = {
+    id: 'prod-pn-pg',
+    title: 'La tua azienda',
+  };
 
   useEffect(() => {
     logAction('Route change', location);
@@ -54,20 +67,20 @@ export function BodyLogger() {
                 }
               : false
           }
-          selectedProductId={'prod-pn-pg'}
-          selectedPartyId={'test01'}
+          selectedProductId={product.id}
+          selectedPartyId={selectedInstitution?.businessTaxId}
           partyList={[
             {
               logoUrl: '',
-              id: 'test01',
-              name: 'Ragione Sociale Test 1',
-              productRole: '00000000000',
+              id: selectedInstitution ? selectedInstitution.businessTaxId : '',
+              name: selectedInstitution ? selectedInstitution.businessName : '',
+              productRole: selectedInstitution ? selectedInstitution.businessTaxId : '',
             },
           ]}
           productsList={[
             {
-              id: 'prod-pn-pg',
-              title: 'La tua azienda',
+              id: product.id,
+              title: product.title,
               productUrl: '',
               linkType: 'external',
             },

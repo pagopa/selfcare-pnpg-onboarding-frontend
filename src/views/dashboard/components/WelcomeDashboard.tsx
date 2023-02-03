@@ -10,7 +10,7 @@ export default function WelcomeDashboard({ businessName }: Props) {
   const title = t('dashboard.title');
   const subTitle = (
     <Trans i18nKey="dashboard.subTitle">
-      Qui puoi vedere un riepilogo dei dati di {{ businessName }} lorem ipsum dolor sit amet.
+      Qui puoi vedere un riepilogo dei dati di {{ businessName }}.
     </Trans>
   );
   return (
