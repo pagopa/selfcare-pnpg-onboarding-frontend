@@ -57,7 +57,7 @@ export async function mockFetch(
     switch (endpointParams.externalInstitutionId) {
       case '00000000000':
         return new Promise((resolve) =>
-          resolve({ data: '', status: 200, statusText: '200' } as AxiosResponse)
+          resolve({ data: '', status: 201, statusText: '201' } as AxiosResponse)
         );
       case '11111111111':
         return genericError;

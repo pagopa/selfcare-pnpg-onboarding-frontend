@@ -9,6 +9,7 @@ import { unregisterUnloadEvent } from '../../../utils/unloadEvent-utils';
 import { fetchWithLogs } from '../../../lib/api-utils';
 import { getFetchOutcome } from '../../../lib/error-utils';
 import { ENV } from '../../../utils/env';
+import { useHistoryState } from '../../../components/useHistoryState';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -17,10 +18,11 @@ type Props = StepperStepComponentProps & {
 
 function StepSubmit({ forward, setLoading, selectedInstitution }: Props) {
   const { t } = useTranslation();
-  const [error, setError] = useState<boolean>(false);
   const { setOnExit } = useContext(HeaderContext);
   const { setRequiredLogin } = useContext(UserContext);
-
+  const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
+    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [error, setError] = useState<boolean>(false);
   const productId = 'prod-pn-pg';
 
   useEffect(() => {
@@ -71,6 +73,8 @@ function StepSubmit({ forward, setLoading, selectedInstitution }: Props) {
 
     if (outcome === 'success') {
       trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
+      setSelectedInstitution(selectedInstitution);
+      setSelectedInstitutionHistory(selectedInstitution);
       forward();
     } else {
       trackEvent('ONBOARDING_PNPG_SEND_ERROR', {});
