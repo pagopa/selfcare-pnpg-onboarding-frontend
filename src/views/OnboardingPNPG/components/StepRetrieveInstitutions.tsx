@@ -16,18 +16,14 @@ import { LoadingOverlay } from '../../../components/LoadingOverlay';
 import { ENV } from '../../../utils/env';
 
 type Props = {
-  retrievedInstitutions?: InstitutionsPnPG;
   setRetrievedInstitutions: React.Dispatch<React.SetStateAction<InstitutionsPnPG | undefined>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function StepRetrieveInstitutions({
-  retrievedInstitutions,
-  setRetrievedInstitutions,
-  setActiveStep,
-}: Props) {
+function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: Props) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const { setRequiredLogin } = useContext(UserContext);
 
   const retrieveInstitutionsUsingId = async () => {
@@ -53,11 +49,17 @@ function StepRetrieveInstitutions({
     const outcome = getFetchOutcome(searchResponse);
 
     if (outcome === 'success') {
-      const retrievedInstitutions = (searchResponse as AxiosResponse).data;
+      const retrievedInstitutions = (searchResponse as AxiosResponse).data as InstitutionsPnPG;
       setRetrievedInstitutions(retrievedInstitutions);
-      setActiveStep(1);
+      console.log('retrievedInstitutions', retrievedInstitutions.businesses.length);
+      if (retrievedInstitutions.businesses && retrievedInstitutions.businesses.length !== 0) {
+        setActiveStep(1);
+      } else {
+        setError(true);
+      }
     } else {
       trackEvent('NOT_RETRIEVED_ENTITIES', {});
+      setError(true);
     }
     setLoading(false);
   };
@@ -71,7 +73,7 @@ function StepRetrieveInstitutions({
 
   return loading ? (
     <LoadingOverlay loadingText={t('loadingText')} />
-  ) : retrievedInstitutions && retrievedInstitutions.businesses.length === 0 ? (
+  ) : error ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}

@@ -21,7 +21,6 @@ function OnboardingPNPGComponent() {
       label: 'Retrieve institutions',
       Component: () =>
         StepRetrieveInstitutions({
-          retrievedInstitutions,
           setRetrievedInstitutions,
           setActiveStep,
         }),
