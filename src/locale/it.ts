@@ -1,9 +1,15 @@
 export default {
+  loadingText: 'Stiamo verificando i tuoi dati',
   institutionsNotFound: {
     title: 'Nessuna azienda trovata',
     message:
       'Per accedere alle notifiche, l’azienda deve essere registrata <1 />dal Legale Rappresentante.',
     backToAccess: 'Torna all’accesso',
+  },
+  alreadyOnboarded: {
+    title: "L'Ente che hai scelto ha già aderito",
+    description: "L'ente selezionato ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
+    enter: 'Entra',
   },
   selectFromAgencyList: {
     title: 'A nome di quale azienda vuoi accedere?',

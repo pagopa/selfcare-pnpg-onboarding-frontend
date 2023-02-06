@@ -18,10 +18,12 @@ function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
 
   useEffect(() => {
-    setSelectedInstitution(undefined);
-    setSelectedInstitutionHistory(undefined);
     if (retrievedInstitutions?.businesses.length === 1) {
       setSelectedInstitution(retrievedInstitutions.businesses[0]);
+      setSelectedInstitutionHistory(retrievedInstitutions.businesses[0]);
+    } else {
+      setSelectedInstitutionHistory(undefined);
+      setSelectedInstitution(undefined);
     }
   }, [retrievedInstitutions]);
 

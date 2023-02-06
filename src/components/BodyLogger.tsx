@@ -4,10 +4,8 @@ import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
 import { logAction } from '../lib/action-log';
 import { ENV } from '../utils/env';
-import { BusinessPnpg } from '../../types';
 import { HeaderContext, UserContext } from './../lib/context';
 import { Main } from './Main';
-import { useHistoryState } from './useHistoryState';
 
 export function BodyLogger() {
   const { user } = useContext(UserContext);
@@ -15,10 +13,8 @@ export function BodyLogger() {
   const [subHeaderVisible, setSubHeaderVisible] = useState<boolean>(false);
   const [onExit, setOnExit] = useState<((exitAction: () => void) => void) | undefined>();
   const [enableLogin, setEnableLogin] = useState<boolean>(true);
-  const selectedInstitution = useHistoryState<BusinessPnpg | undefined>(
-    'selected_institution',
-    undefined
-  )[0];
+
+  const selectedInstitution = history.state;
 
   const product = {
     id: 'prod-pn-pg',
@@ -66,13 +62,15 @@ export function BodyLogger() {
               : false
           }
           selectedProductId={product.id}
-          selectedPartyId={selectedInstitution?.businessTaxId}
+          selectedPartyId={selectedInstitution?.state.businessTaxId}
           partyList={[
             {
               logoUrl: '',
-              id: selectedInstitution ? selectedInstitution.businessTaxId : '',
-              name: selectedInstitution ? selectedInstitution.businessName : '',
-              productRole: selectedInstitution ? selectedInstitution.businessTaxId : '',
+              id: selectedInstitution?.state ? selectedInstitution.state.businessTaxId : '',
+              name: selectedInstitution?.state ? selectedInstitution.state.businessName : '',
+              productRole: selectedInstitution?.state
+                ? selectedInstitution.state.businessTaxId
+                : '',
             },
           ]}
           productsList={[

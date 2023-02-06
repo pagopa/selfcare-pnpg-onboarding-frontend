@@ -19,15 +19,15 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 };
 
 export const mockedPnPGInstitutionResource: PnPGInstitutionResource = {
-  externalId: mockedAgencies[0].businessTaxId,
+  externalId: mockedAgencies[0]?.businessTaxId,
   address: 'via test',
   category: 'test',
-  fiscalCode: mockedAgencies[0].businessTaxId,
+  fiscalCode: mockedAgencies[0]?.businessTaxId,
   geographicTaxonomies: [],
   id: 'test010203',
   institutionType: 'GSP',
   mailAddress: 'test@comuneditest.it',
-  name: mockedAgencies[0].businessName,
+  name: mockedAgencies[0]?.businessName,
   origin: 'testorigin',
   originId: 'testoriginId',
   recipientCode: 'MDSSFDF',

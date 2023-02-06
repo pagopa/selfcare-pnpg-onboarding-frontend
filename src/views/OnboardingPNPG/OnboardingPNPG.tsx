@@ -1,7 +1,6 @@
 import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { BusinessPnpg, InstitutionsPnPG, RequestOutcomeMessage, StepperStep } from '../../../types';
-import { useHistoryState } from '../../components/useHistoryState';
+import { InstitutionsPnPG, StepperStep } from '../../../types';
 import { withLogin } from '../../components/withLogin';
 import StepRetrieveInstitutions from './components/StepRetrieveInstitutions';
 import StepSelectInstitution from './components/StepSelectInstitution';
@@ -10,11 +9,7 @@ import StepSuccess from './components/StepSuccess';
 
 function OnboardingPNPGComponent() {
   const [activeStep, setActiveStep] = useState(0);
-  const [_outcome, _setOutcome] = useState<RequestOutcomeMessage>();
   const [retrievedInstitutions, setRetrievedInstitutions] = useState<InstitutionsPnPG>();
-  const [selectedInstitution, _setSelectedInstitution, _setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
-
   const [_loading, setLoading] = useState<boolean>(false);
 
   const forward = () => {
@@ -36,7 +31,6 @@ function OnboardingPNPGComponent() {
       Component: () =>
         StepSelectInstitution({
           retrievedInstitutions,
-
           forward,
         }),
     },
@@ -45,7 +39,6 @@ function OnboardingPNPGComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
-          selectedInstitution,
           forward,
         }),
     },

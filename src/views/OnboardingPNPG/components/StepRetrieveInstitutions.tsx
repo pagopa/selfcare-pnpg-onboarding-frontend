@@ -12,6 +12,8 @@ import { withLogin } from '../../../components/withLogin';
 import { UserContext } from '../../../lib/context';
 import { fetchWithLogs } from '../../../lib/api-utils';
 import { getFetchOutcome } from '../../../lib/error-utils';
+import { LoadingOverlay } from '../../../components/LoadingOverlay';
+import { ENV } from '../../../utils/env';
 
 type Props = {
   retrievedInstitutions?: InstitutionsPnPG;
@@ -25,7 +27,7 @@ function StepRetrieveInstitutions({
   setActiveStep,
 }: Props) {
   const { t } = useTranslation();
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { setRequiredLogin } = useContext(UserContext);
 
   const retrieveInstitutionsUsingId = async () => {
@@ -67,7 +69,9 @@ function StepRetrieveInstitutions({
     retrieveInstitutionsUsingId().catch((e) => e);
   }, []);
 
-  return retrievedInstitutions && retrievedInstitutions.businesses.length === 0 ? (
+  return loading ? (
+    <LoadingOverlay loadingText={t('loadingText')} />
+  ) : retrievedInstitutions && retrievedInstitutions.businesses.length === 0 ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}
@@ -81,7 +85,7 @@ function StepRetrieveInstitutions({
         variantTitle={'h4'}
         variantDescription={'body1'}
         buttonLabel={t('institutionsNotFound.backToAccess')}
-        onButtonClick={() => {}} // TODO Redirect
+        onButtonClick={() => ENV.URL_FE.LOGOUT}
       />
       <Typography
         sx={{
