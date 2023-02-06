@@ -42,7 +42,7 @@ export default function PartyInfoOverview({ party }: Props) {
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.category}
+                {party?.institutionType} {/* TODO {party?.category} */}
               </Typography>
             </Grid>
             <Grid item xs={4}>
