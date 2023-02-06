@@ -51,7 +51,6 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
     if (outcome === 'success') {
       const retrievedInstitutions = (searchResponse as AxiosResponse).data as InstitutionsPnPG;
       setRetrievedInstitutions(retrievedInstitutions);
-      console.log('retrievedInstitutions', retrievedInstitutions.businesses.length);
       if (retrievedInstitutions.businesses && retrievedInstitutions.businesses.length !== 0) {
         setActiveStep(1);
       } else {
