@@ -6,13 +6,12 @@ import { useContext, useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { BusinessPnpg, PnPGInstitutionResource } from '../../../types';
+import { PnPGInstitutionResource } from '../../../types';
 import { withLogin } from '../../components/withLogin';
 import { fetchWithLogs } from '../../lib/api-utils';
 import { UserContext } from '../../lib/context';
 import { getFetchOutcome } from '../../lib/error-utils';
 import PnIcon from '../OnboardingPNPG/assets/pn.svg';
-import { useHistoryState } from '../../components/useHistoryState';
 import WelcomeDashboard from './components/WelcomeDashboard';
 import ActiveProductCard from './components/ActiveProductCard';
 import PartyInfoOverview from './components/PartyInfoOverview';
@@ -23,8 +22,6 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const { setRequiredLogin } = useContext(UserContext);
   const [party, setParty] = useState<PnPGInstitutionResource>();
-  const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
 
   const selectedInstitution = history.state;
 
@@ -55,8 +52,6 @@ const Dashboard = () => {
       const selectedParty = retrievedInstitutionsInfos.find(
         (p) => p.fiscalCode === selectedInstitution?.state.businessTaxId
       );
-      setSelectedInstitution(selectedInstitution?.state);
-      setSelectedInstitutionHistory(selectedInstitution?.state);
       setParty(selectedParty);
     } else {
       trackEvent('DASHBOARD_PNPG_RETRIEVED_ERROR', {});

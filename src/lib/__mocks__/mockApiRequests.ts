@@ -18,23 +18,42 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
   requestDateTime: 'x',
 };
 
-export const mockedPnPGInstitutionResource: PnPGInstitutionResource = {
-  externalId: mockedAgencies[0]?.businessTaxId,
-  address: 'via test',
-  category: 'test',
-  fiscalCode: mockedAgencies[0]?.businessTaxId,
-  geographicTaxonomies: [],
-  id: 'test010203',
-  institutionType: 'GSP',
-  mailAddress: 'test@comuneditest.it',
-  name: mockedAgencies[0]?.businessName,
-  origin: 'testorigin',
-  originId: 'testoriginId',
-  recipientCode: 'MDSSFDF',
-  status: 'TestStatus',
-  userRole: 'UserRoleTest',
-  zipCode: '12345',
-};
+export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
+  {
+    externalId: mockedAgencies[0]?.businessTaxId,
+    address: 'via test 1',
+    category: 'test1',
+    fiscalCode: mockedAgencies[0]?.businessTaxId,
+    geographicTaxonomies: [],
+    id: 'test010203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: mockedAgencies[0]?.businessName,
+    origin: 'testorigin1',
+    originId: 'testoriginId1',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus1',
+    userRole: 'UserRoleTest1',
+    zipCode: '12345',
+  },
+  {
+    externalId: mockedAgencies[1]?.businessTaxId,
+    address: 'via test 2',
+    category: 'test2',
+    fiscalCode: mockedAgencies[1]?.businessTaxId,
+    geographicTaxonomies: [],
+    id: 'test020203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: mockedAgencies[1]?.businessName,
+    origin: 'testorigin2',
+    originId: 'testoriginId2',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus2',
+    userRole: 'UserRoleTest2',
+    zipCode: '54321',
+  },
+];
 
 const genericError: Promise<AxiosError> = new Promise((resolve) =>
   resolve({
@@ -64,10 +83,10 @@ export async function mockFetch(
     }
   }
 
-  if (endpoint === 'DASHBOARD_PNPG_RETRIEVE_PARTY_INFOS') {
+  if (endpoint === 'DASHBOARD_GET_INSTITUTIONS') {
     return new Promise((resolve) =>
       resolve({
-        data: mockedPnPGInstitutionResource,
+        data: mockedPnPGInstitutionsResource,
         status: 200,
         statusText: '200',
       } as AxiosResponse)
