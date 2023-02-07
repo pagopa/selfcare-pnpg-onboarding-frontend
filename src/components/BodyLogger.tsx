@@ -23,9 +23,7 @@ export function BodyLogger() {
 
   useEffect(() => {
     logAction('Route change', location);
-    if (location.pathname === '/dashboardpg') {
-      setSubHeaderVisible(true);
-    }
+    setSubHeaderVisible(location.pathname === '/dashboardpg');
   }, [location]);
 
   return (
