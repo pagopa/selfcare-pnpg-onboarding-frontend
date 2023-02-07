@@ -3,12 +3,16 @@ import { BusinessPnpg, Endpoint, InstitutionsPnPG, PnPGInstitutionResource } fro
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
-    businessName: 'Ragione Sociale Test 1',
+    businessName: 'Ragione Sociale success',
     businessTaxId: '00000000000',
   },
   {
-    businessName: 'Ragione Sociale Test 2',
+    businessName: 'Ragione Sociale alreadyOnboarded',
     businessTaxId: '11111111111',
+  },
+  {
+    businessName: 'Ragione Sociale genericError',
+    businessTaxId: '22222222222',
   },
 ];
 
@@ -53,12 +57,36 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     userRole: 'UserRoleTest2',
     zipCode: '54321',
   },
+  {
+    externalId: mockedAgencies[2]?.businessTaxId,
+    address: 'via test 3',
+    category: 'test3',
+    fiscalCode: mockedAgencies[2]?.businessTaxId,
+    geographicTaxonomies: [],
+    id: 'test030203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: mockedAgencies[2]?.businessName,
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus3',
+    userRole: 'UserRoleTest3',
+    zipCode: '32145',
+  },
 ];
+
+const alreadyOnboarded: Promise<AxiosError> = new Promise((resolve) =>
+  resolve({
+    isAxiosError: true,
+    response: { data: '', status: 400, statusText: '400' },
+  } as AxiosError)
+);
 
 const genericError: Promise<AxiosError> = new Promise((resolve) =>
   resolve({
     isAxiosError: true,
-    response: { data: '', status: 400, statusText: '400' },
+    response: { data: '', status: 404, statusText: '404' },
   } as AxiosError)
 );
 
@@ -79,6 +107,8 @@ export async function mockFetch(
           resolve({ data: '', status: 201, statusText: '201' } as AxiosResponse)
         );
       case '11111111111':
+        return alreadyOnboarded;
+      case '22222222222':
         return genericError;
     }
   }
