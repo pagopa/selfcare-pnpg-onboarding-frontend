@@ -1,10 +1,19 @@
 import { IllusCompleted } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useTranslation, Trans } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import { BusinessPnpg } from '../../../../types';
+import { useHistoryState } from '../../../components/useHistoryState';
 import { ROUTES } from '../../../utils/constants';
 
 function StepSuccess() {
   const { t } = useTranslation();
+  const history = useHistory();
+
+  const selectedInstitution = useHistoryState<BusinessPnpg | undefined>(
+    'selected_institution',
+    undefined
+  )[0];
   return (
     <EndingPage
       minHeight="52vh"
@@ -24,7 +33,7 @@ function StepSuccess() {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('outcome.success.enterButton')}
-      onButtonClick={() => window.location.assign(ROUTES.DASHBOARD.PATH)}
+      onButtonClick={() => history.push(ROUTES.DASHBOARD.PATH, selectedInstitution)}
     />
   );
 }

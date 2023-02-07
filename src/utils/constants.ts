@@ -21,7 +21,7 @@ export const ROUTES: RoutesObject = {
   DASHBOARD: {
     PATH: '/dashboardpg',
     LABEL: 'Onboarding-pnpg dashboard',
-    EXACT: true,
+    EXACT: false,
     COMPONENT: Dashboard,
   },
 };
