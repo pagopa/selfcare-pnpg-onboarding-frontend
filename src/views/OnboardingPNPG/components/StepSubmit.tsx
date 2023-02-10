@@ -1,19 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { EndingPage } from '@pagopa/selfcare-common-frontend';
 import { IllusError } from '@pagopa/mui-italia';
 import { useTranslation, Trans } from 'react-i18next';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
-import { AxiosError } from 'axios';
 import { useHistory } from 'react-router-dom';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../../types';
-import { HeaderContext, UserContext } from '../../../lib/context';
-import { unregisterUnloadEvent } from '../../../utils/unloadEvent-utils';
-import { fetchWithLogs } from '../../../lib/api-utils';
-import { getFetchOutcome } from '../../../lib/error-utils';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { ROUTES } from '../../../utils/constants';
+import { onboardingPGSubmit } from '../../../services/onboardingService';
+import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -21,8 +18,6 @@ type Props = StepperStepComponentProps & {
 
 function StepSubmit({ forward, setLoading }: Props) {
   const { t } = useTranslation();
-  const { setOnExit } = useContext(HeaderContext);
-  const { setRequiredLogin } = useContext(UserContext);
   const history = useHistory();
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
@@ -30,62 +25,41 @@ function StepSubmit({ forward, setLoading }: Props) {
   const productId = 'prod-pn-pg';
 
   useEffect(() => {
-    if (!error) {
+    if (!error && selectedInstitution) {
       setLoading(true);
-      submit()
+      submit(selectedInstitution.businessTaxId, productId, selectedInstitution)
         .catch((_reason) => {
           setError('genericError');
         })
         .finally(() => {
-          unregisterUnloadEvent(setOnExit);
           setLoading(false);
         });
     }
   }, []);
 
-  const submit = async () => {
-    const submitResponse = await fetchWithLogs(
-      {
-        endpoint: 'ONBOARDING_PNPG_SUBMIT',
-        endpointParams: {
-          externalInstitutionId: selectedInstitution?.businessTaxId,
-          productId,
-        },
-      },
-      {
-        method: 'POST',
-        data: {
-          billingData: {
-            businessName: selectedInstitution?.businessName,
-            taxCode: selectedInstitution?.businessTaxId,
-          },
-          users: [
-            {
-              taxCode: 'DLLDGI53T30I324E',
-              name: 'Diego',
-              surname: 'Della Valle',
-              email: 'd.dellavalle@test.it',
-              role: 'MANAGER',
-            },
-          ],
-        },
-      },
-      () => setRequiredLogin(true)
-    );
+  const submit = async (
+    externalInstitutionId: string,
+    productId: string,
+    selectedInstitution: BusinessPnpg
+  ) => {
+    setLoading(true);
 
-    const outcome = getFetchOutcome(submitResponse);
-
-    if (outcome === 'success') {
-      trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
-      setSelectedInstitution(selectedInstitution);
-      setSelectedInstitutionHistory(selectedInstitution);
-      forward();
-    } else if ((submitResponse as AxiosError<any>).response?.status === 400) {
-      setError('alreadyOnboarded');
-    } else {
-      trackEvent('ONBOARDING_PNPG_SEND_ERROR', {});
-      setError('genericError');
-    }
+    onboardingPGSubmit(externalInstitutionId, productId, loggedUser, selectedInstitution)
+      .then(() => {
+        trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
+        setSelectedInstitution(selectedInstitution);
+        setSelectedInstitutionHistory(selectedInstitution);
+        forward();
+      })
+      .catch(() => {
+        trackEvent('ONBOARDING_PNPG_SEND_ERROR', {});
+        setSelectedInstitution(selectedInstitution);
+        setSelectedInstitutionHistory(selectedInstitution);
+        // TODO Differentiate 400 (alreadyOnboarded) from other status code of error
+        setError('alreadyOnboarded');
+        setError('genericError');
+      })
+      .finally(() => setLoading(false));
   };
 
   return error === 'genericError' ? (
@@ -117,7 +91,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={i18n.t('alreadyOnboarded.enter')}
-      onButtonClick={() => history.push(ROUTES.DASHBOARD.PATH, selectedInstitution)}
+      onButtonClick={() => history.push(ROUTES.PNPG_DASHBOARD.PATH, selectedInstitution)}
     />
   ) : (
     <></>

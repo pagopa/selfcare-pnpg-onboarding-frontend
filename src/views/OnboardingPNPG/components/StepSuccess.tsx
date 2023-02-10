@@ -33,7 +33,7 @@ function StepSuccess() {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('outcome.success.enterButton')}
-      onButtonClick={() => history.push(ROUTES.DASHBOARD.PATH, selectedInstitution)}
+      onButtonClick={() => history.push(ROUTES.PNPG_DASHBOARD.PATH, selectedInstitution)}
     />
   );
 }

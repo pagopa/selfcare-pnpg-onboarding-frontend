@@ -1,20 +1,28 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
 import { logAction } from '../lib/action-log';
 import { ENV } from '../utils/env';
-import { HeaderContext, UserContext } from './../lib/context';
+import { partiesSelectors } from '../redux/slices/partiesSlice';
+import { useAppSelector } from '../redux/hooks';
+import { loggedUser } from '../api/__mocks__/DashboardPnPgApiClient';
+import { BusinessPnpg } from '../../types';
+import { HeaderContext } from './../lib/context';
 import { Main } from './Main';
+import { useHistoryState } from './useHistoryState';
 
-export function BodyLogger() {
-  const { user } = useContext(UserContext);
+function BodyLogger() {
+  // const { user } = useContext(UserContext);
   const location = useLocation();
+  const parties = useAppSelector(partiesSelectors.selectPartiesList);
   const [subHeaderVisible, setSubHeaderVisible] = useState<boolean>(false);
+  const [selectedInstitution, _setSelectedInstitution, setSelectedInstitutionHistory] =
+    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
   const [onExit, setOnExit] = useState<((exitAction: () => void) => void) | undefined>();
   const [enableLogin, setEnableLogin] = useState<boolean>(true);
 
-  const selectedInstitution = history.state;
+  const selectedInstitutionPnPg = history.state;
 
   const product = {
     id: 'prod-pn-pg',
@@ -50,27 +58,21 @@ export function BodyLogger() {
           assistanceEmail={ENV.ASSISTANCE.ENABLE ? ENV.ASSISTANCE.EMAIL : undefined}
           enableLogin={enableLogin}
           loggedUser={
-            user
+            loggedUser
               ? {
-                  id: user ? user.uid : '',
-                  name: user?.name,
-                  surname: user?.surname,
-                  email: user?.email,
+                  id: loggedUser.uid,
+                  name: loggedUser.name,
+                  surname: loggedUser.surname,
+                  email: loggedUser.email,
                 }
               : false
           }
-          selectedProductId={product.id}
-          selectedPartyId={selectedInstitution?.state.businessTaxId}
-          partyList={[
-            {
-              logoUrl: '',
-              id: selectedInstitution?.state ? selectedInstitution.state.businessTaxId : '',
-              name: selectedInstitution?.state ? selectedInstitution.state.businessName : '',
-              productRole: selectedInstitution?.state
-                ? selectedInstitution.state.businessTaxId
-                : '',
-            },
-          ]}
+          partyList={parties?.map((p) => ({
+            logoUrl: '', // TODO
+            id: p.id,
+            name: p.name ?? '',
+            productRole: p.fiscalCode ?? '',
+          }))}
           productsList={[
             {
               id: product.id,
@@ -79,12 +81,24 @@ export function BodyLogger() {
               linkType: 'external',
             },
           ]}
+          selectedProductId={product?.id}
+          selectedPartyId={
+            selectedInstitution?.businessTaxId ?? selectedInstitutionPnPg?.state.businessTaxId
+          }
+          onSelectedParty={(selected) => {
+            setSelectedInstitutionHistory({
+              ...selected,
+              businessName: selected.name,
+              businessTaxId: selected.id,
+            });
+          }}
         />
         <Main />
         <Box>
-          <Footer loggedUser={!!user} onExit={onExit} />
+          <Footer loggedUser={!!loggedUser} onExit={onExit} />
         </Box>
       </HeaderContext.Provider>
     </Box>
   );
 }
+export default BodyLogger;

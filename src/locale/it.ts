@@ -44,7 +44,16 @@ export default {
     subTitle: 'Qui puoi vedere un riepilogo dei dati di {{businessName}}.',
     partyLogo: {
       upload: 'Carica il logo dell’azienda',
-      modify: 'Carica il logo dell’azienda',
+      modify: 'Modifica il logo dell’azienda',
+      uploadError: {
+        title: 'Caricamento non riuscito',
+        description:
+          'Il caricamento del logo non è andato a buon fine. Verifica che il formato e la dimensione siano corretti e caricalo di nuovo',
+      },
+      modifyError: {
+        title: 'Caricamento non riuscito',
+        description: 'Spiacenti, qualcosa è andato storto. Riprova più tardi',
+      },
       info: 'Inserisci solo il logo della tua azienda. <1 />Sarai responsabile dell’inserimento di immagini diverse da quella indicata.',
     },
     infoOverview: {

@@ -1,5 +1,13 @@
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { BusinessPnpg, Endpoint, InstitutionsPnPG, PnPGInstitutionResource } from '../../../types';
+import { BusinessPnpg, InstitutionsPnPG, PnPGInstitutionResource, User } from '../../../types';
+
+// TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
+export const loggedUser: User = {
+  taxCode: 'DLLDGI53T30I324E',
+  uid: '111',
+  name: 'Diego',
+  surname: 'Della Valle',
+  email: 'd.dellavalle@test.it',
+};
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
@@ -29,7 +37,7 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     category: 'test1',
     fiscalCode: mockedAgencies[0]?.businessTaxId,
     geographicTaxonomies: [],
-    id: 'test010203',
+    id: mockedAgencies[0]?.businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
     name: mockedAgencies[0]?.businessName,
@@ -46,7 +54,7 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     category: 'test2',
     fiscalCode: mockedAgencies[1]?.businessTaxId,
     geographicTaxonomies: [],
-    id: 'test020203',
+    id: mockedAgencies[1]?.businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
     name: mockedAgencies[1]?.businessName,
@@ -63,7 +71,7 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     category: 'test3',
     fiscalCode: mockedAgencies[2]?.businessTaxId,
     geographicTaxonomies: [],
-    id: 'test030203',
+    id: mockedAgencies[2]?.businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
     name: mockedAgencies[2]?.businessName,
@@ -76,56 +84,16 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
 ];
 
-const alreadyOnboarded: Promise<AxiosError> = new Promise((resolve) =>
-  resolve({
-    isAxiosError: true,
-    response: { data: '', status: 400, statusText: '400' },
-  } as AxiosError)
-);
+export const DashboardApi = {
+  getPnPGInstitutions: async (): Promise<Array<PnPGInstitutionResource>> =>
+    new Promise((resolve) => resolve(mockedPnPGInstitutionsResource)),
 
-const genericError: Promise<AxiosError> = new Promise((resolve) =>
-  resolve({
-    isAxiosError: true,
-    response: { data: '', status: 404, statusText: '404' },
-  } as AxiosError)
-);
+  retrieveProductBackoffice: async (
+    _productId: string,
+    _institutionId: string,
+    _environment?: string
+  ): Promise<string> => new Promise((resolve) => resolve('mockedUrl')),
 
-export async function mockFetch(
-  { endpoint, endpointParams }: Endpoint,
-  { params }: AxiosRequestConfig
-): Promise<AxiosResponse | AxiosError> {
-  if (endpoint === 'GET_INSTITUTIONS_BY_USER_ID') {
-    return new Promise((resolve) =>
-      resolve({ data: mockedInstitutionPnPG, status: 200, statusText: '200' } as AxiosResponse)
-    );
-  }
-
-  if (endpoint === 'ONBOARDING_PNPG_SUBMIT') {
-    switch (endpointParams.externalInstitutionId) {
-      case '00000000000':
-        return new Promise((resolve) =>
-          resolve({ data: '', status: 201, statusText: '201' } as AxiosResponse)
-        );
-      case '11111111111':
-        return alreadyOnboarded;
-      case '22222222222':
-        return genericError;
-    }
-  }
-
-  if (endpoint === 'DASHBOARD_GET_INSTITUTIONS') {
-    return new Promise((resolve) =>
-      resolve({
-        data: mockedPnPGInstitutionsResource,
-        status: 200,
-        statusText: '200',
-      } as AxiosResponse)
-    );
-  }
-
-  const msg = `NOT MOCKED REQUEST! {endpoint: ${endpoint}, endpointParams: ${JSON.stringify(
-    endpointParams
-  )}, params: ${JSON.stringify(params)}}`;
-  console.error(msg);
-  throw new Error(msg);
-}
+  saveInstitutionLogo: async (_institutionId: string, _logo: File): Promise<boolean> =>
+    new Promise((resolve) => resolve(true)),
+};
