@@ -24,11 +24,6 @@ function BodyLogger() {
 
   const selectedInstitutionPnPg = history.state;
 
-  const product = {
-    id: 'prod-pn-pg',
-    title: 'La tua azienda',
-  };
-
   useEffect(() => {
     logAction('Route change', location);
     setSubHeaderVisible(location.pathname === '/dashboardpg');
@@ -69,27 +64,27 @@ function BodyLogger() {
           }
           partyList={parties?.map((p) => ({
             logoUrl: '', // TODO
-            id: p.id,
+            id: p.id ?? '',
             name: p.name ?? '',
             productRole: p.fiscalCode ?? '',
           }))}
           productsList={[
             {
-              id: product.id,
-              title: product.title,
+              id: 'prod-pn-pg',
+              title: 'La tua azienda',
               productUrl: '',
               linkType: 'external',
             },
           ]}
-          selectedProductId={product?.id}
+          selectedProductId={'prod-pn-pg'}
           selectedPartyId={
             selectedInstitution?.businessTaxId ?? selectedInstitutionPnPg?.state.businessTaxId
           }
           onSelectedParty={(selected) => {
             setSelectedInstitutionHistory({
               ...selected,
-              businessName: selected.name,
-              businessTaxId: selected.id,
+              businessName: selected.name ?? '',
+              businessTaxId: selected.id ?? '',
             });
           }}
         />

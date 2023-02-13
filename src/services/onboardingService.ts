@@ -11,6 +11,10 @@ export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => 
   }
 };
 
+// TODO if else branch will inserted after api is ready
+export const onboardingPGEnteringTaxcode = (_taxCode: string): Promise<boolean> =>
+  new Promise((resolve) => resolve(true));
+
 export const onboardingPGSubmit = (
   externalInstitutionId: string,
   productId: string,

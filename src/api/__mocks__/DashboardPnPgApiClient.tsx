@@ -10,7 +10,7 @@ export const loggedUser: User = {
 };
 
 export const mockedAgencies: Array<BusinessPnpg> = [
-  {
+  /* {
     businessName: 'Ragione Sociale success',
     businessTaxId: '00000000000',
   },
@@ -21,6 +21,13 @@ export const mockedAgencies: Array<BusinessPnpg> = [
   {
     businessName: 'Ragione Sociale genericError',
     businessTaxId: '22222222222',
+  }, */
+];
+
+export const mockedAgenciesAfterInsertingTaxCode: Array<BusinessPnpg> = [
+  {
+    businessName: 'Ragione Sociale afterInsertingTaxcode',
+    businessTaxId: '33333333333',
   },
 ];
 
@@ -32,15 +39,15 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 
 export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   {
-    externalId: mockedAgencies[0]?.businessTaxId,
+    externalId: '12345678912',
     address: 'via test 1',
     category: 'test1',
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
+    fiscalCode: '12345678912',
     geographicTaxonomies: [],
-    id: mockedAgencies[0]?.businessTaxId,
+    id: '12345678912',
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: mockedAgencies[0]?.businessName,
+    name: 'name',
     origin: 'testorigin1',
     originId: 'testoriginId1',
     recipientCode: 'MDSSFDF',
@@ -49,15 +56,15 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     zipCode: '12345',
   },
   {
-    externalId: mockedAgencies[1]?.businessTaxId,
+    externalId: '76859343421',
     address: 'via test 2',
     category: 'test2',
-    fiscalCode: mockedAgencies[1]?.businessTaxId,
+    fiscalCode: '76859343421',
     geographicTaxonomies: [],
-    id: mockedAgencies[1]?.businessTaxId,
+    id: '76859343421',
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: mockedAgencies[1]?.businessName,
+    name: 'name1',
     origin: 'testorigin2',
     originId: 'testoriginId2',
     recipientCode: 'MDSSFDF',
@@ -66,21 +73,39 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     zipCode: '54321',
   },
   {
-    externalId: mockedAgencies[2]?.businessTaxId,
+    externalId: '76859343423',
     address: 'via test 3',
     category: 'test3',
-    fiscalCode: mockedAgencies[2]?.businessTaxId,
+    fiscalCode: '76859343423',
     geographicTaxonomies: [],
-    id: mockedAgencies[2]?.businessTaxId,
+    id: '76859343423',
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: mockedAgencies[2]?.businessName,
+    name: 'name2',
     origin: 'testorigin3',
     originId: 'testoriginId3',
     recipientCode: 'MDSSFDF',
     status: 'TestStatus3',
     userRole: 'UserRoleTest3',
     zipCode: '32145',
+  },
+  // USE CASE INTRODUCED WHEN RELATED ENTITIES ARE NOT FOUND
+  {
+    externalId: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
+    address: 'via test after inserting taxCode, 4',
+    category: 'testAfterinsertingTaxCode4',
+    fiscalCode: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
+    geographicTaxonomies: [],
+    id: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: mockedAgenciesAfterInsertingTaxCode[0]?.businessName,
+    origin: 'testOriginAfterinsertingTaxCode4',
+    originId: 'testOriginIdAfterInsertingTaxCode4',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatusAfterinsertingTaxCode44',
+    userRole: 'UserRoleTestAfterinsertingTaxCode44',
+    zipCode: '15432',
   },
 ];
 
