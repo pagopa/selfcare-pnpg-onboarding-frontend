@@ -1,24 +1,3 @@
-import { SvgIconTypeMap } from '@mui/material/SvgIcon';
-import { DefaultComponentProps } from '@mui/material/OverridableComponent';
-import { AxiosRequestConfig } from 'axios';
-import { FunctionComponent, SVGProps } from 'react';
-import { API } from './src/utils/constants';
-
-/*
- * Fetch data and router related types
- */
-export type ApiEndpointKey = keyof typeof API;
-
-export type Endpoint = {
-  endpoint: ApiEndpointKey;
-  endpointParams?: any;
-};
-
-export type RequestConfig = {
-  path: Endpoint;
-  config: AxiosRequestConfig;
-};
-
 export type RoutesObject = { [key: string]: RouteConfig };
 
 export type RouteConfig = {
@@ -28,18 +7,6 @@ export type RouteConfig = {
   SUBROUTES?: RoutesObject;
   COMPONENT?: React.FunctionComponent<any>;
 };
-
-export type Image = { src: string; alt: string };
-export type RequestOutcome = 'success' | 'error';
-export type RequestOutcomeMessage = {
-  title: string;
-  description: Array<JSX.Element>;
-  img?: Image;
-  ImgComponent?:
-    | FunctionComponent<SVGProps<SVGSVGElement>>
-    | ((props: DefaultComponentProps<SvgIconTypeMap>) => JSX.Element);
-};
-export type RequestOutcomeOptions = { [key in RequestOutcome]: RequestOutcomeMessage };
 
 /*
  * Onboarding component
@@ -70,25 +37,6 @@ export type AlertDialogActions = {
   setShowDialog: (t: boolean) => void;
   handleCloseDialog?: (t: any) => void;
 };
-
-export interface Attribute {
-  id: string;
-  name: string;
-  description: string;
-}
-
-export interface Problem {
-  type: string;
-  status: number;
-  title: string;
-  detail?: string;
-  errors: Array<ProblemError>;
-}
-
-export interface ProblemError {
-  code: string;
-  detail: string;
-}
 
 export type Product = {
   id: string;
