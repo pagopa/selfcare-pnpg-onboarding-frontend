@@ -1,4 +1,10 @@
-import { BusinessPnpg, InstitutionsPnPG, PnPGInstitutionResource, User } from '../../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  PnPGInstitutionResource,
+  User,
+} from '../../../types';
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
@@ -74,6 +80,11 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     zipCode: '32145',
   },
 ];
+
+export const mockedRetrievedInstitutionLegalAddress: PnPGInstitutionLegalAddressResource = {
+  address: 'Via retrievedInstitutionLegalAddress',
+  zipCode: '98765',
+};
 
 export const DashboardApi = {
   getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> =>

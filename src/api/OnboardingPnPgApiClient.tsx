@@ -4,7 +4,12 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import { EmailString } from '@pagopa/ts-commons/lib/strings';
 import { extractResponsee } from '../utils/extractResponse';
 import { ENV } from '../utils/env';
-import { BusinessPnpg, InstitutionsPnPG, User } from '../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  User,
+} from '../../types';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
 import { RoleEnum } from './generated/b4f-onboarding-pnpg/UserDto';
 
@@ -77,5 +82,12 @@ export const OnboardingPnPgApi = {
       },
     });
     return extractResponsee(result, 400, onRedirectToLogin);
+  },
+
+  getInstitutionLegalAddress: async (
+    externalInstitutionId: string
+  ): Promise<PnPGInstitutionLegalAddressResource> => {
+    const result = await apiClient.getInstitutionLegalAddressUsingGET({ externalInstitutionId });
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };
