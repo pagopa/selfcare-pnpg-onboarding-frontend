@@ -10,7 +10,7 @@ export const loggedUser: User = {
 };
 
 export const mockedAgencies: Array<BusinessPnpg> = [
-  /* {
+  {
     businessName: 'Ragione Sociale success',
     businessTaxId: '00000000000',
   },
@@ -21,12 +21,12 @@ export const mockedAgencies: Array<BusinessPnpg> = [
   {
     businessName: 'Ragione Sociale genericError',
     businessTaxId: '22222222222',
-  }, */
+  },
 ];
 
 export const mockedAgenciesAfterInsertingTaxCode: Array<BusinessPnpg> = [
   {
-    businessName: 'Ragione Sociale afterInsertingTaxcode',
+    businessName: '',
     businessTaxId: '33333333333',
   },
 ];

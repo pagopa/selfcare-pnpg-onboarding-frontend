@@ -69,3 +69,8 @@ export type PnPGInstitutionResource = {
   userRole: string;
   zipCode: string;
 };
+
+export type PnPGInstitutionLegalAddressResource = {
+  address: string;
+  zipCode: string;
+};

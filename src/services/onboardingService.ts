@@ -1,6 +1,12 @@
-import { BusinessPnpg, InstitutionsPnPG, User } from '../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  User,
+} from '../../types';
 import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
 import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';
+import { mockedRetrievedInstitutionLegalAddress } from '../api/__mocks__/OnboardingPnPgApiClient';
 
 export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => {
   /* istanbul ignore if */
@@ -12,8 +18,19 @@ export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => 
 };
 
 // TODO if else branch will inserted after api is ready
-export const onboardingPGEnteringTaxcode = (_taxCode: string): Promise<boolean> =>
+export const verifyMatchOnAde = (_taxCode: string): Promise<boolean> =>
   new Promise((resolve) => resolve(true));
+
+export const getInstitutionLegalAddress = (
+  externalInstitutionId: string
+): Promise<PnPGInstitutionLegalAddressResource> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return new Promise((resolve) => resolve(mockedRetrievedInstitutionLegalAddress));
+  } else {
+    return OnboardingPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
+  }
+};
 
 export const onboardingPGSubmit = (
   externalInstitutionId: string,

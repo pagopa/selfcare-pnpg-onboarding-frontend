@@ -9,7 +9,7 @@ import { BusinessPnpg } from '../../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import { onboardingPGEnteringTaxcode } from '../../../services/onboardingService';
+import { getInstitutionLegalAddress, verifyMatchOnAde } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 
 type Props = {
@@ -28,20 +28,24 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   const handleSubmit = (taxCode: string) => {
     setLoading(true);
-    onboardingPGEnteringTaxcode(taxCode)
-      .then(() => {
-        setSelectedInstitution({
-          businessName: 'Ragione sociale afterInsertingTaxId',
-          businessTaxId: taxCode,
-        });
-        setSelectedInstitutionHistory({
-          businessName: 'Ragione sociale afterInsertingTaxId',
-          businessTaxId: taxCode,
-        });
-        setActiveStep(4);
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
+    getInstitutionLegalAddress(taxCode)
+      .then(() => console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT'))
+      .catch(() =>
+        verifyMatchOnAde(taxCode)
+          .then(() => {
+            setSelectedInstitution({
+              businessName: '',
+              businessTaxId: taxCode,
+            });
+            setSelectedInstitutionHistory({
+              businessName: '',
+              businessTaxId: taxCode,
+            });
+            setActiveStep(4);
+          })
+          .catch(() => setError(true))
+          .finally(() => setLoading(false))
+      );
   };
 
   return error ? (
