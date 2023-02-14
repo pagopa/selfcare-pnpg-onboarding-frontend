@@ -31,6 +31,7 @@ function OnboardingPNPGComponent() {
       Component: () =>
         StepSelectInstitution({
           retrievedInstitutions,
+          setActiveStep,
           forward,
         }),
     },

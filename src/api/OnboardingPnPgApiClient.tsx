@@ -2,6 +2,7 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage'
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
 import { EmailString } from '@pagopa/ts-commons/lib/strings';
+import { extractResponsee } from '../utils/extractResponse';
 import { ENV } from '../utils/env';
 import { BusinessPnpg, InstitutionsPnPG, User } from '../../types';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
@@ -75,6 +76,6 @@ export const OnboardingPnPgApi = {
         ],
       },
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    return extractResponsee(result, 400, onRedirectToLogin);
   },
 };

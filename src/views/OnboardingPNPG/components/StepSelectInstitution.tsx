@@ -9,9 +9,10 @@ import { useHistoryState } from '../../../components/useHistoryState';
 
 type Props = {
   retrievedInstitutions?: InstitutionsPnPG;
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 } & StepperStepComponentProps;
 
-function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
+function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }: Props) {
   const { t } = useTranslation();
 
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
@@ -28,7 +29,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
   }, [retrievedInstitutions]);
 
   const onForwardAction = () => {
-    forward();
+    setActiveStep(3);
   };
 
   const moreThanTwoInstitutions =
@@ -123,35 +124,38 @@ function StepSelectInstitution({ forward, retrievedInstitutions }: Props) {
             }}
           />
         </Grid>
-        {!moreThanTwoInstitutions && (
-          <Grid item xs={6} mt={6}>
-            <Box
+
+        <Grid item xs={6} mt={6}>
+          <Box
+            sx={{
+              fontSize: '18px',
+              lineHeight: '24px',
+              textAlign: 'center',
+            }}
+          >
+            <Typography
               sx={{
-                fontSize: '18px',
-                lineHeight: '24px',
                 textAlign: 'center',
               }}
+              variant="caption"
+              color={theme.palette.text.primary}
             >
-              <Typography
-                sx={{
-                  textAlign: 'center',
-                }}
-                variant="caption"
-                color={theme.palette.text.primary}
-              >
-                <Trans i18nKey="selectInstitutionReleated.changeInstitutionSelectedLink">
-                  {'Sei il Legale Rappresentante di un’azienda? '}
-                  <Link
-                    sx={{ textDecoration: 'underline', color: theme.palette.primary.main }}
-                    // onClick={() => } // TODO add the correct redirect
-                  >
-                    {'Registra nuova azienda'}
-                  </Link>
-                </Trans>
-              </Typography>
-            </Box>
-          </Grid>
-        )}
+              <Trans i18nKey="selectInstitutionReleated.registerAgencyByTaxCodeLink">
+                {"La tua azienda non è nell'elenco? "}
+                <Link
+                  onClick={forward}
+                  sx={{
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    color: theme.palette.primary.main,
+                  }}
+                >
+                  {'Registra nuova azienda'}
+                </Link>
+              </Trans>
+            </Typography>
+          </Box>
+        </Grid>
       </Grid>
     </Grid>
   );

@@ -68,23 +68,23 @@ function BodyLogger() {
             name: p.name ?? '',
             productRole: p.fiscalCode ?? '',
           }))}
+          selectedPartyId={
+            selectedInstitution?.businessTaxId ?? selectedInstitutionPnPg?.state.businessTaxId
+          }
           productsList={[
             {
               id: 'prod-pn-pg',
               title: 'La tua azienda',
-              productUrl: '',
               linkType: 'external',
+              productUrl: '',
             },
           ]}
           selectedProductId={'prod-pn-pg'}
-          selectedPartyId={
-            selectedInstitution?.businessTaxId ?? selectedInstitutionPnPg?.state.businessTaxId
-          }
           onSelectedParty={(selected) => {
             setSelectedInstitutionHistory({
               ...selected,
               businessName: selected.name ?? '',
-              businessTaxId: selected.id ?? '',
+              businessTaxId: selected?.id ?? '',
             });
           }}
         />

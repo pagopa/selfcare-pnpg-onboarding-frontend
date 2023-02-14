@@ -10,7 +10,7 @@ export const loggedUser: User = {
 };
 
 export const mockedAgencies: Array<BusinessPnpg> = [
-  /* {
+  {
     businessName: 'Ragione Sociale success',
     businessTaxId: '00000000000',
   },
@@ -21,12 +21,12 @@ export const mockedAgencies: Array<BusinessPnpg> = [
   {
     businessName: 'Ragione Sociale genericError',
     businessTaxId: '22222222222',
-  }, */
+  },
 ];
 
 export const mockedAgenciesAfterInsertingTaxCode: Array<BusinessPnpg> = [
   {
-    businessName: 'Ragione Sociale afterInsertingTaxcode',
+    businessName: '',
     businessTaxId: '33333333333',
   },
 ];
@@ -39,15 +39,15 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 
 export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   {
-    externalId: '12345678912',
+    externalId: mockedAgencies[0].businessTaxId,
     address: 'via test 1',
     category: 'test1',
-    fiscalCode: '12345678912',
+    fiscalCode: mockedAgencies[0].businessTaxId,
     geographicTaxonomies: [],
-    id: '12345678912',
+    id: mockedAgencies[0].businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: 'name',
+    name: mockedAgencies[0].businessName,
     origin: 'testorigin1',
     originId: 'testoriginId1',
     recipientCode: 'MDSSFDF',
@@ -56,15 +56,15 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     zipCode: '12345',
   },
   {
-    externalId: '76859343421',
+    externalId: mockedAgencies[1].businessTaxId,
     address: 'via test 2',
     category: 'test2',
-    fiscalCode: '76859343421',
+    fiscalCode: mockedAgencies[1].businessTaxId,
     geographicTaxonomies: [],
-    id: '76859343421',
+    id: mockedAgencies[1].businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: 'name1',
+    name: mockedAgencies[1].businessName,
     origin: 'testorigin2',
     originId: 'testoriginId2',
     recipientCode: 'MDSSFDF',
@@ -73,15 +73,15 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     zipCode: '54321',
   },
   {
-    externalId: '76859343423',
+    externalId: mockedAgencies[2].businessTaxId,
     address: 'via test 3',
     category: 'test3',
-    fiscalCode: '76859343423',
+    fiscalCode: mockedAgencies[2].businessTaxId,
     geographicTaxonomies: [],
-    id: '76859343423',
+    id: mockedAgencies[2].businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: 'name2',
+    name: mockedAgencies[2].businessName,
     origin: 'testorigin3',
     originId: 'testoriginId3',
     recipientCode: 'MDSSFDF',

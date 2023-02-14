@@ -31,11 +31,11 @@ function StepAddCompany({ setActiveStep }: Props) {
     onboardingPGEnteringTaxcode(taxCode)
       .then(() => {
         setSelectedInstitution({
-          businessName: 'Ragione sociale afterInsertingTaxId',
+          businessName: '',
           businessTaxId: taxCode,
         });
         setSelectedInstitutionHistory({
-          businessName: 'Ragione sociale afterInsertingTaxId',
+          businessName: '',
           businessTaxId: taxCode,
         });
         setActiveStep(4);
@@ -72,7 +72,11 @@ function StepAddCompany({ setActiveStep }: Props) {
         <Trans i18nKey="institutionNotFound.registerNewAgency">
           {'Sei il Legale Rappresentante di un’azienda? '}
           <Link
-            sx={{ textDecoration: 'underline', color: theme.palette.primary.main }}
+            sx={{
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              color: theme.palette.primary.main,
+            }}
             onClick={() => history.goBack()}
           >
             {'Registra nuova azienda'}

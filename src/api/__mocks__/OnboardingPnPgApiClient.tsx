@@ -80,20 +80,9 @@ export const DashboardApi = {
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
   onboardingPGSubmit: async (
-    externalInstitutionId: string,
+    _externalInstitutionId: string,
     _productId: string,
     _loggedUser: User,
     _selectedInstitution: BusinessPnpg
-  ): Promise<boolean> => {
-    switch (externalInstitutionId) {
-      case '00000000000':
-        return new Promise((resolve) => resolve(true));
-      case '11111111111':
-        return new Promise((resolve) => resolve(false));
-      case '22222222222':
-        return new Promise((resolve) => resolve(false));
-      default:
-        return new Promise((resolve) => resolve(true));
-    }
-  },
+  ): Promise<boolean> => new Promise((resolve) => resolve(true)),
 };

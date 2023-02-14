@@ -33,7 +33,8 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
           retrievedInstitutions.businesses && retrievedInstitutions.businesses.length !== 0 ? 1 : 2
         );
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log('e', e);
         trackEvent('GENERIC ERROR', {});
         setError(true);
       })

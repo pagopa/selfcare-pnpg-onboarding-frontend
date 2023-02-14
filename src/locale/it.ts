@@ -10,6 +10,7 @@ export default {
     title: 'Seleziona l’azienda',
     description:
       'Se operi per più enti, potrai modificare la tua scelta dopo aver effettuato l’accesso.',
+    registerAgencyByTaxCodeLink: "La tua azienda non è nell'elenco? <1>Registra nuova azienda</1>",
     enter: 'Entra',
   },
   addCompany: {

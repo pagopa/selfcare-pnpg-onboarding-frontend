@@ -21,18 +21,10 @@ export const onboardingPGSubmit = (
   loggedUser: User,
   selectedInstitution: BusinessPnpg
 ): Promise<boolean> => {
+  console.log('here in the service');
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    switch (externalInstitutionId) {
-      case '00000000000':
-        return new Promise((resolve) => resolve(true));
-      case '11111111111':
-        return new Promise((resolve) => resolve(false));
-      case '22222222222':
-        return new Promise((resolve) => resolve(false));
-      default:
-        return new Promise((resolve) => resolve(true));
-    }
+    return new Promise((resolve) => resolve(true));
   } else {
     return OnboardingPnPgApi.onboardingPGSubmit(
       externalInstitutionId,
