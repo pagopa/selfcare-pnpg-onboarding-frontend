@@ -1335,10 +1335,10 @@
       },
       "PnPGMatchResource": {
         "title": "PnPGMatchResource",
-        "required": ["matchResult"],
+        "required": ["verificationResult"],
         "type": "object",
         "properties": {
-          "matchResult": {
+          "verificationResult": {
             "type": "boolean",
             "description": "Legal Representative and Institution match result on Agenzia delle Entrate",
             "example": false
