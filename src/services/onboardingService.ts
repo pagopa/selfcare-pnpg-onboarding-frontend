@@ -38,7 +38,6 @@ export const onboardingPGSubmit = (
   loggedUser: User,
   selectedInstitution: BusinessPnpg
 ): Promise<boolean> => {
-  console.log('here in the service');
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return new Promise((resolve) => resolve(true));

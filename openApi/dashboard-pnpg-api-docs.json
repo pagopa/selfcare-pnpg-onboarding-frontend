@@ -3160,8 +3160,7 @@
           },
           "institutionType": {
             "type": "string",
-            "description": "Institution's type",
-            "enum": ["GSP", "PA", "PG", "PSP", "PT", "SCP"]
+            "description": "Institution's type"
           },
           "mailAddress": {
             "type": "string",

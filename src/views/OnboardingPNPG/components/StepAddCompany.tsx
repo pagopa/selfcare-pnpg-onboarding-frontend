@@ -29,7 +29,9 @@ function StepAddCompany({ setActiveStep }: Props) {
   const handleSubmit = (taxCode: string) => {
     setLoading(true);
     getInstitutionLegalAddress(taxCode)
-      .then(() => console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT'))
+      .then((e) =>
+        e ? setActiveStep(4) : console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT')
+      )
       .catch(() =>
         verifyMatchOnAde(taxCode)
           .then(() => {
