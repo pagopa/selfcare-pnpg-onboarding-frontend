@@ -109,6 +109,12 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
 ];
 
+export const mockedRetrievedInstitutionLegalAddress = {
+  externalInstitutionId: '33333333333',
+  address: 'Legal Address API retrieve, 1',
+  zipCode: '03040',
+};
+
 export const DashboardApi = {
   getPnPGInstitutions: async (): Promise<Array<PnPGInstitutionResource>> =>
     new Promise((resolve) => resolve(mockedPnPGInstitutionsResource)),

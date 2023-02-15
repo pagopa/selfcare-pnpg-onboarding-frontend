@@ -17,9 +17,17 @@ export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => 
   }
 };
 
-// TODO if else branch will inserted after api is ready
-export const verifyMatchOnAde = (_taxCode: string): Promise<boolean> =>
-  new Promise((resolve) => resolve(true));
+export const matchInstitutionAndUser = (
+  externalInstitutionId: string,
+  loggedUser: User
+): Promise<boolean> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return new Promise((resolve) => resolve(true));
+  } else {
+    return OnboardingPnPgApi.matchInstitutionAndUser(externalInstitutionId, loggedUser);
+  }
+};
 
 export const getInstitutionLegalAddress = (
   externalInstitutionId: string

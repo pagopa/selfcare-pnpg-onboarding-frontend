@@ -6,10 +6,14 @@ import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { BusinessPnpg } from '../../../../types';
+import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import { getInstitutionLegalAddress, verifyMatchOnAde } from '../../../services/onboardingService';
+import {
+  getInstitutionLegalAddress,
+  matchInstitutionAndUser,
+} from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 
 type Props = {
@@ -26,22 +30,23 @@ function StepAddCompany({ setActiveStep }: Props) {
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = (taxCode: string) => {
+  // TODO When service login is available, the loggedUser mockedObject, will be replace with the real loggedUser contained into userContext
+  const handleSubmit = (typedInput: string) => {
     setLoading(true);
-    getInstitutionLegalAddress(taxCode)
+    getInstitutionLegalAddress(typedInput)
       .then((e) =>
         e ? setActiveStep(4) : console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT')
       )
       .catch(() =>
-        verifyMatchOnAde(taxCode)
+        matchInstitutionAndUser(typedInput, loggedUser)
           .then(() => {
             setSelectedInstitution({
               businessName: '',
-              businessTaxId: taxCode,
+              businessTaxId: typedInput,
             });
             setSelectedInstitutionHistory({
               businessName: '',
-              businessTaxId: taxCode,
+              businessTaxId: typedInput,
             });
             setActiveStep(4);
           })
