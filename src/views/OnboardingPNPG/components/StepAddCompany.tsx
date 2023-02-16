@@ -4,7 +4,6 @@ import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { BusinessPnpg } from '../../../../types';
 import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
@@ -22,37 +21,49 @@ type Props = {
 
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
-  const history = useHistory();
 
   const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isDisabled, _setIsDisabled] = useState<boolean>(false);
 
   // TODO When service login is available, the loggedUser mockedObject, will be replace with the real loggedUser contained into userContext
   const handleSubmit = (typedInput: string) => {
     setLoading(true);
     getInstitutionLegalAddress(typedInput)
-      .then((e) =>
-        e ? setActiveStep(4) : console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT')
-      )
-      .catch(() =>
-        matchInstitutionAndUser(typedInput, loggedUser)
-          .then(() => {
-            setSelectedInstitution({
-              businessName: '',
-              businessTaxId: typedInput,
-            });
-            setSelectedInstitutionHistory({
-              businessName: '',
-              businessTaxId: typedInput,
-            });
-            setActiveStep(4);
-          })
-          .catch(() => setError(true))
-          .finally(() => setLoading(false))
-      );
+      .then((e) => {
+        if (e.address !== '') {
+          console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT');
+        } else {
+          matchInstitutionAndUser(typedInput, loggedUser)
+            .then((e) => {
+              if (e === true) {
+                setSelectedInstitution({
+                  businessName: '',
+                  businessTaxId: typedInput,
+                });
+                setSelectedInstitutionHistory({
+                  businessName: '',
+                  businessTaxId: typedInput,
+                });
+                setActiveStep(4);
+              } else {
+                setError(true);
+              }
+            })
+            .catch(() => {
+              console.log(
+                'TODO: PROBABLY THIS CASE WILL BE COVERED BY THE NEW UI PAGE INTRODUCED AT THE NEXT SPRINT'
+              );
+              setError(true);
+            })
+            .finally(() => setLoading(false));
+        }
+      })
+      .catch(() => setError(true));
   };
 
   return error ? (
@@ -88,7 +99,10 @@ function StepAddCompany({ setActiveStep }: Props) {
               cursor: 'pointer',
               color: theme.palette.primary.main,
             }}
-            onClick={() => history.goBack()}
+            onClick={() => {
+              setError(false);
+              setTypedInput('');
+            }}
           >
             {'Registra nuova azienda'}
           </Link>
@@ -128,6 +142,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             }}
           >
             <TextField
+              id="fiscalCode-textfield"
               label={t('addCompany.textfieldLabel')}
               variant="outlined"
               type="tel"
@@ -141,7 +156,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             forward={{
               action: () => handleSubmit(typedInput),
               label: t('addCompany.forwardAction'),
-              disabled: typedInput.length !== 11,
+              disabled: typedInput.length !== 11 || isDisabled,
             }}
           />
         </Grid>

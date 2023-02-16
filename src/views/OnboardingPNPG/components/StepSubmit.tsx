@@ -50,7 +50,7 @@ function StepSubmit({ forward, setLoading }: Props) {
         forward();
       })
       .catch((reason) => {
-        if (reason === 400) {
+        if (reason.httpStatus === 400) {
           setError('alreadyOnboarded');
           trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
           setSelectedInstitution(selectedInstitution);

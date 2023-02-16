@@ -19,7 +19,7 @@ export const getInstitutionLegalAddress = (
 ): Promise<PnPGInstitutionLegalAddressResource> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    return new Promise((resolve) => resolve(mockedRetrievedInstitutionLegalAddress));
+    return new Promise((resolve) => resolve(mockedRetrievedInstitutionLegalAddress[0]));
   } else {
     return DashboardPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
   }

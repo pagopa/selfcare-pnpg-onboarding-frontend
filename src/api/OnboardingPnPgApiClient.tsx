@@ -2,7 +2,7 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage'
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
 import { EmailString } from '@pagopa/ts-commons/lib/strings';
-import { extractResponsee } from '../utils/extractResponse';
+import { extractResponsee } from '../components/api-utils';
 import { ENV } from '../utils/env';
 import {
   BusinessPnpg,
@@ -81,7 +81,7 @@ export const OnboardingPnPgApi = {
         ],
       },
     });
-    return extractResponsee(result, 400, onRedirectToLogin);
+    return extractResponsee(result, 201, onRedirectToLogin);
   },
 
   getInstitutionLegalAddress: async (

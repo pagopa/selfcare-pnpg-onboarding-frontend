@@ -53,7 +53,6 @@ export type InstitutionsPnPG = {
 };
 
 export type PnPGInstitutionResource = {
-  address: string;
   category: string;
   externalId: string;
   fiscalCode: string;
@@ -71,6 +70,7 @@ export type PnPGInstitutionResource = {
 };
 
 export type PnPGInstitutionLegalAddressResource = {
+  externalInstitutionId: string;
   address: string;
   zipCode: string;
 };
