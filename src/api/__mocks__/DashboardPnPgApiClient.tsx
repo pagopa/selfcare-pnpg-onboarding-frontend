@@ -1,4 +1,10 @@
-import { BusinessPnpg, InstitutionsPnPG, PnPGInstitutionResource, User } from '../../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  PnPGInstitutionResource,
+  User,
+} from '../../../types';
 
 // TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
 export const loggedUser: User = {

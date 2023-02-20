@@ -1,4 +1,4 @@
-import { PnPGInstitutionResource } from '../../types';
+import { PnPGInstitutionLegalAddressResource, PnPGInstitutionResource } from '../../types';
 import { DashboardPnPgApi } from '../api/DashboardPnPgApiClient';
 import { mockedPnPGInstitutionsResource } from '../api/__mocks__/DashboardPnPgApiClient';
 import { mockedRetrievedInstitutionLegalAddress } from '../api/__mocks__/OnboardingPnPgApiClient';

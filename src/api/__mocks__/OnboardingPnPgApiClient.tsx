@@ -1,4 +1,10 @@
-import { BusinessPnpg, InstitutionsPnPG, PnPGInstitutionResource, User } from '../../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  PnPGInstitutionResource,
+  User,
+} from '../../../types';
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
@@ -24,7 +30,6 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   {
     externalId: mockedAgencies[0]?.businessTaxId,
-    address: 'via test 1',
     category: 'test1',
     fiscalCode: mockedAgencies[0]?.businessTaxId,
     geographicTaxonomies: [],
@@ -41,7 +46,6 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
   {
     externalId: mockedAgencies[1]?.businessTaxId,
-    address: 'via test 2',
     category: 'test2',
     fiscalCode: mockedAgencies[1]?.businessTaxId,
     geographicTaxonomies: [],
@@ -58,7 +62,6 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
   {
     externalId: mockedAgencies[2]?.businessTaxId,
-    address: 'via test 3',
     category: 'test3',
     fiscalCode: mockedAgencies[2]?.businessTaxId,
     geographicTaxonomies: [],
@@ -159,12 +162,7 @@ export const mockedOnboardingPnPgApi = {
   getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> =>
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
-  onboardingPGSubmit: async (
-    externalInstitutionId: string,
-    _productId: string,
-    _loggedUser: User,
-    _selectedInstitution: BusinessPnpg
-  ): Promise<boolean> => {
+  onboardingPGSubmit: async (externalInstitutionId: string): Promise<boolean> => {
     if (externalInstitutionId === '11111111111') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);

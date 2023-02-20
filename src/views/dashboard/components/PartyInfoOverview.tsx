@@ -78,7 +78,7 @@ export default function PartyInfoOverview({ party }: Props) {
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.address}
+                {''}
               </Typography>
             </Grid>
           </Grid>

@@ -3,7 +3,12 @@ import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/a
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
 import { EmailString } from '@pagopa/ts-commons/lib/strings';
 import { ENV } from '../utils/env';
-import { BusinessPnpg, InstitutionsPnPG, User } from '../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  User,
+} from '../../types';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
 import { RoleEnum } from './generated/b4f-onboarding-pnpg/UserDto';
 
