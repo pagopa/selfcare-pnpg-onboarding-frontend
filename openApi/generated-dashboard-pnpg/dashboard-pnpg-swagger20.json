@@ -21,12 +21,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/InstitutionResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/InstitutionResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -148,12 +143,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/GeographicTaxonomyResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/GeographicTaxonomyResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -341,12 +331,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/ProductsResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/ProductsResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -431,12 +416,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/ProductUserResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/ProductUserResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -668,12 +648,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/InstitutionUserResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/InstitutionUserResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -964,12 +939,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/InstitutionPnPGResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/InstitutionPnPGResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -1011,6 +981,68 @@
         "summary": "getPnPGInstitutions"
       }
     },
+    "/pnPGInstitutions/{externalInstitutionId}/legal-address": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "description": "PG Institution's unique external identifier",
+            "in": "path",
+            "name": "externalInstitutionId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PnPGInstitutionLegalAddressResource"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "pnPGInstitutions"
+        ],
+        "description": "Get legal address by business tax id",
+        "operationId": "getInstitutionLegalAddressUsingGET",
+        "summary": "getInstitutionLegalAddress"
+      }
+    },
     "/pnPGInstitutions/{institutionId}/products": {
       "get": {
         "produces": [
@@ -1029,12 +1061,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/PartyProduct"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/PartyProductArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -1171,12 +1198,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/ProductRoleMappingsResource"
-              },
-              "type": "array"
-            }
+            "schema":{"$ref":"#/definitions/ProductRoleMappingsResourceArray"}
           },
           "400": {
             "description": "Bad Request",
@@ -2350,7 +2372,7 @@
       }
     }
   },
-  "definitions": {
+  "definitions" : {"ProductRoleMappingsResourceArray":{"type": "array", "items": {"$ref": "#/definitions/ProductRoleMappingsResource"}},"PartyProductArray":{"type": "array", "items": {"$ref": "#/definitions/PartyProduct"}},"InstitutionPnPGResourceArray":{"type": "array", "items": {"$ref": "#/definitions/InstitutionPnPGResource"}},"InstitutionUserResourceArray":{"type": "array", "items": {"$ref": "#/definitions/InstitutionUserResource"}},"ProductUserResourceArray":{"type": "array", "items": {"$ref": "#/definitions/ProductUserResource"}},"ProductsResourceArray":{"type": "array", "items": {"$ref": "#/definitions/ProductsResource"}},"GeographicTaxonomyResourceArray":{"type": "array", "items": {"$ref": "#/definitions/GeographicTaxonomyResource"}},"STRINGWrapper":{"type": "string"},"STRINGArray":{"type": "array", "items": {"type": "string"}},"InstitutionResourceArray":{"type": "array", "items": {"$ref": "#/definitions/InstitutionResource"}},
     "BackOfficeConfigurationsResource": {
       "properties": {
         "environment": {
@@ -2656,14 +2678,6 @@
         },
         "institutionType": {
           "description": "Institution's type",
-          "enum": [
-            "GSP",
-            "PA",
-            "PG",
-            "PSP",
-            "PT",
-            "SCP"
-          ],
           "type": "string"
         },
         "mailAddress": {
@@ -3053,6 +3067,24 @@
         "surname"
       ],
       "title": "PlainUserResource",
+      "type": "object"
+    },
+    "PnPGInstitutionLegalAddressResource": {
+      "properties": {
+        "address": {
+          "description": "Legal Representative's institution legal address",
+          "type": "string"
+        },
+        "zipCode": {
+          "description": "Legal Representative's institution legal address zip code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "address",
+        "zipCode"
+      ],
+      "title": "PnPGInstitutionLegalAddressResource",
       "type": "object"
     },
     "Problem": {

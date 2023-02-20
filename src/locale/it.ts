@@ -1,16 +1,5 @@
 export default {
   loadingText: 'Stiamo verificando i tuoi dati',
-  institutionsNotFound: {
-    title: 'Nessuna azienda trovata',
-    message:
-      'Per accedere alle notifiche, l’azienda deve essere registrata <1 />dal Legale Rappresentante.',
-    backToAccess: 'Torna all’accesso',
-  },
-  alreadyOnboarded: {
-    title: "L'Ente che hai scelto ha già aderito",
-    description: "L'ente selezionato ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
-    enter: 'Entra',
-  },
   selectFromAgencyList: {
     title: 'A nome di quale azienda vuoi accedere?',
     description:
@@ -21,9 +10,28 @@ export default {
     title: 'Seleziona l’azienda',
     description:
       'Se operi per più enti, potrai modificare la tua scelta dopo aver effettuato l’accesso.',
+    registerAgencyByTaxCodeLink: "La tua azienda non è nell'elenco? <1>Registra nuova azienda</1>",
     enter: 'Entra',
-    changeInstitutionSelectedLink:
+  },
+  addCompany: {
+    title: 'Aggiungi la tua impresa',
+    description:
+      'Inserisci il Codice Fiscale/Partita IVA dell’impresa con cui vuoi <1 />accedere a Piattaforma Notifiche',
+    textfieldLabel: 'Codice Fiscale/Partita IVA',
+    forwardAction: 'Continua',
+  },
+  alreadyOnboarded: {
+    title: "L'Ente che hai scelto ha già aderito",
+    description: "L'ente selezionato ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
+    enter: 'Entra',
+  },
+  institutionNotFound: {
+    title: 'Nessuna azienda trovata',
+    message:
+      'Per accedere alle notifiche, l’azienda deve essere registrata <1 />dal Legale Rappresentante.',
+    registerNewAgency:
       'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
+    backToAccess: 'Torna all’accesso',
   },
   outcome: {
     success: {

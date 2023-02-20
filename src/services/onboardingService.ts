@@ -1,6 +1,12 @@
-import { BusinessPnpg, InstitutionsPnPG, User } from '../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  User,
+} from '../../types';
 import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
-import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';
+import { mockedInstitutionPnPG } from '../api/__mocks__/OnboardingPnPgApiClient';
+import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
 
 export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => {
   /* istanbul ignore if */
@@ -8,6 +14,29 @@ export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => 
     return new Promise((resolve) => resolve(mockedInstitutionPnPG));
   } else {
     return OnboardingPnPgApi.getInstitutionsByUser(user);
+  }
+};
+
+export const matchInstitutionAndUser = (
+  externalInstitutionId: string,
+  loggedUser: User
+): Promise<boolean> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingPnPgApi.matchInstitutionAndUser(externalInstitutionId, loggedUser);
+  } else {
+    return OnboardingPnPgApi.matchInstitutionAndUser(externalInstitutionId, loggedUser);
+  }
+};
+
+export const getInstitutionLegalAddress = (
+  externalInstitutionId: string
+): Promise<PnPGInstitutionLegalAddressResource> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
+  } else {
+    return OnboardingPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
   }
 };
 
@@ -19,16 +48,12 @@ export const onboardingPGSubmit = (
 ): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    switch (externalInstitutionId) {
-      case '00000000000':
-        return new Promise((resolve) => resolve(true));
-      case '11111111111':
-        return new Promise((resolve) => resolve(false));
-      case '22222222222':
-        return new Promise((resolve) => resolve(false));
-      default:
-        return new Promise((resolve) => resolve(true));
-    }
+    return mockedOnboardingPnPgApi.onboardingPGSubmit(
+      externalInstitutionId,
+      productId,
+      loggedUser,
+      selectedInstitution
+    );
   } else {
     return OnboardingPnPgApi.onboardingPGSubmit(
       externalInstitutionId,

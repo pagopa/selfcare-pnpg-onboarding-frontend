@@ -1,4 +1,10 @@
-import { BusinessPnpg, InstitutionsPnPG, PnPGInstitutionResource, User } from '../../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  PnPGInstitutionResource,
+  User,
+} from '../../../types';
 
 // TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
 export const loggedUser: User = {
@@ -24,6 +30,13 @@ export const mockedAgencies: Array<BusinessPnpg> = [
   },
 ];
 
+export const mockedAgenciesAfterInsertingTaxCode: Array<BusinessPnpg> = [
+  {
+    businessName: '',
+    businessTaxId: '33333333333',
+  },
+];
+
 export const mockedInstitutionPnPG: InstitutionsPnPG = {
   businesses: mockedAgencies,
   legalTaxId: '1234567',
@@ -32,15 +45,14 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 
 export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   {
-    externalId: mockedAgencies[0]?.businessTaxId,
-    address: 'via test 1',
+    externalId: '00000000000', // mockedAgencies[0].businessTaxId,
     category: 'test1',
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
+    fiscalCode: '00000000000', // mockedAgencies[0].businessTaxId,
     geographicTaxonomies: [],
-    id: mockedAgencies[0]?.businessTaxId,
+    id: '00000000000', // mockedAgencies[0].businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: mockedAgencies[0]?.businessName,
+    name: 'Ragione Sociale success', // mockedAgencies[0].businessName,
     origin: 'testorigin1',
     originId: 'testoriginId1',
     recipientCode: 'MDSSFDF',
@@ -49,38 +61,55 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     zipCode: '12345',
   },
   {
-    externalId: mockedAgencies[1]?.businessTaxId,
-    address: 'via test 2',
-    category: 'test2',
-    fiscalCode: mockedAgencies[1]?.businessTaxId,
+    externalId: '11111111111', // mockedAgencies[0].businessTaxId,
+    category: 'test1',
+    fiscalCode: '11111111111', // mockedAgencies[0].businessTaxId,
     geographicTaxonomies: [],
-    id: mockedAgencies[1]?.businessTaxId,
+    id: '11111111111', // mockedAgencies[0].businessTaxId,
     institutionType: 'GSP',
     mailAddress: 'test@comuneditest.it',
-    name: mockedAgencies[1]?.businessName,
-    origin: 'testorigin2',
-    originId: 'testoriginId2',
+    name: 'Ragione Sociale alreadyOnboarded', // mockedAgencies[0].businessName,
+    origin: 'testorigin1',
+    originId: 'testoriginId1',
     recipientCode: 'MDSSFDF',
-    status: 'TestStatus2',
-    userRole: 'UserRoleTest2',
-    zipCode: '54321',
+    status: 'TestStatus1',
+    userRole: 'UserRoleTest1',
+    zipCode: '12345',
+  },
+  // USE CASE INTRODUCED WHEN RELATED ENTITIES ARE NOT FOUND
+  {
+    externalId: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
+    category: 'testAfterinsertingTaxCode4',
+    fiscalCode: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
+    geographicTaxonomies: [],
+    id: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: mockedAgenciesAfterInsertingTaxCode[0]?.businessName,
+    origin: 'testOriginAfterinsertingTaxCode4',
+    originId: 'testOriginIdAfterInsertingTaxCode4',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatusAfterinsertingTaxCode44',
+    userRole: 'UserRoleTestAfterinsertingTaxCode44',
+    zipCode: '15432',
+  },
+];
+
+export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
+  {
+    externalInstitutionId: '00000000000',
+    address: 'Legal Address API retrieve, 0',
+    zipCode: '03040',
   },
   {
-    externalId: mockedAgencies[2]?.businessTaxId,
-    address: 'via test 3',
-    category: 'test3',
-    fiscalCode: mockedAgencies[2]?.businessTaxId,
-    geographicTaxonomies: [],
-    id: mockedAgencies[2]?.businessTaxId,
-    institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
-    name: mockedAgencies[2]?.businessName,
-    origin: 'testorigin3',
-    originId: 'testoriginId3',
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus3',
-    userRole: 'UserRoleTest3',
-    zipCode: '32145',
+    externalInstitutionId: '11111111111',
+    address: 'Legal Address API retrieve, 1',
+    zipCode: '03040',
+  },
+  {
+    externalInstitutionId: '33333333333',
+    address: 'Legal Address API retrieve, 3',
+    zipCode: '03040',
   },
 ];
 

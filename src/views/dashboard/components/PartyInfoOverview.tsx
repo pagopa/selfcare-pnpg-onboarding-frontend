@@ -5,9 +5,11 @@ import { PnPGInstitutionResource } from '../../../../types';
 
 type Props = {
   party?: PnPGInstitutionResource;
+  legalAddress?: string;
+  zipCode?: string;
 };
 
-export default function PartyInfoOverview({ party }: Props) {
+export default function PartyInfoOverview({ party, legalAddress, zipCode }: Props) {
   const { t } = useTranslation();
 
   const infoStyles = {
@@ -42,7 +44,7 @@ export default function PartyInfoOverview({ party }: Props) {
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.institutionType} {/* TODO {party?.category} */}
+                {party?.category ?? zipCode} {/* TODO {party?.category} */}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -78,7 +80,7 @@ export default function PartyInfoOverview({ party }: Props) {
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.address}
+                {legalAddress}
               </Typography>
             </Grid>
           </Grid>

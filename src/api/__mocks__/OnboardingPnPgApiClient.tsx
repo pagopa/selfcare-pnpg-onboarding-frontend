@@ -1,4 +1,10 @@
-import { BusinessPnpg, InstitutionsPnPG, PnPGInstitutionResource, User } from '../../../types';
+import {
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  PnPGInstitutionResource,
+  User,
+} from '../../../types';
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
@@ -24,7 +30,6 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   {
     externalId: mockedAgencies[0]?.businessTaxId,
-    address: 'via test 1',
     category: 'test1',
     fiscalCode: mockedAgencies[0]?.businessTaxId,
     geographicTaxonomies: [],
@@ -41,7 +46,6 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
   {
     externalId: mockedAgencies[1]?.businessTaxId,
-    address: 'via test 2',
     category: 'test2',
     fiscalCode: mockedAgencies[1]?.businessTaxId,
     geographicTaxonomies: [],
@@ -58,7 +62,6 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
   {
     externalId: mockedAgencies[2]?.businessTaxId,
-    address: 'via test 3',
     category: 'test3',
     fiscalCode: mockedAgencies[2]?.businessTaxId,
     geographicTaxonomies: [],
@@ -75,25 +78,124 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
 ];
 
-export const DashboardApi = {
+export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
+  {
+    externalInstitutionId: '77777777777',
+    address: 'Via retrievedInstitutionLegalAddress1',
+    zipCode: '98765',
+  },
+  {
+    externalInstitutionId: '88888888888',
+    address: 'Via retrievedInstitutionLegalAddress2',
+    zipCode: '56789',
+  },
+];
+
+export const mockedEdA = [
+  {
+    externalId: '55555555555',
+    address: 'via test 3',
+    category: 'test3',
+    fiscalCode: '55555555555',
+    geographicTaxonomies: [],
+    id: 'test030203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: 'retrieved in EdA mock 1',
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus3',
+    userRole: 'UserRoleTest3',
+    zipCode: '32145',
+  },
+
+  {
+    externalId: '66666666666',
+    address: 'via test 3',
+    category: 'test3',
+    fiscalCode: '66666666666',
+    geographicTaxonomies: [],
+    id: 'test030203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: 'retrieved in EdA mock 2',
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus3',
+    userRole: 'UserRoleTest3',
+    zipCode: '32145',
+  },
+];
+
+export const mockedOnboardingPnPgApi = {
   getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> =>
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
-  onboardingPGSubmit: async (
+  onboardingPGSubmit: (
     externalInstitutionId: string,
     _productId: string,
     _loggedUser: User,
     _selectedInstitution: BusinessPnpg
   ): Promise<boolean> => {
-    switch (externalInstitutionId) {
-      case '00000000000':
-        return new Promise((resolve) => resolve(true));
-      case '11111111111':
-        return new Promise((resolve) => resolve(false));
-      case '22222222222':
-        return new Promise((resolve) => resolve(false));
-      default:
-        return new Promise((resolve) => resolve(true));
+    if (externalInstitutionId === '11111111111') {
+      return new Promise(() => {
+        const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 400;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 400,
+          description: 'Bad Request',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
+    } else if (externalInstitutionId === '22222222222') {
+      return new Promise(() => {
+        const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 404`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 404;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 404,
+          description: 'Not found',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
+    }
+    return new Promise((resolve) => resolve(true));
+  },
+
+  matchInstitutionAndUser: (externalInstitutionId: string, _loggedUser: User): Promise<boolean> => {
+    const matchedPartyInEdAByExternalId = mockedEdA.find(
+      (p) => p.externalId === externalInstitutionId
+    );
+    return new Promise((resolve) => resolve(matchedPartyInEdAByExternalId ? true : false));
+  },
+
+  getInstitutionLegalAddress: (
+    externalInstitutionId: string
+  ): Promise<PnPGInstitutionLegalAddressResource> => {
+    const matchedInstitutionLegalAddressByExternalId = mockedRetrievedInstitutionLegalAddress.find(
+      (i) => i.externalInstitutionId === externalInstitutionId
+    );
+    if (matchedInstitutionLegalAddressByExternalId) {
+      return new Promise((resolve) => resolve(matchedInstitutionLegalAddressByExternalId));
+    } else {
+      return new Promise((resolve) =>
+        resolve({ address: '', externalInstitutionId: '', zipCode: '' })
+      );
     }
   },
 };
