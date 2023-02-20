@@ -33,7 +33,6 @@ export const mockedInstitutionPnPG: InstitutionsPnPG = {
 export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   {
     externalId: mockedAgencies[0]?.businessTaxId,
-    address: 'via test 1',
     category: 'test1',
     fiscalCode: mockedAgencies[0]?.businessTaxId,
     geographicTaxonomies: [],
@@ -50,7 +49,6 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
   {
     externalId: mockedAgencies[1]?.businessTaxId,
-    address: 'via test 2',
     category: 'test2',
     fiscalCode: mockedAgencies[1]?.businessTaxId,
     geographicTaxonomies: [],
@@ -67,7 +65,6 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
   },
   {
     externalId: mockedAgencies[2]?.businessTaxId,
-    address: 'via test 3',
     category: 'test3',
     fiscalCode: mockedAgencies[2]?.businessTaxId,
     geographicTaxonomies: [],
@@ -78,9 +75,59 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     origin: 'testorigin3',
     originId: 'testoriginId3',
     recipientCode: 'MDSSFDF',
+    status: 'TestStatusAfterinsertingTaxCode44',
+    userRole: 'UserRoleTestAfterinsertingTaxCode44',
+    zipCode: '15432',
+  },
+  {
+    externalId: '55555555555',
+    category: 'test3',
+    fiscalCode: '55555555555',
+    geographicTaxonomies: [],
+    id: '55555555555',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: 'retrieved in EdA mock 1',
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
     status: 'TestStatus3',
     userRole: 'UserRoleTest3',
     zipCode: '32145',
+  },
+  {
+    externalId: '66666666666',
+    category: 'test3',
+    fiscalCode: '66666666666',
+    geographicTaxonomies: [],
+    id: '66666666666',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: 'retrieved in EdA mock 2',
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus3',
+    userRole: 'UserRoleTest3',
+    zipCode: '32145',
+  },
+];
+
+export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
+  {
+    externalInstitutionId: '00000000000',
+    address: 'Legal Address API retrieve, 0',
+    zipCode: '03040',
+  },
+  {
+    externalInstitutionId: '11111111111',
+    address: 'Legal Address API retrieve, 1',
+    zipCode: '03040',
+  },
+  {
+    externalInstitutionId: '33333333333',
+    address: 'Legal Address API retrieve, 3',
+    zipCode: '03040',
   },
 ];
 

@@ -31,14 +31,12 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
     getInstitutionsByUser(loggedUser)
       .then((retrievedInstitutions) => {
         setRetrievedInstitutions(retrievedInstitutions);
-        if (retrievedInstitutions.businesses && retrievedInstitutions.businesses.length !== 0) {
-          setActiveStep(1);
-        } else {
-          setError(true);
-        }
+        setActiveStep(
+          retrievedInstitutions && retrievedInstitutions.businesses.length !== 0 ? 1 : 2
+        );
       })
       .catch(() => {
-        trackEvent('NOT_RETRIEVED_ENTITIES', {});
+        trackEvent('GENERIC ERROR', {});
         setError(true);
       })
       .finally(() => setLoading(false));
