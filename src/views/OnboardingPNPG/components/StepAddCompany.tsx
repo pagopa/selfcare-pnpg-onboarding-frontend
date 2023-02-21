@@ -19,6 +19,7 @@ type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
 
@@ -26,47 +27,34 @@ function StepAddCompany({ setActiveStep }: Props) {
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState<'matchedButNotLR' | 'institutionNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [isDisabled, _setIsDisabled] = useState<boolean>(false);
 
   // TODO When service login is available, the loggedUser mockedObject, will be replace with the real loggedUser contained into userContext
   const handleSubmit = (typedInput: string) => {
     setLoading(true);
     getInstitutionLegalAddress(typedInput)
-      .then((e) => {
-        if (e.address !== '') {
-          console.log('TODO PUT HERE THE NEW UI TO MAKE IN THE NEXT SPRINT');
-        } else {
-          matchInstitutionAndUser(typedInput, loggedUser)
-            .then((e) => {
-              if (e === true) {
-                setSelectedInstitution({
-                  businessName: '',
-                  businessTaxId: typedInput,
-                });
-                setSelectedInstitutionHistory({
-                  businessName: '',
-                  businessTaxId: typedInput,
-                });
-                setActiveStep(4);
-              } else {
-                setError(true);
-              }
-            })
-            .catch(() => {
-              console.log(
-                'TODO: PROBABLY THIS CASE WILL BE COVERED BY THE NEW UI PAGE INTRODUCED AT THE NEXT SPRINT'
-              );
-              setError(true);
-            })
-            .finally(() => setLoading(false));
-        }
+      .then(() => setError('matchedButNotLR'))
+      .catch(() => {
+        matchInstitutionAndUser(typedInput, loggedUser)
+          .then(() => {
+            setSelectedInstitution({
+              businessName: '',
+              businessTaxId: typedInput,
+            });
+            setSelectedInstitutionHistory({
+              businessName: '',
+              businessTaxId: typedInput,
+            });
+            setActiveStep(4);
+          })
+          .catch(() => setError('institutionNotFound'))
+          .finally(() => setLoading(false));
       })
-      .catch(() => setError(true));
+      .finally(() => setLoading(false));
   };
 
-  return error ? (
+  return error === 'institutionNotFound' ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}
@@ -100,7 +88,7 @@ function StepAddCompany({ setActiveStep }: Props) {
               color: theme.palette.primary.main,
             }}
             onClick={() => {
-              setError(false);
+              setError(undefined);
               setTypedInput('');
             }}
           >
@@ -108,6 +96,27 @@ function StepAddCompany({ setActiveStep }: Props) {
           </Link>
         </Trans>
       </Typography>
+    </>
+  ) : error === 'matchedButNotLR' ? (
+    <>
+      <EndingPage
+        icon={<IllusError size={60} />}
+        title={t('matchedButNotLR.title')}
+        description={
+          <Trans i18nKey="matchedButNotLR.message">
+            Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale
+            rappresentante. <br />
+            Contatta il Registro delle imprese per farti aggiungere.
+          </Trans>
+        }
+        variantTitle={'h4'}
+        variantDescription={'body1'}
+        buttonLabel={t('matchedButNotLR.backToAccess')}
+        onButtonClick={() => {
+          setError(undefined);
+          setTypedInput('');
+        }}
+      />
     </>
   ) : loading ? (
     <LoadingOverlay />
@@ -156,7 +165,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             forward={{
               action: () => handleSubmit(typedInput),
               label: t('addCompany.forwardAction'),
-              disabled: typedInput.length !== 11 || isDisabled,
+              disabled: typedInput.length !== 11,
             }}
           />
         </Grid>

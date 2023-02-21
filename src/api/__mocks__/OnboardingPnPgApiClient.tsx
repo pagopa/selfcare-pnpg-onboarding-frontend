@@ -76,6 +76,38 @@ export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
     userRole: 'UserRoleTest3',
     zipCode: '32145',
   },
+  {
+    externalId: '55555555555',
+    category: 'test3',
+    fiscalCode: '55555555555',
+    geographicTaxonomies: [],
+    id: 'test030203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: 'retrieved in EdA mock 1',
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus3',
+    userRole: 'UserRoleTest3',
+    zipCode: '32145',
+  },
+  {
+    externalId: '66666666666',
+    category: 'test3',
+    fiscalCode: '66666666666',
+    geographicTaxonomies: [],
+    id: 'test030203',
+    institutionType: 'GSP',
+    mailAddress: 'test@comuneditest.it',
+    name: 'retrieved in EdA mock 2',
+    origin: 'testorigin3',
+    originId: 'testoriginId3',
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus3',
+    userRole: 'UserRoleTest3',
+    zipCode: '32145',
+  },
 ];
 
 export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
@@ -91,7 +123,7 @@ export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalA
   },
 ];
 
-export const mockedEdA = [
+export const mockedEdAOccurrences = [
   {
     externalId: '55555555555',
     address: 'via test 3',
@@ -109,10 +141,8 @@ export const mockedEdA = [
     userRole: 'UserRoleTest3',
     zipCode: '32145',
   },
-
   {
     externalId: '66666666666',
-    address: 'via test 3',
     category: 'test3',
     fiscalCode: '66666666666',
     geographicTaxonomies: [],
@@ -133,12 +163,7 @@ export const mockedOnboardingPnPgApi = {
   getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> =>
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
-  onboardingPGSubmit: (
-    externalInstitutionId: string,
-    _productId: string,
-    _loggedUser: User,
-    _selectedInstitution: BusinessPnpg
-  ): Promise<boolean> => {
+  onboardingPGSubmit: (externalInstitutionId: string): Promise<boolean> => {
     if (externalInstitutionId === '11111111111') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);
@@ -178,10 +203,29 @@ export const mockedOnboardingPnPgApi = {
   },
 
   matchInstitutionAndUser: (externalInstitutionId: string, _loggedUser: User): Promise<boolean> => {
-    const matchedPartyInEdAByExternalId = mockedEdA.find(
+    const matchedPartyInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === externalInstitutionId
     );
-    return new Promise((resolve) => resolve(matchedPartyInEdAByExternalId ? true : false));
+    if (matchedPartyInEdAByExternalId) {
+      return new Promise((resolve) => resolve(true));
+    } else {
+      return new Promise(() => {
+        const error = new Error(`Unexpected mocked HTTP status!! Expected 200 obtained 400`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 400;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 400,
+          description: 'Bad Request',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
+    }
   },
 
   getInstitutionLegalAddress: (
@@ -193,9 +237,22 @@ export const mockedOnboardingPnPgApi = {
     if (matchedInstitutionLegalAddressByExternalId) {
       return new Promise((resolve) => resolve(matchedInstitutionLegalAddressByExternalId));
     } else {
-      return new Promise((resolve) =>
-        resolve({ address: '', externalInstitutionId: '', zipCode: '' })
-      );
+      return new Promise(() => {
+        const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 400;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 400,
+          description: 'Bad Request',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
     }
   },
 };

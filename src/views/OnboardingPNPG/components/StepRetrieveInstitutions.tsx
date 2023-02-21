@@ -30,11 +30,10 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
       .then((retrievedInstitutions) => {
         setRetrievedInstitutions(retrievedInstitutions);
         setActiveStep(
-          retrievedInstitutions.businesses && retrievedInstitutions.businesses.length !== 0 ? 1 : 2
+          retrievedInstitutions && retrievedInstitutions.businesses.length !== 0 ? 1 : 2
         );
       })
-      .catch((e) => {
-        console.log('e', e);
+      .catch(() => {
         trackEvent('GENERIC ERROR', {});
         setError(true);
       })

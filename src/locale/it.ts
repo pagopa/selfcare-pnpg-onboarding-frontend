@@ -33,6 +33,14 @@ export default {
       'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
     backToAccess: 'Torna all’accesso',
   },
+  matchedButNotLR: {
+    title: 'Spiacenti, qualcosa è andato storto',
+    message:
+      'Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale rappresentante. <1 />Contatta il Registro delle imprese per farti aggiungere.',
+    registerNewAgency:
+      'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
+    backToAccess: 'Torna all’accesso',
+  },
   outcome: {
     success: {
       title: 'La registrazione è avvenuta con <1 />successo',

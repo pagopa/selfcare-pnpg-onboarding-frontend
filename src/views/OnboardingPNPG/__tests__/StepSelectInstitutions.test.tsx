@@ -1,51 +1,35 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { InstitutionsPnPG, User } from '../../../../types';
 import StepSelectInstitution from '../components/StepSelectInstitution';
-import StepRetrieveInstitutions from '../components/StepRetrieveInstitutions';
 import './../../../locale';
 import { ROUTES } from '../../../utils/constants';
 import { createMemoryHistory } from 'history';
 import { Router, Switch, Route } from 'react-router';
 import { useState } from 'react';
 import { HeaderContext, UserContext } from '../../../lib/context';
-import { ENV } from '../../../utils/env';
-import OnboardingPNPG from '../OnboardingPNPG';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../redux/store';
-import StepAddCompany from '../components/StepAddCompany';
+import { ENV } from '../../../utils/env';
 
-const oldWindowLocation = global.window.location;
-const initialLocation = {
-  assign: jest.fn(),
-  pathname: '/onboarding-pnpg',
-  origin: '',
-  search: '',
-  hash: '',
-  state: undefined,
+const mockOneAgencyRetrieved: InstitutionsPnPG = {
+  businesses: [{ businessName: 'Mocked Agency 0', businessTaxId: '00000000000' }],
+  legalTaxId: '10101010101',
+  requestDateTime: 'datamocked0',
 };
-const mockedLocation = Object.assign({}, initialLocation);
-const mockedHistoryPush = jest.fn();
 
-beforeAll(() => {
-  Object.defineProperty(window, 'location', { value: mockedLocation });
-});
-afterAll(() => {
-  Object.defineProperty(window, 'location', { value: oldWindowLocation });
-});
-
-beforeEach(() => Object.assign(mockedLocation, initialLocation));
-
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: mockedHistoryPush,
-    location: mockedLocation,
-    replace: (nextLocation) => Object.assign(mockedLocation, nextLocation),
-  }),
-}));
+const mockTwoAgencyRetrieved: InstitutionsPnPG = {
+  businesses: [
+    { businessName: 'Mocked Agency 1', businessTaxId: '11111111111' },
+    { businessName: 'Mocked Agency 2', businessTaxId: '22222222222' },
+  ],
+  legalTaxId: '12121212121',
+  requestDateTime: 'datamocked0',
+};
 
 const history = createMemoryHistory();
 
 const renderComponent = (
+  oneRetrieved: boolean = false,
   injectedHistory?: ReturnType<typeof createMemoryHistory>,
   injectedStore?: ReturnType<typeof createStore>
 ) => {
@@ -76,14 +60,16 @@ const renderComponent = (
             value={{ user, setUser, requiredLogin: false, setRequiredLogin: () => {} }}
           >
             La registrazione è avvenuta con successo
-            <button onClick={() => onExit?.(() => history.push(ROUTES.PNPG_DASHBOARD.PATH))}>
-              Entra
-            </button>
             <button onClick={() => onExit?.(() => history.push(ENV.URL_FE.LOGOUT))}>LOGOUT</button>
             <Switch>
               <Route path="/onboarding-pnpg">
                 <Provider store={store}>
-                  <StepAddCompany setActiveStep={() => {}} />
+                  <StepSelectInstitution
+                    setActiveStep={() => {}}
+                    retrievedInstitutions={
+                      oneRetrieved ? mockOneAgencyRetrieved : mockTwoAgencyRetrieved
+                    }
+                  />
                 </Provider>
               </Route>
             </Switch>
@@ -92,33 +78,39 @@ const renderComponent = (
       </Router>
     );
   };
-
   render(<Component />);
+  return { history };
 };
 
-test('Render test', async () => {
-  renderComponent();
-});
+test('One agency retrieved, the agency is auto-selected and enter button is enabled', async () => {
+  renderComponent(true);
 
-test('No agency retrieved, the insert fiscalCode UI will be shown ', async () => {
-  renderComponent();
+  await waitFor(() => screen.getByText('Seleziona l’azienda'));
 
-  await waitFor(() => screen.getByText('Aggiungi la tua impresa'));
+  const enterButton = screen.getByRole('button', { name: 'Entra' });
+  expect(enterButton).toBeEnabled();
 
-  const continueButton = screen.getByText('Continua');
-  expect(continueButton).toBeDisabled();
+  fireEvent.click(enterButton);
 
-  const fiscalCodeInputField = document.getElementById('fiscalCode-textfield');
+  await waitFor(() => expect(history.location.pathname).toBe('/'));
 
-  fireEvent.change(fiscalCodeInputField as Element, { target: { value: '3333333333' } });
-  expect(continueButton).toBeDisabled();
-
-  fireEvent.change(fiscalCodeInputField as Element, { target: { value: '33333333333' } });
-  expect(continueButton).toBeEnabled();
-
-  fireEvent.click(continueButton);
-  screen.getByText('La registrazione è avvenuta con successo');
+  await screen.getByText('La registrazione è avvenuta con successo');
   const enterDashboardButton = screen.getByText('Entra');
   fireEvent.click(enterDashboardButton);
-  expect(history.location.pathname).toBe('/');
+});
+
+test('Two or more agency retrieved, when we land in the page, the enter button is disabled', async () => {
+  renderComponent();
+
+  screen.getByText('A nome di quale azienda vuoi accedere?');
+
+  const registerAgencyButton = screen.getByText('Registra azienda');
+  expect(registerAgencyButton).toBeDisabled();
+
+  const agencySelected = screen.getByRole('button', { name: 'Mocked Agency 1' });
+  fireEvent.click(agencySelected);
+
+  expect(registerAgencyButton).toBeEnabled();
+
+  await waitFor(() => fireEvent.click(registerAgencyButton));
 });

@@ -5,8 +5,8 @@ import {
   User,
 } from '../../types';
 import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
-import { mockedInstitutionPnPG } from '../api/__mocks__/OnboardingPnPgApiClient';
 import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
+import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';
 
 export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => {
   /* istanbul ignore if */
@@ -48,12 +48,7 @@ export const onboardingPGSubmit = (
 ): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingPnPgApi.onboardingPGSubmit(
-      externalInstitutionId,
-      productId,
-      loggedUser,
-      selectedInstitution
-    );
+    return mockedOnboardingPnPgApi.onboardingPGSubmit(externalInstitutionId);
   } else {
     return OnboardingPnPgApi.onboardingPGSubmit(
       externalInstitutionId,
