@@ -1,11 +1,12 @@
-import { BusinessPnpg, InstitutionsPnPG, User } from '../../types';
-import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
 import {
-  mockedOnboardingPnPgApi,
-  mockedRetrievedInstitutionLegalAddress,
-} from '../api/__mocks__/OnboardingPnPgApiClient';
+  BusinessPnpg,
+  InstitutionsPnPG,
+  PnPGInstitutionLegalAddressResource,
+  User,
+} from '../../types';
+import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
+import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
 import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';
-import { DashboardPnPgApi } from '../api/DashboardPnPgApiClient';
 
 export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => {
   /* istanbul ignore if */
@@ -55,33 +56,5 @@ export const onboardingPGSubmit = (
       loggedUser,
       selectedInstitution
     );
-  }
-};
-
-export const getInstitutionLegalAddress = (
-  externalInstitutionId: string
-): Promise<PnPGInstitutionLegalAddressResource> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    const matchedInstitutionLegalAddress = mockedRetrievedInstitutionLegalAddress.find(
-      (a) => a.externalInstitutionId === externalInstitutionId
-    );
-    return new Promise((resolve) =>
-      resolve(matchedInstitutionLegalAddress ?? mockedRetrievedInstitutionLegalAddress[0])
-    );
-  } else {
-    return DashboardPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
-  }
-};
-
-export const matchInstitutionAndUser = (
-  externalInstitutionId: string,
-  loggedUser: User
-): Promise<boolean> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return new Promise((resolve) => resolve(true));
-  } else {
-    return OnboardingPnPgApi.matchInstitutionAndUser(externalInstitutionId, loggedUser);
   }
 };

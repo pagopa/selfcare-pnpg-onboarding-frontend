@@ -112,7 +112,10 @@ function StepAddCompany({ setActiveStep }: Props) {
         variantTitle={'h4'}
         variantDescription={'body1'}
         buttonLabel={t('matchedButNotLR.backToAccess')}
-        onButtonClick={() => setError(undefined)}
+        onButtonClick={() => {
+          setError(undefined);
+          setTypedInput('');
+        }}
       />
     </>
   ) : loading ? (
