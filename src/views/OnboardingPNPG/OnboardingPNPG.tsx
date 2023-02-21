@@ -2,6 +2,7 @@ import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { InstitutionsPnPG, StepperStep } from '../../../types';
 import { withLogin } from '../../components/withLogin';
+import StepAddCompany from './components/StepAddCompany';
 import StepRetrieveInstitutions from './components/StepRetrieveInstitutions';
 import StepSelectInstitution from './components/StepSelectInstitution';
 import StepSubmit from './components/StepSubmit';
@@ -30,7 +31,15 @@ function OnboardingPNPGComponent() {
       Component: () =>
         StepSelectInstitution({
           retrievedInstitutions,
+          setActiveStep,
           forward,
+        }),
+    },
+    {
+      label: 'Add company',
+      Component: () =>
+        StepAddCompany({
+          setActiveStep,
         }),
     },
     {

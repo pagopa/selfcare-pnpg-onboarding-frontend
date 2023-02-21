@@ -3,7 +3,6 @@ import { DashboardPnPgApi } from '../api/DashboardPnPgApiClient';
 import { mockedPnPGInstitutionsResource } from '../api/__mocks__/DashboardPnPgApiClient';
 import { mockedRetrievedInstitutionLegalAddress } from '../api/__mocks__/OnboardingPnPgApiClient';
 
-// Dashboard API
 export const getPnPGInstitutions = (): Promise<Array<PnPGInstitutionResource>> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {

@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Trans } from 'react-i18next';
-import { EndingPage } from '@pagopa/selfcare-common-frontend';
-import { IllusError, theme } from '@pagopa/mui-italia';
-import { Link, Typography } from '@mui/material';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { IllusError } from '@pagopa/mui-italia';
+import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { InstitutionsPnPG } from '../../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
-import { ENV } from '../../../utils/env';
 import { getInstitutionsByUser } from '../../../services/onboardingService';
 import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
+import { ENV } from '../../../utils/env';
 
 type Props = {
   setRetrievedInstitutions: React.Dispatch<React.SetStateAction<InstitutionsPnPG | undefined>>;
@@ -52,39 +50,21 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
   return loading ? (
     <LoadingOverlay loadingText={t('loadingText')} />
   ) : error ? (
-    <>
-      <EndingPage
-        icon={<IllusError size={60} />}
-        title={t('institutionsNotFound.title')}
-        description={
-          <Trans i18nKey="institutionsNotFound.message">
-            Per accedere alle notifiche, l’azienda deve essere registrata <br /> dal Legale
-            Rappresentante.
-          </Trans>
-        }
-        variantTitle={'h4'}
-        variantDescription={'body1'}
-        buttonLabel={t('institutionsNotFound.backToAccess')}
-        onButtonClick={() => ENV.URL_FE.LOGOUT}
-      />
-      <Typography
-        sx={{
-          textAlign: 'center',
-          display: 'block',
-          marginTop: 4,
-        }}
-        variant="caption"
-        color={theme.palette.text.primary}
-      >
-        <Trans i18nKey="selectInstitutionReleated.changeInstitutionSelectedLink">
-          {'Sei il Legale Rappresentante di un’azienda? '}
-          <Link sx={{ textDecoration: 'underline', color: theme.palette.primary.main }} href="">
-            {/* Todo add the correct redirect */}
-            {'Registra nuova azienda'}
-          </Link>
+    <EndingPage
+      minHeight="52vh"
+      icon={<IllusError size={60} />}
+      title={t('outcome.error.title')}
+      description={
+        <Trans i18nKey="outcome.error.description">
+          A causa di un errore del sistema non è possibile completare <br />
+          la procedura. Ti chiediamo di riprovare più tardi.
         </Trans>
-      </Typography>
-    </>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('outcome.error.backToHome')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)} // TODO Actually redirect to selfcare login, set correct redirect when available
+    />
   ) : (
     <></>
   );

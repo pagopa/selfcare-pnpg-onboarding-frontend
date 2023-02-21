@@ -4,10 +4,17 @@ import { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { BusinessPnpg, PnPGInstitutionResource } from '../../../types';
+import {
+  BusinessPnpg,
+  PnPGInstitutionLegalAddressResource,
+  PnPGInstitutionResource,
+} from '../../../types';
 import { withLogin } from '../../components/withLogin';
 import PnIcon from '../OnboardingPNPG/assets/pn.svg';
-import { retrieveProductBackoffice } from '../../services/dashboardService';
+import {
+  getInstitutionLegalAddress,
+  retrieveProductBackoffice,
+} from '../../services/dashboardService';
 import { useAppSelector } from '../../redux/hooks';
 import { partiesSelectors } from '../../redux/slices/partiesSlice';
 import withParties from '../../decorators/withParties';
@@ -31,15 +38,21 @@ const Dashboard = () => {
   )[0];
 
   const [party, setParty] = useState<PnPGInstitutionResource>();
+  const [retrievedLegalAddressInfos, setRetrievedLegalAddressInfos] =
+    useState<PnPGInstitutionLegalAddressResource>();
 
   useEffect(() => {
-    const selectedBusinessPnPgTaxId =
-      selectedInstitutionPnPg?.state?.selected_institution?.businessTaxId ??
-      selectedInstitution?.businessTaxId;
+    const selectedBusinessPnPg =
+      selectedInstitutionPnPg?.state?.selected_institution ?? selectedInstitution;
+
+    getInstitutionLegalAddress(selectedBusinessPnPg.businessTaxId)
+      .then((p) => setRetrievedLegalAddressInfos(p))
+      .catch((reason) => reason);
+
     const partySelected = parties?.find(
       (p) =>
         p.fiscalCode ===
-        (selectedBusinessPnPgTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
+        (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
     );
     setParty(partySelected);
   }, [history.state]);
@@ -73,7 +86,11 @@ const Dashboard = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <PartyInfoOverview party={party} />
+          <PartyInfoOverview
+            party={party}
+            legalAddress={retrievedLegalAddressInfos?.address}
+            zipCode={retrievedLegalAddressInfos?.zipCode}
+          />
         </Grid>
         <Grid item container ml={1} mt={5}>
           <TitleBox

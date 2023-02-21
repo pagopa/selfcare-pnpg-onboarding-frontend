@@ -126,6 +126,7 @@ export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalA
 export const mockedEdAOccurrences = [
   {
     externalId: '55555555555',
+    address: 'via test 3',
     category: 'test3',
     fiscalCode: '55555555555',
     geographicTaxonomies: [],
@@ -162,7 +163,12 @@ export const mockedOnboardingPnPgApi = {
   getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> =>
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
-  onboardingPGSubmit: async (externalInstitutionId: string): Promise<boolean> => {
+  onboardingPGSubmit: (
+    externalInstitutionId: string,
+    _productId: string,
+    _loggedUser: User,
+    _selectedInstitution: BusinessPnpg
+  ): Promise<boolean> => {
     if (externalInstitutionId === '11111111111') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);
@@ -202,31 +208,10 @@ export const mockedOnboardingPnPgApi = {
   },
 
   matchInstitutionAndUser: (externalInstitutionId: string, _loggedUser: User): Promise<boolean> => {
-    const matchedPartyInEdAByExternalId = mockedEdAOccurrences.find(
+    const matchedPartyInEdAByExternalId = mockedEdA.find(
       (p) => p.externalId === externalInstitutionId
     );
-    if (matchedPartyInEdAByExternalId) {
-      return new Promise((resolve) => resolve(true));
-    } else {
-      return new Promise(() => {
-        const error = new Error(
-          `Unexpected mocked HTTP status in matchInstitutionAndUser! Expected 200 obtained 400`
-        );
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
-    }
+    return new Promise((resolve) => resolve(matchedPartyInEdAByExternalId ? true : false));
   },
 
   getInstitutionLegalAddress: (
@@ -238,24 +223,9 @@ export const mockedOnboardingPnPgApi = {
     if (matchedInstitutionLegalAddressByExternalId) {
       return new Promise((resolve) => resolve(matchedInstitutionLegalAddressByExternalId));
     } else {
-      return new Promise(() => {
-        const error = new Error(
-          `Unexpected mocked HTTP status in getInstitutionLegalAddress! Expected 200 obtained 400`
-        );
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
+      return new Promise((resolve) =>
+        resolve({ address: '', externalInstitutionId: '', zipCode: '' })
+      );
     }
   },
 };

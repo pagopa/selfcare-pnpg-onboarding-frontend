@@ -28,9 +28,7 @@ function StepSubmit({ forward, setLoading }: Props) {
     if (!error && selectedInstitution) {
       setLoading(true);
       submit(selectedInstitution.businessTaxId, productId, selectedInstitution)
-        .catch((_reason) => {
-          setError('genericError');
-        })
+        .catch((e) => e)
         .finally(() => {
           setLoading(false);
         });
@@ -51,13 +49,16 @@ function StepSubmit({ forward, setLoading }: Props) {
         setSelectedInstitutionHistory(selectedInstitution);
         forward();
       })
-      .catch(() => {
-        trackEvent('ONBOARDING_PNPG_SEND_ERROR', {});
-        setSelectedInstitution(selectedInstitution);
-        setSelectedInstitutionHistory(selectedInstitution);
-        // TODO Differentiate 400 (alreadyOnboarded) from other status code of error
-        setError('alreadyOnboarded');
-        setError('genericError');
+      .catch((reason) => {
+        if (reason.httpStatus === 400) {
+          setError('alreadyOnboarded');
+          trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
+          setSelectedInstitution(selectedInstitution);
+          setSelectedInstitutionHistory(selectedInstitution);
+        } else {
+          setError('genericError');
+          trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
+        }
       })
       .finally(() => setLoading(false));
   };
