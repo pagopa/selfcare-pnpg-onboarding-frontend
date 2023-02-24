@@ -10,7 +10,7 @@ const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
     const token = storageTokenOps.read();
     return wrappedOperation({
       ...params,
-      bearerAuth: `Bearer ${token}`,
+      bearerAuth: `${token}`,
     });
   };
 
