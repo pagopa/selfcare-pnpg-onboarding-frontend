@@ -79,7 +79,6 @@ const renderComponent = (
     );
   };
   render(<Component />);
-  return { history };
 };
 
 test('One agency retrieved, the agency is auto-selected and enter button is enabled', async () => {
