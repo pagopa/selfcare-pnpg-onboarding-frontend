@@ -101,14 +101,14 @@ function StepAddCompany({ setActiveStep }: Props) {
     <>
       <EndingPage
         icon={<IllusError size={60} />}
-        title={t('matchedButNotLR.title')}
-        description={
-          <Trans i18nKey="matchedButNotLR.message">
+        title={
+          <Trans i18nKey="matchedButNotLR.title">
             Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale
             rappresentante. <br />
             Contatta il Registro delle imprese per farti aggiungere.
           </Trans>
         }
+        description={''}
         variantTitle={'h4'}
         variantDescription={'body1'}
         buttonLabel={t('matchedButNotLR.backToAccess')}

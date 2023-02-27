@@ -17,7 +17,7 @@ const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
     const token = storageTokenOps.read();
     return wrappedOperation({
       ...params,
-      bearerAuth: `Bearer ${token}`,
+      bearerAuth: `${token}`,
     });
   };
 
@@ -42,14 +42,14 @@ const onRedirectToLogin = () =>
   );
 
 export const OnboardingPnPgApi = {
-  getInstitutionsByUser: async (loggedUser: User): Promise<InstitutionsPnPG> => {
+  getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> => {
     const result = await apiClient.getInstitutionsByUserUsingPOST({
       body: {
-        taxCode: loggedUser.taxCode,
-        email: loggedUser.email as EmailString,
-        name: loggedUser.name,
-        surname: loggedUser.surname,
-        role: '' as RoleEnum,
+        taxCode: 'DLLDGI53T30I324E',
+        email: 'd.dellavalle@test.it' as EmailString,
+        name: 'Diego',
+        surname: 'Della Valle',
+        role: 'MANAGER' as RoleEnum,
       },
     });
     return extractResponse(result, 200, onRedirectToLogin);
