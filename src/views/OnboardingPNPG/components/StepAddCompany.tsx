@@ -109,8 +109,7 @@ function StepAddCompany({ setActiveStep }: Props) {
           </Trans>
         }
         description={''}
-        variantTitle={'h1'}
-        variantDescription={'body1'}
+        variantTitle={'h5'}
         buttonLabel={t('matchedButNotLR.backToAccess')}
         onButtonClick={() => {
           setError(undefined);
