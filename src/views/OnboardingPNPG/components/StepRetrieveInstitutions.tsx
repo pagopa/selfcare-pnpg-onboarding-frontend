@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+// import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { IllusError } from '@pagopa/mui-italia';
@@ -19,7 +19,7 @@ type Props = {
 function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: Props) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+  const [error, _setError] = useState<boolean>(false);
 
   // TODO When login services is available, this line will be uncommented and loggedUser object replaced with this
   // const { user } = useContext(UserContext);
@@ -34,8 +34,12 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
         );
       })
       .catch(() => {
+        setActiveStep(2);
+        /*
+        This code is commented and replaced by setting the activeStep to 2 only for test the onboarding flow via taxCode 
+        because there is a malfunction in Infocamere
         trackEvent('GENERIC ERROR', {});
-        setError(true);
+        setError(true); */
       })
       .finally(() => setLoading(false));
   };
