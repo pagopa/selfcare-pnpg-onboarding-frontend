@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import {
   BusinessPnpg,
   PnPGInstitutionLegalAddressResource,
@@ -29,6 +30,7 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const [_loading, setLoading] = useState<boolean>(false);
   const parties = useAppSelector(partiesSelectors.selectPartiesList);
+  const addError = useErrorDispatcher();
 
   const selectedInstitutionPnPg = history.state;
 
@@ -45,16 +47,26 @@ const Dashboard = () => {
     const selectedBusinessPnPg =
       selectedInstitutionPnPg?.state?.selected_institution ?? selectedInstitution;
 
-    getInstitutionLegalAddress(selectedBusinessPnPg.businessTaxId)
-      .then((p) => setRetrievedLegalAddressInfos(p))
-      .catch((reason) => reason);
+    if (selectedBusinessPnPg) {
+      getInstitutionLegalAddress(selectedBusinessPnPg?.businessTaxId)
+        .then((p) => setRetrievedLegalAddressInfos(p))
+        .catch((reason) => {
+          addError({
+            id: 'RETRIEVING_LEGAL_ADDRESS_ERROR',
+            blocking: false,
+            error: reason,
+            techDescription: `An error occurred while retrieving legal address for agency ${selectedBusinessPnPg}`,
+            toNotify: true,
+          });
+        });
 
-    const partySelected = parties?.find(
-      (p) =>
-        p.fiscalCode ===
-        (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
-    );
-    setParty(partySelected);
+      const partySelected = parties?.find(
+        (p) =>
+          p.fiscalCode ===
+          (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
+      );
+      setParty(partySelected);
+    }
   }, [history.state]);
 
   const handleClick = async (productId: string, institutionId: string) => {
@@ -64,7 +76,15 @@ const Dashboard = () => {
     setLoading(true);
     retrieveProductBackoffice(productId, institutionId)
       .then((backOfficeUrl) => window.location.assign(backOfficeUrl))
-      .catch((er) => console.log(er)) // TODO
+      .catch((reason) => {
+        addError({
+          id: 'RETRIEVE_PRODUCT_BACK_OFFICE_ERROR',
+          blocking: false,
+          error: reason,
+          techDescription: `An error occurred while retrieving product back office for institutionId ${institutionId}`,
+          toNotify: true,
+        });
+      })
       .finally(() => setLoading(false));
   };
 
@@ -82,7 +102,7 @@ const Dashboard = () => {
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            {party && <PartyLogoUploader partyId={party.id} />}
+            <PartyLogoUploader partyId={party?.id ?? ''} />
           </Grid>
         </Grid>
         <Grid item xs={12}>
