@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { EndingPage } from '@pagopa/selfcare-common-frontend';
+import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { IllusError } from '@pagopa/mui-italia';
 import { useTranslation, Trans } from 'react-i18next';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { useHistory } from 'react-router-dom';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../../types';
 import { ENV } from '../../../utils/env';
@@ -19,16 +18,26 @@ type Props = StepperStepComponentProps & {
 function StepSubmit({ forward, setLoading }: Props) {
   const { t } = useTranslation();
   const history = useHistory();
+  const addError = useErrorDispatcher();
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
+
   const productId = 'prod-pn-pg';
 
   useEffect(() => {
     if (!error && selectedInstitution) {
       setLoading(true);
       submit(selectedInstitution.businessTaxId, productId, selectedInstitution)
-        .catch((e) => e)
+        .catch((reason) => {
+          addError({
+            id: 'ONBOARDING_PNPG_SUBMIT_ERROR',
+            blocking: false,
+            error: reason,
+            techDescription: `An error occurred while submit onboarding of ${selectedInstitution}`,
+            toNotify: true,
+          });
+        })
         .finally(() => {
           setLoading(false);
         });
@@ -82,7 +91,7 @@ function StepSubmit({ forward, setLoading }: Props) {
   ) : error === 'alreadyOnboarded' ? (
     <EndingPage
       icon={<IllusError size={60} />}
-      title={i18n.t('alreadyOnboarded.title')}
+      title={t('alreadyOnboarded.title')}
       description={
         <Trans i18nKey="alreadyOnboarded.message">
           L&apos;ente selezionato ha già effettuato l&apos;adesione. <br />
@@ -91,7 +100,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={i18n.t('alreadyOnboarded.enter')}
+      buttonLabel={t('alreadyOnboarded.enter')}
       onButtonClick={() => history.push(ROUTES.PNPG_DASHBOARD.PATH, selectedInstitution)}
     />
   ) : (

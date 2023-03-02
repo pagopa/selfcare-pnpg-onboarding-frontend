@@ -14,6 +14,7 @@ function StepSuccess() {
     'selected_institution',
     undefined
   )[0];
+
   return (
     <EndingPage
       minHeight="52vh"

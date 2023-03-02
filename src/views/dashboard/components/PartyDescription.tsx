@@ -36,6 +36,7 @@ export function PartyDescription({ labelLink, open, loading }: Props) {
             </Trans>
           }
           placement="top"
+          role={'tooltip'}
           arrow={true}
         >
           <InfoOutlinedIcon

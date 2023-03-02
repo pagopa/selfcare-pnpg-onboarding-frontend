@@ -42,13 +42,13 @@ const onRedirectToLogin = () =>
   );
 
 export const OnboardingPnPgApi = {
-  getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> => {
+  getInstitutionsByUser: async (loggedUser: User): Promise<InstitutionsPnPG> => {
     const result = await apiClient.getInstitutionsByUserUsingPOST({
       body: {
-        taxCode: 'DLLDGI53T30I324E',
-        email: 'd.dellavalle@test.it' as EmailString,
-        name: 'Diego',
-        surname: 'Della Valle',
+        taxCode: loggedUser.taxCode,
+        email: loggedUser.email as EmailString,
+        name: loggedUser.name,
+        surname: loggedUser.surname,
         role: 'MANAGER' as RoleEnum,
       },
     });
