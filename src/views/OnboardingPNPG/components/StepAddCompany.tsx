@@ -34,8 +34,12 @@ function StepAddCompany({ setActiveStep }: Props) {
   const handleSubmit = (typedInput: string) => {
     setLoading(true);
     getInstitutionLegalAddress(typedInput)
-      .then(() => setError('matchedButNotLR'))
+      .then(() => {
+        setLoading(false);
+        setError('matchedButNotLR');
+      })
       .catch(() => {
+        setLoading(true);
         matchInstitutionAndUser(typedInput, loggedUser)
           .then(() => {
             setSelectedInstitution({
@@ -48,8 +52,9 @@ function StepAddCompany({ setActiveStep }: Props) {
             });
             setActiveStep(4);
           })
-          .catch(() => setError('institutionNotFound'))
+          .catch((reason) => reason)
           .finally(() => setLoading(false));
+        setError('institutionNotFound');
       })
       .finally(() => setLoading(false));
   };

@@ -12,6 +12,8 @@ type Props = {
 export default function PartyInfoOverview({ party, legalAddress, zipCode }: Props) {
   const { t } = useTranslation();
 
+  const selectedInstitutionPnPg = history.state.state;
+
   const infoStyles = {
     fontWeight: theme.typography.fontWeightMedium,
     fontSize: theme.typography.fontSize,
@@ -52,7 +54,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.name}
+                {party?.name ?? selectedInstitutionPnPg?.businessName}
               </Typography>
             </Grid>
           </Grid>
@@ -62,7 +64,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.fiscalCode}
+                {party?.fiscalCode ?? selectedInstitutionPnPg?.businessTaxId}
               </Typography>
             </Grid>
             <Grid item xs={4}>

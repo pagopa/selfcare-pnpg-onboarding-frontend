@@ -59,7 +59,6 @@ const Dashboard = () => {
             toNotify: true,
           });
         });
-
       const partySelected = parties?.find(
         (p) =>
           p.fiscalCode ===
@@ -94,7 +93,7 @@ const Dashboard = () => {
         <DashboardSideMenu /> {/* Todo Agency selected */}
       </Grid>
       <Box p={3} sx={{ width: '100%' }}>
-        <WelcomeDashboard businessName={party?.name} />
+        <WelcomeDashboard businessName={party?.name ?? selectedInstitution?.businessName} />
         <Grid container direction="row" justifyContent={'center'} alignItems="center" mb={2}>
           <Grid item xs={6} display="flex" alignItems="center">
             <Typography variant="h6" sx={{ fontWeight: '700' }}>
