@@ -2,7 +2,7 @@ import { IllusCompleted } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useTranslation, Trans } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { BusinessPnpg } from '../../../../types';
+import { BusinessPnpg } from '../../../types';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { ROUTES } from '../../../utils/constants';
 

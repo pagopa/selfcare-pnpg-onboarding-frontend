@@ -8,7 +8,7 @@ import {
   InstitutionsPnPG,
   PnPGInstitutionLegalAddressResource,
   User,
-} from '../../types';
+} from '../types';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
 import { RoleEnum } from './generated/b4f-onboarding-pnpg/UserDto';
 

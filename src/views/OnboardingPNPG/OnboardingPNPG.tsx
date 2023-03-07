@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { InstitutionsPnPG, StepperStep } from '../../../types';
+import { InstitutionsPnPG, StepperStep } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import StepAddCompany from './components/StepAddCompany';
 import StepRetrieveInstitutions from './components/StepRetrieveInstitutions';

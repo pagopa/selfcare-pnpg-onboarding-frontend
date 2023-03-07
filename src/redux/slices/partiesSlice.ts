@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { InstitutionPnPGResource } from '../../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResource';
+import { InstitutionPnPGResourceArray } from '../../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 import type { RootState } from '../store';
-import { PnPGInstitutionResource } from '../../../types';
 
 interface PartiesState {
-  list?: Array<PnPGInstitutionResource>;
-  selected?: PnPGInstitutionResource;
+  list?: InstitutionPnPGResourceArray;
+  selected?: InstitutionPnPGResource;
   selectedPartyLogoUrl?: string;
 }
 
@@ -15,10 +16,10 @@ export const partiesSlice = createSlice({
   name: 'parties',
   initialState,
   reducers: {
-    setPartiesList: (state, action: PayloadAction<Array<PnPGInstitutionResource>>) => {
+    setPartiesList: (state, action: PayloadAction<InstitutionPnPGResourceArray>) => {
       state.list = action.payload;
     },
-    setPartySelected: (state, action: PayloadAction<PnPGInstitutionResource | undefined>) => {
+    setPartySelected: (state, action: PayloadAction<InstitutionPnPGResource | undefined>) => {
       state.selected = action.payload;
       // state.selectedPartyLogoUrl = action.payload?.urlLogo;   // TODO urlLogo
     },
@@ -35,9 +36,9 @@ export const partiesActions = partiesSlice.actions;
 export const partiesReducer = partiesSlice.reducer;
 
 export const partiesSelectors = {
-  selectPartiesList: (state: RootState): Array<PnPGInstitutionResource> | undefined =>
+  selectPartiesList: (state: RootState): InstitutionPnPGResourceArray | undefined =>
     state.parties.list,
-  selectPartySelected: (state: RootState): PnPGInstitutionResource | undefined =>
+  selectPartySelected: (state: RootState): InstitutionPnPGResource | undefined =>
     state.parties.selected,
   selectPartySelectedLogo: (state: RootState): string | undefined =>
     state.parties.selectedPartyLogoUrl,

@@ -3,7 +3,7 @@ import {
   InstitutionsPnPG,
   PnPGInstitutionLegalAddressResource,
   User,
-} from '../../types';
+} from '../types';
 import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
 import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
 import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';

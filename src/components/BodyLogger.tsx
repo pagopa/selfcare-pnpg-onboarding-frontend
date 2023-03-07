@@ -7,7 +7,7 @@ import { ENV } from '../utils/env';
 import { partiesSelectors } from '../redux/slices/partiesSlice';
 import { useAppSelector } from '../redux/hooks';
 import { loggedUser } from '../api/__mocks__/DashboardPnPgApiClient';
-import { BusinessPnpg } from '../../types';
+import { BusinessPnpg } from '../types';
 import { HeaderContext } from './../lib/context';
 import { Main } from './Main';
 import { useHistoryState } from './useHistoryState';

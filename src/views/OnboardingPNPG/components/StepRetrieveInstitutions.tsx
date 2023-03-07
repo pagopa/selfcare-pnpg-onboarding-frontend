@@ -5,7 +5,7 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage'
 import { IllusError } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { InstitutionsPnPG } from '../../../../types';
+import { InstitutionsPnPG } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
 import { getInstitutionsByUser } from '../../../services/onboardingService';

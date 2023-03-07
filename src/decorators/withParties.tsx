@@ -1,9 +1,9 @@
 import withRetrievedValue from '@pagopa/selfcare-common-frontend/decorators/withRetrievedValue';
-import { PnPGInstitutionResource } from '../../types';
+import { InstitutionPnPGResourceArray } from '../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 import { useParties } from '../hooks/useParties';
 
 export type WithPartiesProps = {
-  parties: Array<PnPGInstitutionResource>;
+  parties: InstitutionPnPGResourceArray;
 };
 
 export default function withParties<T extends WithPartiesProps>(

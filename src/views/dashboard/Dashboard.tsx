@@ -5,11 +5,7 @@ import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import {
-  BusinessPnpg,
-  PnPGInstitutionLegalAddressResource,
-  PnPGInstitutionResource,
-} from '../../../types';
+import { BusinessPnpg, PnPGInstitutionLegalAddressResource } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import PnIcon from '../OnboardingPNPG/assets/pn.svg';
 import {
@@ -20,6 +16,7 @@ import { useAppSelector } from '../../redux/hooks';
 import { partiesSelectors } from '../../redux/slices/partiesSlice';
 import withParties from '../../decorators/withParties';
 import { useHistoryState } from '../../components/useHistoryState';
+import { InstitutionPnPGResource } from '../../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResource';
 import WelcomeDashboard from './components/WelcomeDashboard';
 import ActiveProductCard from './components/ActiveProductCard';
 import PartyInfoOverview from './components/PartyInfoOverview';
@@ -39,7 +36,7 @@ const Dashboard = () => {
     selectedInstitutionPnPg?.state
   )[0];
 
-  const [party, setParty] = useState<PnPGInstitutionResource>();
+  const [party, setParty] = useState<InstitutionPnPGResource>();
   const [retrievedLegalAddressInfos, setRetrievedLegalAddressInfos] =
     useState<PnPGInstitutionLegalAddressResource>();
 

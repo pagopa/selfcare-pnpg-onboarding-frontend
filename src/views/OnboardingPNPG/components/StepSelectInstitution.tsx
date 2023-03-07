@@ -2,7 +2,7 @@ import { Button, Grid, Typography, Box, Link } from '@mui/material';
 import { PartyAccountItem, theme } from '@pagopa/mui-italia';
 import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { BusinessPnpg, InstitutionsPnPG, StepperStepComponentProps } from '../../../../types';
+import { BusinessPnpg, InstitutionsPnPG, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';

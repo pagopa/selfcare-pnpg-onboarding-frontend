@@ -1,10 +1,10 @@
 import { Card, Grid, Typography } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import { useTranslation } from 'react-i18next';
-import { PnPGInstitutionResource } from '../../../../types';
+import { InstitutionPnPGResource } from '../../../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResource';
 
 type Props = {
-  party?: PnPGInstitutionResource;
+  party?: InstitutionPnPGResource;
   legalAddress?: string;
   zipCode?: string;
 };
@@ -38,7 +38,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.institutionType}
+                {'-'}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -46,7 +46,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.category ?? zipCode} {/* TODO {party?.category} */}
+                {party?.fiscalCode ?? zipCode} {/* TODO {party?.category} */}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -72,7 +72,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.mailAddress}
+                {party?.address}
               </Typography>
             </Grid>
             <Grid item xs={4}>

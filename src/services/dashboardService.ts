@@ -1,14 +1,17 @@
-import { PnPGInstitutionLegalAddressResource, PnPGInstitutionResource } from '../../types';
 import { DashboardPnPgApi } from '../api/DashboardPnPgApiClient';
+import { InstitutionPnPGResourceArray } from '../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 import { mockedPnPGInstitutionsResource } from '../api/__mocks__/DashboardPnPgApiClient';
 import { mockedRetrievedInstitutionLegalAddress } from '../api/__mocks__/OnboardingPnPgApiClient';
+import { PnPGInstitutionLegalAddressResource } from '../types';
 
-export const getPnPGInstitutions = (): Promise<Array<PnPGInstitutionResource>> => {
+export const getPnPGInstitutions = (): Promise<InstitutionPnPGResourceArray> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return new Promise((resolve) => resolve(mockedPnPGInstitutionsResource));
   } else {
-    return DashboardPnPgApi.getPnPGInstitutions().then((p) => p);
+    return DashboardPnPgApi.getPnPGInstitutions().then((institutions) =>
+      institutions ? institutions : []
+    );
   }
 };
 

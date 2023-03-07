@@ -52,23 +52,6 @@ export type InstitutionsPnPG = {
   requestDateTime: string;
 };
 
-export type PnPGInstitutionResource = {
-  category: string;
-  externalId: string;
-  fiscalCode: string;
-  geographicTaxonomies: Array<any>; // TODO FixMe
-  id: string;
-  institutionType: 'GSP' | 'PA' | 'PSP' | 'PT' | 'SCP';
-  mailAddress: string;
-  name: string;
-  origin: string;
-  originId: string;
-  recipientCode: string;
-  status: string;
-  userRole: string;
-  zipCode: string;
-};
-
 export type PnPGInstitutionLegalAddressResource = {
   externalInstitutionId: string;
   address: string;
