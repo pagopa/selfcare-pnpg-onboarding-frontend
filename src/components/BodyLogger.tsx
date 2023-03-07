@@ -64,7 +64,7 @@ function BodyLogger() {
           }
           partyList={parties?.map((p) => ({
             logoUrl: '', // TODO
-            id: p.id ?? '',
+            id: p.externalId ?? '',
             name: p.name ?? '',
             productRole: p.fiscalCode ?? '',
           }))}
