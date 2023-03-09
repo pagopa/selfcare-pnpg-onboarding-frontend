@@ -2,13 +2,13 @@ import { Button, Grid, Typography, Box, Link } from '@mui/material';
 import { PartyAccountItem, theme } from '@pagopa/mui-italia';
 import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { BusinessPnpg, InstitutionsPnPG, StepperStepComponentProps } from '../../../types';
+import { BusinessPnpg, InstitutionsPnpg, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 
 type Props = {
-  retrievedInstitutions?: InstitutionsPnPG;
+  retrievedInstitutions?: InstitutionsPnpg;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 } & StepperStepComponentProps;
 

@@ -5,18 +5,14 @@ import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { BusinessPnpg, PnPGInstitutionLegalAddressResource } from '../../types';
+import { BusinessPnpg, PartyPnpg } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import PnIcon from '../OnboardingPNPG/assets/pn.svg';
-import {
-  getInstitutionLegalAddress,
-  retrieveProductBackoffice,
-} from '../../services/dashboardService';
+import { retrieveProductBackoffice } from '../../services/dashboardService';
 import { useAppSelector } from '../../redux/hooks';
 import { partiesSelectors } from '../../redux/slices/partiesSlice';
 import withParties from '../../decorators/withParties';
 import { useHistoryState } from '../../components/useHistoryState';
-import { InstitutionPnPGResource } from '../../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResource';
 import WelcomeDashboard from './components/WelcomeDashboard';
 import ActiveProductCard from './components/ActiveProductCard';
 import PartyInfoOverview from './components/PartyInfoOverview';
@@ -36,34 +32,18 @@ const Dashboard = () => {
     selectedInstitutionPnPg?.state
   )[0];
 
-  const [party, setParty] = useState<InstitutionPnPGResource>();
-  const [retrievedLegalAddressInfos, setRetrievedLegalAddressInfos] =
-    useState<PnPGInstitutionLegalAddressResource>();
+  const [party, setParty] = useState<PartyPnpg>();
 
   useEffect(() => {
     const selectedBusinessPnPg =
       selectedInstitutionPnPg?.state?.selected_institution ?? selectedInstitution;
-
-    if (selectedBusinessPnPg) {
-      getInstitutionLegalAddress(selectedBusinessPnPg?.businessTaxId)
-        .then((p) => setRetrievedLegalAddressInfos(p))
-        .catch((reason) => {
-          addError({
-            id: 'RETRIEVING_LEGAL_ADDRESS_ERROR',
-            blocking: false,
-            error: reason,
-            techDescription: `An error occurred while retrieving legal address for agency ${selectedBusinessPnPg}`,
-            toNotify: true,
-          });
-        });
-      const partySelected = parties?.find(
-        (p) =>
-          p.fiscalCode ===
-          (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
-      );
-      setParty(partySelected);
-    }
-  }, [history.state]);
+    const partySelected = parties?.find(
+      (p) =>
+        p.fiscalCode ===
+        (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
+    );
+    setParty(partySelected);
+  }, [selectedInstitutionPnPg]);
 
   const handleClick = async (productId: string, institutionId: string) => {
     storageTokenOps.write(
@@ -102,11 +82,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <PartyInfoOverview
-            party={party}
-            legalAddress={retrievedLegalAddressInfos?.address}
-            zipCode={retrievedLegalAddressInfos?.zipCode}
-          />
+          <PartyInfoOverview party={party} />
         </Grid>
         <Grid item container ml={1} mt={5}>
           <TitleBox
@@ -123,9 +99,7 @@ const Dashboard = () => {
                 </Trans>
               }
               urlLogo={PnIcon}
-              btnAction={() => handleClick('prod-pn-pg', 'bf4dcdb6-f223-4996-bfbc-326b119dd101')} // TODO FixMe
-              // party={party}     TODO
-              // product={product} TODO
+              btnAction={() => handleClick('prod-pn', 'bf4dcdb6-f223-4996-bfbc-326b119dd101')} // TODO FixMe
             />
           </Grid>
         </Grid>

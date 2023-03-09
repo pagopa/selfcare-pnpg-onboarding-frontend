@@ -70,6 +70,7 @@ export default {
         description: 'Spiacenti, qualcosa è andato storto. Riprova più tardi',
       },
       info: 'Inserisci solo il logo della tua azienda. <1 />Sarai responsabile dell’inserimento di immagini diverse da quella indicata.',
+      size: 'Dimensione massima 300 x <1 /> 300px - Formato .png',
     },
     infoOverview: {
       typology: 'Tipologia',

@@ -1,15 +1,13 @@
 import { Card, Grid, Typography } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import { useTranslation } from 'react-i18next';
-import { InstitutionPnPGResource } from '../../../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResource';
+import { PartyPnpg } from '../../../types';
 
 type Props = {
-  party?: InstitutionPnPGResource;
-  legalAddress?: string;
-  zipCode?: string;
+  party?: PartyPnpg;
 };
 
-export default function PartyInfoOverview({ party, legalAddress, zipCode }: Props) {
+export default function PartyInfoOverview({ party }: Props) {
   const { t } = useTranslation();
 
   const selectedInstitutionPnPg = history.state.state;
@@ -46,7 +44,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.fiscalCode ?? zipCode} {/* TODO {party?.category} */}
+                {party?.fiscalCode}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -82,7 +80,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {legalAddress}
+                {party?.address ?? '-'}
               </Typography>
             </Grid>
           </Grid>

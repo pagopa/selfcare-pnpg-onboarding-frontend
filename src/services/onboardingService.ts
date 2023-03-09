@@ -1,14 +1,14 @@
 import {
   BusinessPnpg,
-  InstitutionsPnPG,
-  PnPGInstitutionLegalAddressResource,
+  InstitutionsPnpg,
+  PnpgInstitutionLegalAddressResource,
   User,
 } from '../types';
 import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
 import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
 import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';
 
-export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnPG> => {
+export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnpg> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return new Promise((resolve) => resolve(mockedInstitutionPnPG));
@@ -31,7 +31,7 @@ export const matchInstitutionAndUser = (
 
 export const getInstitutionLegalAddress = (
   externalInstitutionId: string
-): Promise<PnPGInstitutionLegalAddressResource> => {
+): Promise<PnpgInstitutionLegalAddressResource> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingPnPgApi.getInstitutionLegalAddress(externalInstitutionId);

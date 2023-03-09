@@ -5,8 +5,8 @@ import { EmailString } from '@pagopa/ts-commons/lib/strings';
 import { ENV } from '../utils/env';
 import {
   BusinessPnpg,
-  InstitutionsPnPG,
-  PnPGInstitutionLegalAddressResource,
+  InstitutionsPnpg,
+  PnpgInstitutionLegalAddressResource,
   User,
 } from '../types';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
@@ -42,7 +42,7 @@ const onRedirectToLogin = () =>
   );
 
 export const OnboardingPnPgApi = {
-  getInstitutionsByUser: async (loggedUser: User): Promise<InstitutionsPnPG> => {
+  getInstitutionsByUser: async (loggedUser: User): Promise<InstitutionsPnpg> => {
     const result = await apiClient.getInstitutionsByUserUsingPOST({
       body: {
         taxCode: loggedUser.taxCode,
@@ -85,7 +85,7 @@ export const OnboardingPnPgApi = {
 
   getInstitutionLegalAddress: async (
     externalInstitutionId: string
-  ): Promise<PnPGInstitutionLegalAddressResource> => {
+  ): Promise<PnpgInstitutionLegalAddressResource> => {
     const result = await apiClient.getInstitutionLegalAddressUsingGET({ externalInstitutionId });
     return extractResponse(result, 200, onRedirectToLogin);
   },

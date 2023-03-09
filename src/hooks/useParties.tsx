@@ -1,9 +1,9 @@
 import useReduxCachedValue from '@pagopa/selfcare-common-frontend/hooks/useReduxCachedValue';
-import { InstitutionPnPGResourceArray } from '../api/generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 import { partiesActions, partiesSelectors } from '../redux/slices/partiesSlice';
 import { getPnPGInstitutions } from '../services/dashboardService';
+import { PartyPnpg } from '../types';
 
-export const useParties = (): (() => Promise<InstitutionPnPGResourceArray>) =>
+export const useParties = (): (() => Promise<Array<PartyPnpg>>) =>
   useReduxCachedValue(
     'PARTIES',
     getPnPGInstitutions,

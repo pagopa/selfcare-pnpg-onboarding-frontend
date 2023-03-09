@@ -1,10 +1,10 @@
 import {
   BusinessPnpg,
-  InstitutionsPnPG,
-  PnPGInstitutionLegalAddressResource,
+  InstitutionsPnpg,
+  PartyPnpg,
+  PnpgInstitutionLegalAddressResource,
   User,
 } from '../../types';
-import { InstitutionPnPGResourceArray } from '../generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 
 // TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
 export const loggedUser: User = {
@@ -37,71 +37,68 @@ export const mockedAgenciesAfterInsertingTaxCode: Array<BusinessPnpg> = [
   },
 ];
 
-export const mockedInstitutionPnPG: InstitutionsPnPG = {
+export const mockedInstitutionPnPG: InstitutionsPnpg = {
   businesses: mockedAgencies,
   legalTaxId: '1234567',
   requestDateTime: 'x',
 };
 
-export const mockedPnPGInstitutionsResource: InstitutionPnPGResourceArray = [
+export const mockedPnPGInstitutionsResource: Array<PartyPnpg> = [
   {
     externalId: mockedAgencies[0]?.businessTaxId,
     fiscalCode: mockedAgencies[0]?.businessTaxId,
     geographicTaxonomies: [{ code: '', desc: '' }],
-    id: 'test010203',
+    id: mockedAgencies[0]?.businessTaxId,
     institutionType: 'GSP',
+    mailAddress: undefined,
     name: mockedAgencies[0]?.businessName,
     recipientCode: 'MDSSFDF',
     status: 'TestStatus1',
-    address: 'cc',
+    address: 'LegalAddressTest1',
+    category: 'categoryTest1',
+    origin: 'originTest1',
+    originId: 'originIdTest1',
+    userRole: undefined,
+    zipCode: undefined,
+    urlLogo: undefined,
   },
   {
-    externalId: mockedAgencies[0]?.businessTaxId,
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
+    externalId: mockedAgencies[1]?.businessTaxId,
+    fiscalCode: mockedAgencies[1]?.businessTaxId,
     geographicTaxonomies: [{ code: '', desc: '' }],
-    id: 'test010203',
+    id: mockedAgencies[1]?.businessTaxId,
     institutionType: 'GSP',
-    name: mockedAgencies[0]?.businessName,
+    mailAddress: undefined,
+    name: mockedAgencies[1]?.businessName,
     recipientCode: 'MDSSFDF',
-    status: 'TestStatus1',
-    address: 'cc',
+    status: 'TestStatus2',
+    address: 'LegalAddressTest2',
+    category: 'categoryTest2',
+    origin: 'originTest2',
+    originId: 'originIdTest2',
+    userRole: undefined,
+    zipCode: undefined,
   },
   {
-    externalId: mockedAgencies[0]?.businessTaxId,
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
+    externalId: '44444444444',
+    fiscalCode: '44444444444',
     geographicTaxonomies: [{ code: '', desc: '' }],
-    id: 'test010203',
+    id: '44444444444',
     institutionType: 'GSP',
-    name: mockedAgencies[0]?.businessName,
+    mailAddress: undefined,
+    name: mockedAgencies[1]?.businessName,
     recipientCode: 'MDSSFDF',
     status: 'TestStatus1',
-    address: 'cc',
-  },
-  {
-    externalId: mockedAgencies[0]?.businessTaxId,
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
-    geographicTaxonomies: [{ code: '', desc: '' }],
-    id: 'test010203',
-    institutionType: 'GSP',
-    name: mockedAgencies[0]?.businessName,
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus1',
-    address: 'cc',
-  },
-  {
-    externalId: mockedAgencies[0]?.businessTaxId,
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
-    geographicTaxonomies: [{ code: '', desc: '' }],
-    id: 'test010203',
-    institutionType: 'GSP',
-    name: mockedAgencies[0]?.businessName,
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus1',
-    address: 'cc',
+    address: 'LegalAddressTest2',
+    category: 'categoryTest2',
+    origin: 'originTest2',
+    originId: 'originIdTest2',
+    userRole: undefined,
+    zipCode: undefined,
   },
 ];
 
-export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
+export const mockedRetrievedInstitutionLegalAddress: Array<PnpgInstitutionLegalAddressResource> = [
   {
     externalInstitutionId: '00000000000',
     address: 'Legal Address API retrieve, 0',
@@ -120,7 +117,7 @@ export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalA
 ];
 
 export const DashboardApi = {
-  getPnPGInstitutions: async (): Promise<InstitutionPnPGResourceArray> =>
+  getPnPGInstitutions: async (): Promise<Array<PartyPnpg>> =>
     new Promise((resolve) => resolve(mockedPnPGInstitutionsResource)),
 
   retrieveProductBackoffice: async (

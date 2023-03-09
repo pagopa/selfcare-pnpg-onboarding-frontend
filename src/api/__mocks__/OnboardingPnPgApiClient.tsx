@@ -1,9 +1,10 @@
 import {
   BusinessPnpg,
-  InstitutionsPnPG,
-  PnPGInstitutionLegalAddressResource,
+  InstitutionsPnpg,
+  PnpgInstitutionLegalAddressResource,
   User,
 } from '../../types';
+import { InstitutionPnPGResourceArray } from '../generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 
 // TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
 export const loggedUser: User = {
@@ -29,71 +30,58 @@ export const mockedAgencies: Array<BusinessPnpg> = [
   },
 ];
 
-export const mockedInstitutionPnPG: InstitutionsPnPG = {
+export const mockedInstitutionPnPG: InstitutionsPnpg = {
   businesses: mockedAgencies,
   legalTaxId: '1234567',
   requestDateTime: 'x',
 };
 
-export const mockedPnPGInstitutionsResource: Array<any> = [
+export const mockedPnPGInstitutionsResource: InstitutionPnPGResourceArray = [
   {
     externalId: mockedAgencies[0]?.businessTaxId,
     fiscalCode: mockedAgencies[0]?.businessTaxId,
-    geographicTaxonomies: [],
-    id: 'test010203',
-    address: 'via test 1',
+    geographicTaxonomies: [{ code: '', desc: '' }],
+    id: mockedAgencies[0]?.businessTaxId,
     institutionType: 'GSP',
     name: mockedAgencies[0]?.businessName,
     recipientCode: 'MDSSFDF',
     status: 'TestStatus1',
+    address: 'LegalAddressTest1',
+    category: 'categoryTest1',
+    origin: 'originTest1',
+    originId: 'originIdTest1',
   },
   {
     externalId: mockedAgencies[1]?.businessTaxId,
     fiscalCode: mockedAgencies[1]?.businessTaxId,
-    geographicTaxonomies: [],
-    id: 'test020203',
-    address: 'via test 2',
+    geographicTaxonomies: [{ code: '', desc: '' }],
+    id: mockedAgencies[1]?.businessTaxId,
     institutionType: 'GSP',
     name: mockedAgencies[1]?.businessName,
     recipientCode: 'MDSSFDF',
     status: 'TestStatus2',
+    address: 'LegalAddressTest2',
+    category: 'categoryTest2',
+    origin: 'originTest2',
+    originId: 'originIdTest2',
   },
   {
-    externalId: mockedAgencies[2]?.businessTaxId,
-    fiscalCode: mockedAgencies[2]?.businessTaxId,
-    geographicTaxonomies: [],
-    id: 'test030203',
-    address: 'via test 3',
+    externalId: '44444444444',
+    fiscalCode: '44444444444',
+    geographicTaxonomies: [{ code: '', desc: '' }],
+    id: '44444444444',
     institutionType: 'GSP',
-    name: mockedAgencies[2]?.businessName,
+    name: 'Ragione sociale 4',
     recipientCode: 'MDSSFDF',
-    status: 'TestStatus3',
-  },
-  {
-    externalId: '55555555555',
-    fiscalCode: '55555555555',
-    geographicTaxonomies: [],
-    id: '55555555555',
-    address: 'via test 4',
-    institutionType: 'GSP',
-    name: mockedAgencies[2]?.businessName,
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus3',
-  },
-  {
-    externalId: '66666666666',
-    fiscalCode: '66666666666',
-    geographicTaxonomies: [],
-    id: '66666666666',
-    address: 'via test 5',
-    institutionType: 'GSP',
-    name: mockedAgencies[2]?.businessName,
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus3',
+    status: 'TestStatus1',
+    address: 'LegalAddressTest2',
+    category: 'categoryTest2',
+    origin: 'originTest2',
+    originId: 'originIdTest2',
   },
 ];
 
-export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
+export const mockedRetrievedInstitutionLegalAddress: Array<PnpgInstitutionLegalAddressResource> = [
   {
     externalInstitutionId: '77777777777',
     address: 'Via retrievedInstitutionLegalAddress1',
@@ -143,7 +131,7 @@ export const mockedEdAOccurrences = [
 ];
 
 export const mockedOnboardingPnPgApi = {
-  getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnPG> =>
+  getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnpg> =>
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
   onboardingPGSubmit: (externalInstitutionId: string): Promise<boolean> => {
@@ -153,13 +141,13 @@ export const mockedOnboardingPnPgApi = {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
+        error.httpStatus = 409;
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line functional/immutable-data
         error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
+          statusCode: 409,
+          description: 'Conflict Error',
         };
         console.error(JSON.stringify(error));
         throw error;
@@ -213,7 +201,7 @@ export const mockedOnboardingPnPgApi = {
 
   getInstitutionLegalAddress: (
     externalInstitutionId: string
-  ): Promise<PnPGInstitutionLegalAddressResource> => {
+  ): Promise<PnpgInstitutionLegalAddressResource> => {
     const matchedInstitutionLegalAddressByExternalId = mockedRetrievedInstitutionLegalAddress.find(
       (i) => i.externalInstitutionId === externalInstitutionId
     );

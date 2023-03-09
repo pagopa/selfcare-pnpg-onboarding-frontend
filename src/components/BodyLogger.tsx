@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
-import { logAction } from '../lib/action-log';
 import { ENV } from '../utils/env';
 import { partiesSelectors } from '../redux/slices/partiesSlice';
 import { useAppSelector } from '../redux/hooks';
@@ -25,7 +24,6 @@ function BodyLogger() {
   const selectedInstitutionPnPg = history.state;
 
   useEffect(() => {
-    logAction('Route change', location);
     setSubHeaderVisible(location.pathname === '/dashboardpg');
   }, [location]);
 
