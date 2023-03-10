@@ -60,7 +60,7 @@ export const mockedPnPGInstitutionsResource: Array<PartyPnpg> = [
     originId: 'originIdTest1',
     userRole: undefined,
     zipCode: undefined,
-    urlLogo: undefined,
+    urlLogo: 'http://checkout.selfcare/institutions/00000000000/logo.png',
   },
   {
     externalId: mockedAgencies[1]?.businessTaxId,
@@ -78,6 +78,7 @@ export const mockedPnPGInstitutionsResource: Array<PartyPnpg> = [
     originId: 'originIdTest2',
     userRole: undefined,
     zipCode: undefined,
+    urlLogo: 'http://checkout.selfcare/institutions/11111111111/logo.png',
   },
   {
     externalId: '44444444444',
@@ -95,6 +96,7 @@ export const mockedPnPGInstitutionsResource: Array<PartyPnpg> = [
     originId: 'originIdTest2',
     userRole: undefined,
     zipCode: undefined,
+    urlLogo: 'http://checkout.selfcare/institutions/44444444444/logo.png',
   },
 ];
 
