@@ -2,8 +2,8 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage'
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
 import { ENV } from '../utils/env';
-import { PnPGInstitutionLegalAddressResource, PnPGInstitutionResource } from '../../types';
 import { createClient, WithDefaultsT } from './generated/b4f-dashboard-pnpg/client';
+import { InstitutionPnPGResourceArray } from './generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -35,15 +35,8 @@ const onRedirectToLogin = () =>
   );
 
 export const DashboardPnPgApi = {
-  getPnPGInstitutions: async (): Promise<Array<PnPGInstitutionResource>> => {
+  getPnPGInstitutions: async (): Promise<InstitutionPnPGResourceArray> => {
     const result = await apiClient.getPnPGInstitutionsUsingGET({});
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
-
-  getInstitutionLegalAddress: async (
-    externalInstitutionId: string
-  ): Promise<PnPGInstitutionLegalAddressResource> => {
-    const result = await apiClient.getInstitutionLegalAddressUsingGET({ externalInstitutionId });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 

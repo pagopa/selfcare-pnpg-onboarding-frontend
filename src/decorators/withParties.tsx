@@ -1,9 +1,9 @@
 import withRetrievedValue from '@pagopa/selfcare-common-frontend/decorators/withRetrievedValue';
-import { PnPGInstitutionResource } from '../../types';
 import { useParties } from '../hooks/useParties';
+import { PartyPnpg } from '../types';
 
 export type WithPartiesProps = {
-  parties: Array<PnPGInstitutionResource>;
+  parties: Array<PartyPnpg>;
 };
 
 export default function withParties<T extends WithPartiesProps>(

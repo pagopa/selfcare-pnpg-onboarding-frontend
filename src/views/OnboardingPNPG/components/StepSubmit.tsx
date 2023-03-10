@@ -4,7 +4,7 @@ import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend
 import { IllusError } from '@pagopa/mui-italia';
 import { useTranslation, Trans } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { BusinessPnpg, StepperStepComponentProps } from '../../../../types';
+import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { ROUTES } from '../../../utils/constants';
@@ -59,7 +59,7 @@ function StepSubmit({ forward, setLoading }: Props) {
         forward();
       })
       .catch((reason) => {
-        if (reason.httpStatus === 400) {
+        if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
           trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
           setSelectedInstitution(selectedInstitution);

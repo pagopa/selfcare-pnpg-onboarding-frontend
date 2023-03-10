@@ -1270,83 +1270,6 @@
         ]
       }
     },
-    "/pnPGInstitutions/{externalInstitutionId}/legal-address": {
-      "get": {
-        "tags": ["pnPGInstitutions"],
-        "summary": "getInstitutionLegalAddress",
-        "description": "Get legal address by business tax id",
-        "operationId": "getInstitutionLegalAddressUsingGET",
-        "parameters": [
-          {
-            "name": "externalInstitutionId",
-            "in": "path",
-            "description": "PG Institution's unique external identifier",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PnPGInstitutionLegalAddressResource"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": ["global"]
-          }
-        ]
-      }
-    },
     "/pnPGInstitutions/{institutionId}/products": {
       "get": {
         "tags": ["pnPGInstitutions"],
@@ -3192,20 +3115,7 @@
       },
       "InstitutionPnPGResource": {
         "title": "InstitutionPnPGResource",
-        "required": [
-          "address",
-          "externalId",
-          "fiscalCode",
-          "geographicTaxonomies",
-          "id",
-          "mailAddress",
-          "name",
-          "origin",
-          "originId",
-          "status",
-          "userRole",
-          "zipCode"
-        ],
+        "required": ["externalId", "fiscalCode", "id", "name", "status"],
         "type": "object",
         "properties": {
           "address": {
@@ -3347,9 +3257,22 @@
             "type": "string",
             "description": "Institution's status"
           },
+          "supportContact": {
+            "description": "'Institution's assistance contacts'",
+            "$ref": "#/components/schemas/SupportContactResource"
+          },
           "userRole": {
             "type": "string",
             "description": "Logged user's role"
+          },
+          "vatNumber": {
+            "type": "string",
+            "description": "Institution's VAT number"
+          },
+          "vatNumberGroup": {
+            "type": "boolean",
+            "description": "PSP's Vat Number group",
+            "example": false
           },
           "zipCode": {
             "type": "string",
@@ -3551,21 +3474,6 @@
           "surname": {
             "type": "string",
             "description": "User's surname"
-          }
-        }
-      },
-      "PnPGInstitutionLegalAddressResource": {
-        "title": "PnPGInstitutionLegalAddressResource",
-        "required": ["address", "zipCode"],
-        "type": "object",
-        "properties": {
-          "address": {
-            "type": "string",
-            "description": "Legal Representative's institution legal address"
-          },
-          "zipCode": {
-            "type": "string",
-            "description": "Legal Representative's institution legal address zip code"
           }
         }
       },
@@ -3894,6 +3802,20 @@
           "title": {
             "type": "string",
             "description": "Product's title"
+          }
+        }
+      },
+      "SupportContactResource": {
+        "title": "SupportContactResource",
+        "type": "object",
+        "properties": {
+          "supportEmail": {
+            "type": "string",
+            "description": "Institution's support email contact"
+          },
+          "supportPhone": {
+            "type": "string",
+            "description": "Institution's support phone contact"
           }
         }
       },

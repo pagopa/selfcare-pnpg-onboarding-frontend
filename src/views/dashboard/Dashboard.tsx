@@ -5,17 +5,10 @@ import { Trans } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import {
-  BusinessPnpg,
-  PnPGInstitutionLegalAddressResource,
-  PnPGInstitutionResource,
-} from '../../../types';
+import { BusinessPnpg, PartyPnpg } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import PnIcon from '../OnboardingPNPG/assets/pn.svg';
-import {
-  getInstitutionLegalAddress,
-  retrieveProductBackoffice,
-} from '../../services/dashboardService';
+import { retrieveProductBackoffice } from '../../services/dashboardService';
 import { useAppSelector } from '../../redux/hooks';
 import { partiesSelectors } from '../../redux/slices/partiesSlice';
 import withParties from '../../decorators/withParties';
@@ -39,35 +32,18 @@ const Dashboard = () => {
     selectedInstitutionPnPg?.state
   )[0];
 
-  const [party, setParty] = useState<PnPGInstitutionResource>();
-  const [retrievedLegalAddressInfos, setRetrievedLegalAddressInfos] =
-    useState<PnPGInstitutionLegalAddressResource>();
+  const [party, setParty] = useState<PartyPnpg>();
 
   useEffect(() => {
     const selectedBusinessPnPg =
       selectedInstitutionPnPg?.state?.selected_institution ?? selectedInstitution;
-
-    if (selectedBusinessPnPg) {
-      getInstitutionLegalAddress(selectedBusinessPnPg?.businessTaxId)
-        .then((p) => setRetrievedLegalAddressInfos(p))
-        .catch((reason) => {
-          addError({
-            id: 'RETRIEVING_LEGAL_ADDRESS_ERROR',
-            blocking: false,
-            error: reason,
-            techDescription: `An error occurred while retrieving legal address for agency ${selectedBusinessPnPg}`,
-            toNotify: true,
-          });
-        });
-
-      const partySelected = parties?.find(
-        (p) =>
-          p.fiscalCode ===
-          (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
-      );
-      setParty(partySelected);
-    }
-  }, [history.state]);
+    const partySelected = parties?.find(
+      (p) =>
+        p.fiscalCode ===
+        (selectedBusinessPnPg.businessTaxId ?? selectedInstitutionPnPg?.state?.businessTaxId)
+    );
+    setParty(partySelected);
+  }, [selectedInstitutionPnPg]);
 
   const handleClick = async (productId: string, institutionId: string) => {
     storageTokenOps.write(
@@ -94,7 +70,7 @@ const Dashboard = () => {
         <DashboardSideMenu /> {/* Todo Agency selected */}
       </Grid>
       <Box p={3} sx={{ width: '100%' }}>
-        <WelcomeDashboard businessName={party?.name} />
+        <WelcomeDashboard businessName={party?.name ?? selectedInstitution?.businessName} />
         <Grid container direction="row" justifyContent={'center'} alignItems="center" mb={2}>
           <Grid item xs={6} display="flex" alignItems="center">
             <Typography variant="h6" sx={{ fontWeight: '700' }}>
@@ -106,11 +82,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <PartyInfoOverview
-            party={party}
-            legalAddress={retrievedLegalAddressInfos?.address}
-            zipCode={retrievedLegalAddressInfos?.zipCode}
-          />
+          <PartyInfoOverview party={party} />
         </Grid>
         <Grid item container ml={1} mt={5}>
           <TitleBox
@@ -127,9 +99,7 @@ const Dashboard = () => {
                 </Trans>
               }
               urlLogo={PnIcon}
-              btnAction={() => handleClick('prod-pn-pg', 'bf4dcdb6-f223-4996-bfbc-326b119dd101')} // TODO FixMe
-              // party={party}     TODO
-              // product={product} TODO
+              btnAction={() => handleClick('prod-pn', 'bf4dcdb6-f223-4996-bfbc-326b119dd101')} // TODO FixMe
             />
           </Grid>
         </Grid>

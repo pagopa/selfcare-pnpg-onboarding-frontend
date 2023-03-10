@@ -1,16 +1,16 @@
 import { Card, Grid, Typography } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import { useTranslation } from 'react-i18next';
-import { PnPGInstitutionResource } from '../../../../types';
+import { PartyPnpg } from '../../../types';
 
 type Props = {
-  party?: PnPGInstitutionResource;
-  legalAddress?: string;
-  zipCode?: string;
+  party?: PartyPnpg;
 };
 
-export default function PartyInfoOverview({ party, legalAddress, zipCode }: Props) {
+export default function PartyInfoOverview({ party }: Props) {
   const { t } = useTranslation();
+
+  const selectedInstitutionPnPg = history.state.state;
 
   const infoStyles = {
     fontWeight: theme.typography.fontWeightMedium,
@@ -36,7 +36,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.institutionType}
+                {'-'}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -44,7 +44,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.category ?? zipCode} {/* TODO {party?.category} */}
+                {party?.fiscalCode}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -52,7 +52,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.name}
+                {party?.name ?? selectedInstitutionPnPg?.businessName}
               </Typography>
             </Grid>
           </Grid>
@@ -62,7 +62,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.fiscalCode}
+                {party?.fiscalCode ?? selectedInstitutionPnPg?.businessTaxId}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -70,7 +70,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {party?.mailAddress}
+                {'-'}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -80,7 +80,7 @@ export default function PartyInfoOverview({ party, legalAddress, zipCode }: Prop
             </Grid>
             <Grid item xs={8}>
               <Typography sx={{ ...infoStyles, maxWidth: '100% !important' }} className="ShowDots">
-                {legalAddress}
+                {party?.address ?? '-'}
               </Typography>
             </Grid>
           </Grid>

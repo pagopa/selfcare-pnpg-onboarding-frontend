@@ -1,4 +1,4 @@
-import { RoutesObject } from '../../types';
+import { RoutesObject } from '../types';
 import Dashboard from '../views/dashboard/Dashboard';
 import OnboardingPNPG from '../views/OnboardingPNPG/OnboardingPNPG';
 import { ENV } from './env';

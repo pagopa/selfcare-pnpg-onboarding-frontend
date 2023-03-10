@@ -1,6 +1,5 @@
 import { useHistory } from 'react-router-dom';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { logAction } from '../lib/action-log';
 
 export function useHistoryState<T>(
   key: string,
@@ -12,7 +11,6 @@ export function useHistoryState<T>(
     return value ?? initialValue;
   });
   function setHistory(value: T) {
-    logAction('useHistory', { value });
     history.replace({
       ...history.location,
       state: {

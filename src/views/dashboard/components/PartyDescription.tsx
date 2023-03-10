@@ -31,7 +31,7 @@ export function PartyDescription({ labelLink, open, loading }: Props) {
         </ButtonNaked>
         <Tooltip
           title={
-            <Trans i18nKey={t('overview.partyLogo.size')}>
+            <Trans i18nKey={t('dashboard.partyLogo.size')}>
               Dimensione massima 300 x <br /> 300px - Formato .png
             </Trans>
           }

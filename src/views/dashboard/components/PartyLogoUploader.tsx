@@ -1,15 +1,15 @@
 import { Grid, Box } from '@mui/material';
 import { DropEvent, FileRejection, useDropzone } from 'react-dropzone';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { uniqueId } from 'lodash';
 import { TFunction, useTranslation } from 'react-i18next';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { partiesActions, partiesSelectors } from '../../../redux/slices/partiesSlice';
 import { DashboardPnPgApi } from '../../../api/DashboardPnPgApiClient';
-import PartyLogo from './PartyLogo';
+import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import { partiesSelectors, partiesActions } from '../../../redux/slices/partiesSlice';
 import { PartyDescription } from './PartyDescription';
+import PartyLogo from './PartyLogo';
 
 type Props = {
   partyId: string;
@@ -33,9 +33,7 @@ export function PartyLogoUploader({ partyId }: Props) {
   const [uploadedFiles, setUploadedFiles] = useState<Array<File>>([]);
 
   useEffect(() => {
-    if (urlLogo && partyId) {
-      setTimeout(() => setLabelLink(getLabelLinkText(t)), 600);
-    }
+    setTimeout(() => setLabelLink(getLabelLinkText(t)), 600);
   }, [urlLogo, partyId]);
 
   const maxLength = 400;
@@ -47,8 +45,8 @@ export function PartyLogoUploader({ partyId }: Props) {
       blocking: false,
       error: new Error(),
       techDescription: `Wrong File Extension : ${files[0]}`,
-      displayableTitle: t('dashboard.partyLogo.uploadError.title'),
-      displayableDescription: t('dashboard.partyLogo.uploadError.description'),
+      displayableTitle: t('overview.partyLogo.uploadError.title'),
+      displayableDescription: t('overview.partyLogo.uploadError.description'),
       toNotify: false,
       onRetry: open,
     });
@@ -66,17 +64,11 @@ export function PartyLogoUploader({ partyId }: Props) {
         .then(() => {
           setUrlLogo(urlLogo);
           setLoading(false);
-          setLabelLink(t('dashboard.partyLogo.modify'));
-          trackEvent('DASHBOARD_PARTY_CHANGE_LOGO_SUCCESS', {
-            party_id: partyId,
-            request_id: requestId,
-          });
+          setLabelLink(t('overview.partyLogo.modify'));
+          trackEvent('DASHBOARD_PARTY_CHANGE_LOGO_SUCCESS', {});
         })
         .catch((reason) => {
-          trackEvent('DASHBOARD_PARTY_CHANGE_LOGO_FAILURE', {
-            party_id: partyId,
-            request_id: requestId,
-          });
+          trackEvent('DASHBOARD_PARTY_CHANGE_LOGO_FAILURE', {});
           setLoading(false);
           addError({
             id: 'FILE_UPLOAD_ERROR',

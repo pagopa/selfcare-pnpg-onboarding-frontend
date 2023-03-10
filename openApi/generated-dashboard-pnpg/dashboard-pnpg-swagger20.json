@@ -981,68 +981,6 @@
         "summary": "getPnPGInstitutions"
       }
     },
-    "/pnPGInstitutions/{externalInstitutionId}/legal-address": {
-      "get": {
-        "produces": [
-          "application/json",
-          "application/problem+json"
-        ],
-        "parameters": [
-          {
-            "description": "PG Institution's unique external identifier",
-            "in": "path",
-            "name": "externalInstitutionId",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/PnPGInstitutionLegalAddressResource"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Problem"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/Problem"
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/Problem"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/Problem"
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": [
-              "global"
-            ]
-          }
-        ],
-        "tags": [
-          "pnPGInstitutions"
-        ],
-        "description": "Get legal address by business tax id",
-        "operationId": "getInstitutionLegalAddressUsingGET",
-        "summary": "getInstitutionLegalAddress"
-      }
-    },
     "/pnPGInstitutions/{institutionId}/products": {
       "get": {
         "produces": [
@@ -2714,18 +2652,11 @@
         }
       },
       "required": [
-        "address",
         "externalId",
         "fiscalCode",
-        "geographicTaxonomies",
         "id",
-        "mailAddress",
         "name",
-        "origin",
-        "originId",
-        "status",
-        "userRole",
-        "zipCode"
+        "status"
       ],
       "title": "InstitutionPnPGResource",
       "type": "object"
@@ -2795,9 +2726,22 @@
           "description": "Institution's status",
           "type": "string"
         },
+        "supportContact": {
+          "$ref": "#/definitions/SupportContactResource",
+          "description": "'Institution's assistance contacts'"
+        },
         "userRole": {
           "description": "Logged user's role",
           "type": "string"
+        },
+        "vatNumber": {
+          "description": "Institution's VAT number",
+          "type": "string"
+        },
+        "vatNumberGroup": {
+          "description": "PSP's Vat Number group",
+          "example": false,
+          "type": "boolean"
         },
         "zipCode": {
           "description": "Institution's zipCode",
@@ -3067,24 +3011,6 @@
         "surname"
       ],
       "title": "PlainUserResource",
-      "type": "object"
-    },
-    "PnPGInstitutionLegalAddressResource": {
-      "properties": {
-        "address": {
-          "description": "Legal Representative's institution legal address",
-          "type": "string"
-        },
-        "zipCode": {
-          "description": "Legal Representative's institution legal address zip code",
-          "type": "string"
-        }
-      },
-      "required": [
-        "address",
-        "zipCode"
-      ],
-      "title": "PnPGInstitutionLegalAddressResource",
       "type": "object"
     },
     "Problem": {
@@ -3480,6 +3406,20 @@
         "title"
       ],
       "title": "SubProductResource",
+      "type": "object"
+    },
+    "SupportContactResource": {
+      "properties": {
+        "supportEmail": {
+          "description": "Institution's support email contact",
+          "type": "string"
+        },
+        "supportPhone": {
+          "description": "Institution's support phone contact",
+          "type": "string"
+        }
+      },
+      "title": "SupportContactResource",
       "type": "object"
     },
     "UpdateUserDto": {

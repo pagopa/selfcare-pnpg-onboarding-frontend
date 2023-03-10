@@ -1,10 +1,10 @@
 import {
   BusinessPnpg,
-  InstitutionsPnPG,
-  PnPGInstitutionLegalAddressResource,
-  PnPGInstitutionResource,
+  InstitutionsPnpg,
+  PartyPnpg,
+  PnpgInstitutionLegalAddressResource,
   User,
-} from '../../../types';
+} from '../../types';
 
 // TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
 export const loggedUser: User = {
@@ -37,97 +37,70 @@ export const mockedAgenciesAfterInsertingTaxCode: Array<BusinessPnpg> = [
   },
 ];
 
-export const mockedInstitutionPnPG: InstitutionsPnPG = {
+export const mockedInstitutionPnPG: InstitutionsPnpg = {
   businesses: mockedAgencies,
   legalTaxId: '1234567',
   requestDateTime: 'x',
 };
 
-export const mockedPnPGInstitutionsResource: Array<PnPGInstitutionResource> = [
+export const mockedPnPGInstitutionsResource: Array<PartyPnpg> = [
   {
-    externalId: '00000000000', // mockedAgencies[0].businessTaxId,
-    category: 'test1',
-    fiscalCode: '00000000000', // mockedAgencies[0].businessTaxId,
-    geographicTaxonomies: [],
-    id: '00000000000', // mockedAgencies[0].businessTaxId,
+    externalId: mockedAgencies[0]?.businessTaxId,
+    fiscalCode: mockedAgencies[0]?.businessTaxId,
+    geographicTaxonomies: [{ code: '', desc: '' }],
+    id: mockedAgencies[0]?.businessTaxId,
     institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
-    name: 'Ragione Sociale success', // mockedAgencies[0].businessName,
-    origin: 'testorigin1',
-    originId: 'testoriginId1',
+    mailAddress: undefined,
+    name: mockedAgencies[0]?.businessName,
     recipientCode: 'MDSSFDF',
     status: 'TestStatus1',
-    userRole: 'UserRoleTest1',
-    zipCode: '12345',
+    address: 'LegalAddressTest1',
+    category: 'categoryTest1',
+    origin: 'originTest1',
+    originId: 'originIdTest1',
+    userRole: undefined,
+    zipCode: undefined,
+    urlLogo: 'http://checkout.selfcare/institutions/00000000000/logo.png',
   },
   {
-    externalId: '11111111111', // mockedAgencies[0].businessTaxId,
-    category: 'test1',
-    fiscalCode: '11111111111', // mockedAgencies[0].businessTaxId,
-    geographicTaxonomies: [],
-    id: '11111111111', // mockedAgencies[0].businessTaxId,
+    externalId: mockedAgencies[1]?.businessTaxId,
+    fiscalCode: mockedAgencies[1]?.businessTaxId,
+    geographicTaxonomies: [{ code: '', desc: '' }],
+    id: mockedAgencies[1]?.businessTaxId,
     institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
-    name: 'Ragione Sociale alreadyOnboarded', // mockedAgencies[0].businessName,
-    origin: 'testorigin1',
-    originId: 'testoriginId1',
+    mailAddress: undefined,
+    name: mockedAgencies[1]?.businessName,
+    recipientCode: 'MDSSFDF',
+    status: 'TestStatus2',
+    address: 'LegalAddressTest2',
+    category: 'categoryTest2',
+    origin: 'originTest2',
+    originId: 'originIdTest2',
+    userRole: undefined,
+    zipCode: undefined,
+    urlLogo: 'http://checkout.selfcare/institutions/11111111111/logo.png',
+  },
+  {
+    externalId: '44444444444',
+    fiscalCode: '44444444444',
+    geographicTaxonomies: [{ code: '', desc: '' }],
+    id: '44444444444',
+    institutionType: 'GSP',
+    mailAddress: undefined,
+    name: mockedAgencies[1]?.businessName,
     recipientCode: 'MDSSFDF',
     status: 'TestStatus1',
-    userRole: 'UserRoleTest1',
-    zipCode: '12345',
-  },
-  // USE CASE INTRODUCED WHEN RELATED ENTITIES ARE NOT FOUND
-  {
-    externalId: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
-    category: 'testAfterinsertingTaxCode4',
-    fiscalCode: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
-    geographicTaxonomies: [],
-    id: mockedAgenciesAfterInsertingTaxCode[0]?.businessTaxId,
-    institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
-    name: mockedAgenciesAfterInsertingTaxCode[0]?.businessName,
-    origin: 'testOriginAfterinsertingTaxCode4',
-    originId: 'testOriginIdAfterInsertingTaxCode4',
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus3',
-    userRole: 'UserRoleTest3',
-    zipCode: '32145',
-  },
-  {
-    externalId: '55555555555',
-    category: 'test3',
-    fiscalCode: '55555555555',
-    geographicTaxonomies: [],
-    id: '55555555555',
-    institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
-    name: 'retrieved in EdA mock 1',
-    origin: 'testorigin3',
-    originId: 'testoriginId3',
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus3',
-    userRole: 'UserRoleTest3',
-    zipCode: '32145',
-  },
-  {
-    externalId: '66666666666',
-    category: 'test3',
-    fiscalCode: '66666666666',
-    geographicTaxonomies: [],
-    id: '66666666666',
-    institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
-    name: 'retrieved in EdA mock 2',
-    origin: 'testorigin3',
-    originId: 'testoriginId3',
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatusAfterinsertingTaxCode44',
-    userRole: 'UserRoleTestAfterinsertingTaxCode44',
-    zipCode: '15432',
+    address: 'LegalAddressTest2',
+    category: 'categoryTest2',
+    origin: 'originTest2',
+    originId: 'originIdTest2',
+    userRole: undefined,
+    zipCode: undefined,
+    urlLogo: 'http://checkout.selfcare/institutions/44444444444/logo.png',
   },
 ];
 
-export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalAddressResource> = [
+export const mockedRetrievedInstitutionLegalAddress: Array<PnpgInstitutionLegalAddressResource> = [
   {
     externalInstitutionId: '00000000000',
     address: 'Legal Address API retrieve, 0',
@@ -146,7 +119,7 @@ export const mockedRetrievedInstitutionLegalAddress: Array<PnPGInstitutionLegalA
 ];
 
 export const DashboardApi = {
-  getPnPGInstitutions: async (): Promise<Array<PnPGInstitutionResource>> =>
+  getPnPGInstitutions: async (): Promise<Array<PartyPnpg>> =>
     new Promise((resolve) => resolve(mockedPnPGInstitutionsResource)),
 
   retrieveProductBackoffice: async (

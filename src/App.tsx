@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SessionModal from '@pagopa/selfcare-common-frontend/components/SessionModal';
 import { useTranslation } from 'react-i18next';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { User } from '../types';
+import { User } from './types';
 import BodyLogger from './components/BodyLogger';
 import { UserContext } from './lib/context';
 

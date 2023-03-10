@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
-import { logAction } from '../lib/action-log';
 import { ENV } from '../utils/env';
 import { partiesSelectors } from '../redux/slices/partiesSlice';
 import { useAppSelector } from '../redux/hooks';
 import { loggedUser } from '../api/__mocks__/DashboardPnPgApiClient';
-import { BusinessPnpg } from '../../types';
+import { BusinessPnpg } from '../types';
 import { HeaderContext } from './../lib/context';
 import { Main } from './Main';
 import { useHistoryState } from './useHistoryState';
@@ -25,7 +24,6 @@ function BodyLogger() {
   const selectedInstitutionPnPg = history.state;
 
   useEffect(() => {
-    logAction('Route change', location);
     setSubHeaderVisible(location.pathname === '/dashboardpg');
   }, [location]);
 
@@ -64,7 +62,7 @@ function BodyLogger() {
           }
           partyList={parties?.map((p) => ({
             logoUrl: '', // TODO
-            id: p.id ?? '',
+            id: p.externalId ?? '',
             name: p.name ?? '',
             productRole: p.fiscalCode ?? '',
           }))}
