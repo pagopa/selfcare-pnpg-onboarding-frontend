@@ -9,7 +9,7 @@ import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { ROUTES } from '../../../utils/constants';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
-import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
+import { loggedUser } from '../../../api/__mocks__/OnboardingPnPgApiClient';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;

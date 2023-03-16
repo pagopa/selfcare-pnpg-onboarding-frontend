@@ -1,5 +1,4 @@
 import { RoutesObject } from '../types';
-import Dashboard from '../views/dashboard/Dashboard';
 import OnboardingPNPG from '../views/OnboardingPNPG/OnboardingPNPG';
 import { ENV } from './env';
 
@@ -17,11 +16,5 @@ export const ROUTES: RoutesObject = {
     LABEL: 'Onboarding-pnpg',
     EXACT: true,
     COMPONENT: OnboardingPNPG,
-  },
-  PNPG_DASHBOARD: {
-    PATH: '/dashboardpg',
-    LABEL: 'Onboarding-pnpg dashboard',
-    EXACT: false,
-    COMPONENT: Dashboard,
   },
 };
