@@ -88,7 +88,7 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
   const registerAgencyButton = screen.getByText('Registra azienda');
   expect(registerAgencyButton).toBeDisabled();
 
-  const agencySuccess = screen.getByRole('button', { name: 'Ragione Sociale success' });
+  const agencySuccess = screen.getByRole('button', { name: "TOD'S S.P.A" });
   fireEvent.click(agencySuccess);
 
   expect(registerAgencyButton).toBeEnabled();
@@ -107,7 +107,7 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with alre
   expect(registerAgencyButton).toBeDisabled();
 
   const agencyAlreadyOnboarded = screen.getByRole('button', {
-    name: 'Ragione Sociale alreadyOnboarded',
+    name: 'BusinessName alreadyOnboarded',
   });
   fireEvent.click(agencyAlreadyOnboarded);
 
@@ -129,7 +129,7 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with gene
   const registerAgencyButton = screen.getByText('Registra azienda');
   expect(registerAgencyButton).toBeDisabled();
 
-  const agencyGenericError = screen.getByRole('button', { name: 'Ragione Sociale genericError' });
+  const agencyGenericError = screen.getByRole('button', { name: 'BusinessName genericError' });
   fireEvent.click(agencyGenericError);
 
   expect(registerAgencyButton).toBeEnabled();

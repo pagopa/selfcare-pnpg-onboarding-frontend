@@ -21,9 +21,9 @@ test('Test: getInstitutionsByUser', async () => {
 
   expect(fetchGetInstitutionsByUser).toMatchObject({
     businesses: [
-      { businessName: 'Ragione Sociale success', businessTaxId: '00000000000' },
-      { businessName: 'Ragione Sociale alreadyOnboarded', businessTaxId: '11111111111' },
-      { businessName: 'Ragione Sociale genericError', businessTaxId: '22222222222' },
+      { businessName: "TOD'S S.P.A", businessTaxId: '01113570442' },
+      { businessName: 'BusinessName alreadyOnboarded', businessTaxId: '01501320442' },
+      { businessName: 'BusinessName genericError', businessTaxId: '22222222222' },
     ],
     legalTaxId: '1234567',
     requestDateTime: 'x',
