@@ -24,7 +24,6 @@ export const ENV = {
     LOGIN: env.get('REACT_APP_URL_FE_LOGIN').required().asString(),
     LOGOUT: env.get('REACT_APP_URL_FE_LOGOUT').required().asString(),
     DASHBOARD: env.get('REACT_APP_URL_FE_DASHBOARD').required().asString(),
-    DASHBOARDPG: env.get('REACT_APP_URL_FE_DASHBOARDPG').required().asString(),
     LANDING: env.get('REACT_APP_URL_FE_LANDING').required().asString(),
     ASSISTANCE: env.get('REACT_APP_URL_FE_ASSISTANCE').required().asString(),
   },

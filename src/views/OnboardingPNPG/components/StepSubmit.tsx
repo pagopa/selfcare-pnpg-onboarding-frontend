@@ -3,11 +3,9 @@ import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsS
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { IllusError } from '@pagopa/mui-italia';
 import { useTranslation, Trans } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
-import { ROUTES } from '../../../utils/constants';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
 import { loggedUser } from '../../../api/__mocks__/OnboardingPnPgApiClient';
 
@@ -17,7 +15,6 @@ type Props = StepperStepComponentProps & {
 
 function StepSubmit({ forward, setLoading }: Props) {
   const { t } = useTranslation();
-  const history = useHistory();
   const addError = useErrorDispatcher();
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
@@ -101,7 +98,9 @@ function StepSubmit({ forward, setLoading }: Props) {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('alreadyOnboarded.enter')}
-      onButtonClick={() => history.push(ROUTES.PNPG_DASHBOARD.PATH, selectedInstitution)}
+      onButtonClick={() =>
+        window.location.assign(ENV.URL_FE.DASHBOARD + `${selectedInstitution?.businessTaxId}`)
+      }
     />
   ) : (
     <></>

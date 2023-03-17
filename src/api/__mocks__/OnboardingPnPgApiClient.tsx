@@ -16,15 +16,15 @@ export const loggedUser: User = {
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
-    businessName: 'Ragione Sociale success',
-    businessTaxId: '00000000000',
+    businessName: "TOD'S S.P.A",
+    businessTaxId: '01113570442',
   },
   {
-    businessName: 'Ragione Sociale alreadyOnboarded',
-    businessTaxId: '11111111111',
+    businessName: 'BusinessName alreadyOnboarded',
+    businessTaxId: '01501320442',
   },
   {
-    businessName: 'Ragione Sociale genericError',
+    businessName: 'BusinessName genericError',
     businessTaxId: '22222222222',
   },
 ];
@@ -89,7 +89,7 @@ export const mockedOnboardingPnPgApi = {
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
   onboardingPGSubmit: (externalInstitutionId: string): Promise<boolean> => {
-    if (externalInstitutionId === '11111111111') {
+    if (externalInstitutionId === '01501320442') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
