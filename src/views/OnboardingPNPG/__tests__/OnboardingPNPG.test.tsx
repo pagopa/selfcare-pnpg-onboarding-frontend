@@ -88,7 +88,7 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
   const registerAgencyButton = screen.getByText('Registra azienda');
   expect(registerAgencyButton).toBeDisabled();
 
-  const agencySuccess = screen.getByRole('button', { name: "TOD'S S.P.A" });
+  const agencySuccess = screen.getByRole('button', { name: 'BusinessName success' });
   fireEvent.click(agencySuccess);
 
   expect(registerAgencyButton).toBeEnabled();

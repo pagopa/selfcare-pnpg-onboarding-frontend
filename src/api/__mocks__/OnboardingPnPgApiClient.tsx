@@ -16,7 +16,7 @@ export const loggedUser: User = {
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
-    businessName: "TOD'S S.P.A",
+    businessName: 'BusinessName success',
     businessTaxId: '01113570442',
   },
   {
