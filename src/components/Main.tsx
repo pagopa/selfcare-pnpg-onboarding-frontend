@@ -17,9 +17,6 @@ export function Main() {
         <Route path="*">
           <Redirect to={ROUTES.PNPG_ONBOARDING.PATH} />
         </Route>
-        <Route path="/dashboardpg">
-          <Redirect to={ROUTES.PNPG_DASHBOARD.PATH} />
-        </Route>
       </Switch>
     </Box>
   );

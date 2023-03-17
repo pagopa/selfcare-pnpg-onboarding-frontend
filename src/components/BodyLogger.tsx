@@ -3,10 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Box } from '@mui/system';
 import { Footer, Header } from '@pagopa/selfcare-common-frontend';
 import { ENV } from '../utils/env';
-import { partiesSelectors } from '../redux/slices/partiesSlice';
-import { useAppSelector } from '../redux/hooks';
-import { loggedUser } from '../api/__mocks__/DashboardPnPgApiClient';
 import { BusinessPnpg } from '../types';
+import { loggedUser } from '../api/__mocks__/OnboardingPnPgApiClient';
 import { HeaderContext } from './../lib/context';
 import { Main } from './Main';
 import { useHistoryState } from './useHistoryState';
@@ -14,7 +12,6 @@ import { useHistoryState } from './useHistoryState';
 function BodyLogger() {
   // const { user } = useContext(UserContext);
   const location = useLocation();
-  const parties = useAppSelector(partiesSelectors.selectPartiesList);
   const [subHeaderVisible, setSubHeaderVisible] = useState<boolean>(false);
   const [selectedInstitution, _setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
@@ -60,12 +57,6 @@ function BodyLogger() {
                 }
               : false
           }
-          partyList={parties?.map((p) => ({
-            logoUrl: '', // TODO
-            id: p.externalId ?? '',
-            name: p.name ?? '',
-            productRole: p.fiscalCode ?? '',
-          }))}
           selectedPartyId={
             selectedInstitution?.businessTaxId ?? selectedInstitutionPnPg?.state.businessTaxId
           }
@@ -85,6 +76,7 @@ function BodyLogger() {
               businessTaxId: selected?.id ?? '',
             });
           }}
+          addSelfcareProduct={false}
         />
         <Main />
         <Box>

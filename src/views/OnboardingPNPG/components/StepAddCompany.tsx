@@ -5,7 +5,7 @@ import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { BusinessPnpg } from '../../../types';
-import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
+import { loggedUser } from '../../../api/__mocks__/OnboardingPnPgApiClient';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';

@@ -9,8 +9,8 @@ import { InstitutionsPnpg } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
 import { getInstitutionsByUser } from '../../../services/onboardingService';
-import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
-import { ENV } from '../../../utils/env';
+import { loggedUser } from '../../../api/__mocks__/OnboardingPnPgApiClient';
+import { ENV } from '../../../utils/env'; // TODO This will be removed when the login service of PN is available
 
 type Props = {
   setRetrievedInstitutions: React.Dispatch<React.SetStateAction<InstitutionsPnpg | undefined>>;

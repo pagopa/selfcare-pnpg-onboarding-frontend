@@ -6,7 +6,7 @@ import {
 } from '../types';
 import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
 import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
-import { mockedInstitutionPnPG } from '../api/__mocks__/DashboardPnPgApiClient';
+import { mockedInstitutionPnPG } from '../api/__mocks__/OnboardingPnPgApiClient';
 
 export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnpg> => {
   /* istanbul ignore if */

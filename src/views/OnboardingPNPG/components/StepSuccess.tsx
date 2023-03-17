@@ -1,14 +1,12 @@
 import { IllusCompleted } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useTranslation, Trans } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import { BusinessPnpg } from '../../../types';
 import { useHistoryState } from '../../../components/useHistoryState';
-import { ROUTES } from '../../../utils/constants';
+import { BusinessPnpg } from '../../../types';
+import { ENV } from '../../../utils/env';
 
 function StepSuccess() {
   const { t } = useTranslation();
-  const history = useHistory();
 
   const selectedInstitution = useHistoryState<BusinessPnpg | undefined>(
     'selected_institution',
@@ -34,9 +32,10 @@ function StepSuccess() {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('outcome.success.enterButton')}
-      onButtonClick={() => history.push(ROUTES.PNPG_DASHBOARD.PATH, selectedInstitution)}
+      onButtonClick={() =>
+        window.location.assign(ENV.URL_FE.DASHBOARD + `${selectedInstitution?.businessTaxId}`)
+      }
     />
   );
 }
-
 export default StepSuccess;
