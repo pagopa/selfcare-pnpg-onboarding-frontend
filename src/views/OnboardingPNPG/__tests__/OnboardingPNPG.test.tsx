@@ -84,8 +84,8 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
   renderComponent();
   const history = useHistory();
   const pushSpy = jest.spyOn(history, 'push');
-  await waitFor(() => screen.getByText('A nome di quale azienda vuoi accedere?'));
-  const registerAgencyButton = screen.getByText('Registra azienda');
+  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  const registerAgencyButton = screen.getByText('Registra impresa');
   expect(registerAgencyButton).toBeDisabled();
 
   const agencySuccess = screen.getByRole('button', { name: 'BusinessName success' });
@@ -95,15 +95,15 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
 
   fireEvent.click(registerAgencyButton);
 
-  await waitFor(() => screen.getByText('La registrazione è avvenuta con successo'));
-  const enterDashboardButton = screen.getByText('Entra');
+  await waitFor(() => screen.getByText('Impresa registrata!'));
+  const enterDashboardButton = screen.getByText('Accedi');
   fireEvent.click(enterDashboardButton);
 });
 
 test('Test: Onboarding flow after retrieve institution from Infocamere with alreadyOnboarded outcome on submit', async () => {
   renderComponent();
-  await waitFor(() => screen.getByText('A nome di quale azienda vuoi accedere?'));
-  const registerAgencyButton = screen.getByText('Registra azienda');
+  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  const registerAgencyButton = screen.getByText('Registra impresa');
   expect(registerAgencyButton).toBeDisabled();
 
   const agencyAlreadyOnboarded = screen.getByRole('button', {
@@ -117,16 +117,16 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with alre
 
   await waitFor(() =>
     expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent(
-      "L'Ente che hai scelto ha già aderito"
+      "L'impresa che hai scelto ha già aderito"
     )
   );
-  screen.getByText('Entra');
+  screen.getByText('Accedi');
 });
 
 test('Test: Onboarding flow after retrieve institution from Infocamere with genericError outcome on submit', async () => {
   renderComponent();
-  await waitFor(() => screen.getByText('A nome di quale azienda vuoi accedere?'));
-  const registerAgencyButton = screen.getByText('Registra azienda');
+  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  const registerAgencyButton = screen.getByText('Registra impresa');
   expect(registerAgencyButton).toBeDisabled();
 
   const agencyGenericError = screen.getByRole('button', { name: 'BusinessName genericError' });
@@ -137,20 +137,20 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with gene
   fireEvent.click(registerAgencyButton);
 
   await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Qualcosa è andato storto')
+    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Impresa non registrata')
   );
-  const enterDashboardButton = screen.getByText('Torna all’accesso');
+  const enterDashboardButton = screen.getByText('Chiudi');
   fireEvent.click(enterDashboardButton);
 });
 
 test('Test: In the add agency flow via taxCode, when inserting a taxCode that NOT match with legalAddress and AdE APIs, the "no companies found" UI will be show', async () => {
   renderComponent();
 
-  await waitFor(() => screen.getByText('A nome di quale azienda vuoi accedere?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText('Registra nuova azienda');
+  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  const onboardingViaTaxCodeFlowButton = screen.getByText("Registra un'altra impresa");
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
-  screen.getByText('Aggiungi la tua impresa');
+  screen.getByText('Che impresa vuoi registrare?');
 
   const continueButton = screen.getByText('Continua');
   expect(continueButton).toBeDisabled();
@@ -164,20 +164,20 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   expect(continueButton).toBeEnabled();
 
   fireEvent.click(continueButton);
-  await waitFor(() => screen.getByText('Nessuna azienda trovata'));
+  await waitFor(() => screen.getByText('Nessuna impresa trovata'));
 
-  const backToAccessButton = screen.getByText('Torna all’accesso');
+  const backToAccessButton = screen.getByText('Chiudi');
   fireEvent.click(backToAccessButton);
 });
 
 test('Test: In the add agency flow via taxCode, when inserting a taxCode that MATCH with legalAddress API, the "matched but not LR" UI will be show', async () => {
   renderComponent();
 
-  await waitFor(() => screen.getByText('A nome di quale azienda vuoi accedere?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText('Registra nuova azienda');
+  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  const onboardingViaTaxCodeFlowButton = screen.getByText("Registra un'altra impresa");
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
-  screen.getByText('Aggiungi la tua impresa');
+  screen.getByText('Che impresa vuoi registrare?');
 
   const continueButton = screen.getByText('Continua');
   expect(continueButton).toBeDisabled();
@@ -204,11 +204,11 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that MA
 test('Test: In the add agency flow via taxCode, when inserting a taxCode that NOT match with legalAddress API but match with AdE API, the success page will be show', async () => {
   renderComponent();
 
-  await waitFor(() => screen.getByText('A nome di quale azienda vuoi accedere?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText('Registra nuova azienda');
+  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  const onboardingViaTaxCodeFlowButton = screen.getByText("Registra un'altra impresa");
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
-  screen.getByText('Aggiungi la tua impresa');
+  screen.getByText('Che impresa vuoi registrare?');
 
   const continueButton = screen.getByText('Continua');
   expect(continueButton).toBeDisabled();
@@ -224,9 +224,7 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   fireEvent.click(continueButton);
 
   await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent(
-      'La registrazione è avvenuta'
-    )
+    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Impresa registrata!')
   );
-  screen.getByText('Entra');
+  screen.getByText('Accedi');
 });

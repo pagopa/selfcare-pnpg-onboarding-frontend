@@ -56,8 +56,8 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
           >
             {moreThanTwoInstitutions ? (
               <Trans i18nKey={'selectFromAgencyList.description'}>
-                Queste sono le aziende di cui risulti essere Legale Rappresentante. <br />
-                Seleziona la società di cui vuoi visualizzare le notifiche su Piattaforma Notifiche.
+                Queste sono le imprese di cui risulti essere Legale Rappresentante. <br />
+                Seleziona quella che vuoi registrare.
               </Trans>
             ) : (
               t('selectInstitutionReleated.description')
@@ -141,7 +141,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
               color={theme.palette.text.primary}
             >
               <Trans i18nKey="selectInstitutionReleated.registerAgencyByTaxCodeLink">
-                {"La tua azienda non è nell'elenco? "}
+                {'Sei un Legale Rappresentante? '}
                 <Link
                   onClick={forward}
                   sx={{
@@ -150,7 +150,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
                     color: theme.palette.primary.main,
                   }}
                 >
-                  {'Registra nuova azienda'}
+                  {"Registra un'altra impresa"}
                 </Link>
               </Trans>
             </Typography>

@@ -1,37 +1,34 @@
 export default {
   loadingText: 'Stiamo verificando i tuoi dati',
   selectFromAgencyList: {
-    title: 'A nome di quale azienda vuoi accedere?',
+    title: 'Che impresa vuoi registrare?',
     description:
-      'Queste sono le aziende di cui risulti essere Legale Rappresentante. <1 />Seleziona la società di cui vuoi visualizzare le notifiche su Piattaforma Notifiche.',
-    registerAgency: 'Registra azienda',
+      'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
+    registerAgency: 'Registra impresa',
   },
   selectInstitutionReleated: {
-    title: 'Seleziona l’azienda',
+    title: 'Seleziona l’impresa',
     description:
-      'Se operi per più enti, potrai modificare la tua scelta dopo aver effettuato l’accesso.',
-    registerAgencyByTaxCodeLink: "La tua azienda non è nell'elenco? <1>Registra nuova azienda</1>",
-    enter: 'Entra',
+      'Se hai accesso alle notifiche di più imprese, potrai modificare la tua scelta dopo avere effettuato l’accesso.',
+    registerAgencyByTaxCodeLink: "Sei un Legale Rappresentante? <1>Registra un'altra impresa</1>",
+    enter: 'Accedi',
   },
   addCompany: {
-    title: 'Aggiungi la tua impresa',
-    description:
-      'Inserisci il Codice Fiscale/Partita IVA dell’impresa con cui vuoi <1 />accedere a Piattaforma Notifiche',
+    title: 'Che impresa vuoi registrare?',
+    description: 'Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <1/>registrare.',
     textfieldLabel: 'Codice Fiscale/Partita IVA',
     forwardAction: 'Continua',
   },
   alreadyOnboarded: {
-    title: "L'Ente che hai scelto ha già aderito",
-    description: "L'ente selezionato ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
-    enter: 'Entra',
+    title: "L'impresa che hai scelto ha già aderito",
+    description:
+      "L'impresa selezionata ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
+    signIn: 'Accedi',
   },
   institutionNotFound: {
-    title: 'Nessuna azienda trovata',
-    message:
-      'Per accedere alle notifiche, l’azienda deve essere registrata <1 />dal Legale Rappresentante.',
-    registerNewAgency:
-      'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
-    backToAccess: 'Torna all’accesso',
+    title: 'Nessuna impresa trovata',
+    message: 'Dal tuo SPID non risulti essere Legale Rappresentante di <1 /> alcuna impresa.',
+    close: 'Chiudi',
   },
   matchedButNotLR: {
     title:
@@ -42,16 +39,15 @@ export default {
   },
   outcome: {
     success: {
-      title: 'La registrazione è avvenuta con <1 />successo',
-      description:
-        'La tua azienda è su Piattaforma Notifiche. Puoi entrare per <1 />vedere le notifiche e per gestire i permessi di altri utenti.',
-      enterButton: 'Entra',
+      title: 'Impresa registrata!',
+      description: 'Accedi per leggere le notifiche e aggiungere altri utenti.',
+      signIn: 'Accedi',
     },
     error: {
-      title: 'Qualcosa è andato storto',
+      title: 'Impresa non registrata',
       description:
-        'A causa di un errore del sistema non è possibile completare <1 />la procedura. Ti chiediamo di riprovare più tardi.',
-      backToHome: 'Torna all’accesso',
+        'A causa di un problema tecnico, non riusciamo a registrare <1 />la tua impresa. Riprova più tardi.',
+      close: 'Chiudi',
     },
   },
   dashboard: {

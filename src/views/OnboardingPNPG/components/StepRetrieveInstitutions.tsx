@@ -66,14 +66,14 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
       title={t('outcome.error.title')}
       description={
         <Trans i18nKey="outcome.error.description">
-          A causa di un errore del sistema non è possibile completare <br />
-          la procedura. Ti chiediamo di riprovare più tardi.
+          A causa di un problema tecnico, non riusciamo a registrare <br />
+          la tua impresa. Riprova più tardi.
         </Trans>
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={t('outcome.error.backToHome')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)} // TODO Actually redirect to selfcare login, set correct redirect when available
+      buttonLabel={t('outcome.error.close')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)}
     />
   ) : (
     <></>

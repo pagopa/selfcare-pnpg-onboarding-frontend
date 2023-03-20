@@ -1,4 +1,4 @@
-import { Grid, Typography, Card, TextField, Link } from '@mui/material';
+import { Grid, Typography, Card, TextField } from '@mui/material';
 import { IllusError, theme } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
@@ -66,41 +66,14 @@ function StepAddCompany({ setActiveStep }: Props) {
         title={t('institutionNotFound.title')}
         description={
           <Trans i18nKey="institutionNotFound.message">
-            Per accedere alle notifiche, l’azienda deve essere registrata <br /> dal Legale
-            Rappresentante.
+            Dal tuo SPID non risulti essere Legale Rappresentante di <br /> alcuna impresa.
           </Trans>
         }
         variantTitle={'h4'}
         variantDescription={'body1'}
-        buttonLabel={t('institutionNotFound.backToAccess')}
+        buttonLabel={t('institutionNotFound.close')}
         onButtonClick={() => ENV.URL_FE.LOGOUT}
       />
-      <Typography
-        sx={{
-          textAlign: 'center',
-          display: 'block',
-          marginTop: 4,
-        }}
-        variant="caption"
-        color={theme.palette.text.primary}
-      >
-        <Trans i18nKey="institutionNotFound.registerNewAgency">
-          {'Sei il Legale Rappresentante di un’azienda? '}
-          <Link
-            sx={{
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              color: theme.palette.primary.main,
-            }}
-            onClick={() => {
-              setError(undefined);
-              setTypedInput('');
-            }}
-          >
-            {'Registra nuova azienda'}
-          </Link>
-        </Trans>
-      </Typography>
     </>
   ) : error === 'matchedButNotLR' ? (
     <>
@@ -135,8 +108,8 @@ function StepAddCompany({ setActiveStep }: Props) {
         <Grid item xs={12}>
           <Typography align="center" color={theme.palette.text.primary} m={1} mb={3}>
             <Trans i18next="addCompany.description">
-              Inserisci il Codice Fiscale/Partita IVA dell’impresa con cui vuoi <br />
-              accedere a Piattaforma Notifiche
+              Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <br />
+              registrare.
             </Trans>
           </Typography>
         </Grid>
