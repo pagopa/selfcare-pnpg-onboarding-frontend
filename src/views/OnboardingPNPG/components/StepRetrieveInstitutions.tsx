@@ -58,17 +58,16 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
     <EndingPage
       minHeight="52vh"
       icon={<IllusError size={60} />}
-      title={t('outcome.error.title')}
+      title={t('institutionNotFound.title')}
       description={
-        <Trans i18nKey="outcome.error.description">
-          A causa di un problema tecnico, non riusciamo a registrare <br />
-          la tua impresa. Riprova più tardi.
+        <Trans i18nKey="institutionNotFound.message">
+          Dal tuo SPID non risulti essere Legale Rappresentante di <br /> alcuna impresa.
         </Trans>
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={t('outcome.error.close')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
+      buttonLabel={t('institutionNotFound.close')}
+      onButtonClick={() => ENV.URL_FE.LOGOUT}
     />
   ) : (
     <></>
