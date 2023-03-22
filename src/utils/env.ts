@@ -8,7 +8,7 @@ export const ENV = {
   STORE: {} as Store,
   i18n: {} as i18n,
   ENV: env.get('REACT_APP_ENV').required().asString(),
-  PUBLIC_URL: PUBLIC_URL_INNER ? PUBLIC_URL_INNER : '/onboarding-pnpg',
+  PUBLIC_URL: PUBLIC_URL_INNER ? PUBLIC_URL_INNER : '/onboarding',
 
   URL_INSTITUTION_LOGO: {
     PREFIX: env.get('REACT_APP_URL_INSTITUTION_LOGO_PREFIX').required().asString(),

@@ -12,8 +12,8 @@ export const BASE_ROUTE = ENV.PUBLIC_URL;
 
 export const ROUTES: RoutesObject = {
   PNPG_ONBOARDING: {
-    PATH: '/onboarding-pnpg',
-    LABEL: 'Onboarding-pnpg',
+    PATH: '/onboarding',
+    LABEL: 'Onboarding PNPG',
     EXACT: true,
     COMPONENT: OnboardingPNPG,
   },

@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 const oldWindowLocation = global.window.location;
 const initialLocation = {
   assign: jest.fn(),
-  pathname: '/onboarding-pnpg',
+  pathname: '/onboarding',
   origin: '',
   search: '',
   hash: '',

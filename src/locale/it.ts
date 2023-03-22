@@ -50,42 +50,6 @@ export default {
       close: 'Chiudi',
     },
   },
-  dashboard: {
-    title: 'Panoramica',
-    subTitle: 'Qui puoi vedere un riepilogo dei dati di {{businessName}}.',
-    partyLogo: {
-      upload: 'Carica il logo dell’azienda',
-      modify: 'Modifica il logo dell’azienda',
-      uploadError: {
-        title: 'Caricamento non riuscito',
-        description:
-          'Il caricamento del logo non è andato a buon fine. Verifica che il formato e la dimensione siano corretti e caricalo di nuovo',
-      },
-      modifyError: {
-        title: 'Caricamento non riuscito',
-        description: 'Spiacenti, qualcosa è andato storto. Riprova più tardi',
-      },
-      info: 'Inserisci solo il logo della tua azienda. <1 />Sarai responsabile dell’inserimento di immagini diverse da quella indicata.',
-      size: 'Dimensione massima 300 x <1 /> 300px - Formato .png',
-    },
-    infoOverview: {
-      typology: 'Tipologia',
-      category: 'Categoria',
-      businessName: 'Ragione sociale',
-      fiscalCode: 'Codice Fiscale',
-      primaryPecEmail: 'Indirizzo PEC primario',
-      registeredOffice: 'Sede legale',
-    },
-    sideMenu: {
-      overview: 'Panoramica',
-      users: 'Utenti',
-      groups: 'Gruppi',
-    },
-    notificationArea: 'Area notifiche',
-    productCard: {
-      title: 'Vai alle <1 />notifiche',
-    },
-  },
   app: {
     sessionModal: {
       title: 'Sessione scaduta',

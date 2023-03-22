@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { IllusError } from '@pagopa/mui-italia';
@@ -7,7 +7,7 @@ import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
-import { loggedUser } from '../../../api/__mocks__/OnboardingPnPgApiClient';
+import { UserContext } from '../../../lib/context';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -16,6 +16,8 @@ type Props = StepperStepComponentProps & {
 function StepSubmit({ forward, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
+  const { user } = useContext(UserContext);
+
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
@@ -46,27 +48,28 @@ function StepSubmit({ forward, setLoading }: Props) {
     productId: string,
     selectedInstitution: BusinessPnpg
   ) => {
-    setLoading(true);
-
-    onboardingPGSubmit(externalInstitutionId, productId, loggedUser, selectedInstitution)
-      .then(() => {
-        trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
-        setSelectedInstitution(selectedInstitution);
-        setSelectedInstitutionHistory(selectedInstitution);
-        forward();
-      })
-      .catch((reason) => {
-        if (reason.httpStatus === 409) {
-          setError('alreadyOnboarded');
-          trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
+    if (user) {
+      setLoading(true);
+      onboardingPGSubmit(externalInstitutionId, productId, user, selectedInstitution)
+        .then(() => {
+          trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
           setSelectedInstitution(selectedInstitution);
           setSelectedInstitutionHistory(selectedInstitution);
-        } else {
-          setError('genericError');
-          trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
-        }
-      })
-      .finally(() => setLoading(false));
+          forward();
+        })
+        .catch((reason) => {
+          if (reason.httpStatus === 409) {
+            setError('alreadyOnboarded');
+            trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
+            setSelectedInstitution(selectedInstitution);
+            setSelectedInstitutionHistory(selectedInstitution);
+          } else {
+            setError('genericError');
+            trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
+          }
+        })
+        .finally(() => setLoading(false));
+    }
   };
 
   return error === 'genericError' ? (
