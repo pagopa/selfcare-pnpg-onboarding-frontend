@@ -5,15 +5,6 @@ import {
   User,
 } from '../../types';
 
-// TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
-export const loggedUser: User = {
-  taxCode: 'DLLDGI53T30I324E',
-  uid: '111',
-  name: 'Diego',
-  surname: 'Della Valle',
-  email: 'd.dellavalle@test.it',
-};
-
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
     businessName: 'BusinessName success',

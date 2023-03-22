@@ -2,10 +2,9 @@ import { Grid, Typography, Card, TextField } from '@mui/material';
 import { IllusError, theme } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { BusinessPnpg } from '../../../types';
-import { loggedUser } from '../../../api/__mocks__/OnboardingPnPgApiClient';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
@@ -14,6 +13,7 @@ import {
   matchInstitutionAndUser,
 } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
+import { UserContext } from '../../../lib/context';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -22,6 +22,7 @@ type Props = {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
+  const { user } = useContext(UserContext);
 
   const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
@@ -30,7 +31,6 @@ function StepAddCompany({ setActiveStep }: Props) {
   const [error, setError] = useState<'matchedButNotLR' | 'institutionNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  // TODO When service login is available, the loggedUser mockedObject, will be replace with the real loggedUser contained into userContext
   const handleSubmit = (typedInput: string) => {
     setLoading(true);
     getInstitutionLegalAddress(typedInput)
@@ -39,22 +39,24 @@ function StepAddCompany({ setActiveStep }: Props) {
         setError('matchedButNotLR');
       })
       .catch(() => {
-        setLoading(true);
-        matchInstitutionAndUser(typedInput, loggedUser)
-          .then(() => {
-            setSelectedInstitution({
-              businessName: '',
-              businessTaxId: typedInput,
-            });
-            setSelectedInstitutionHistory({
-              businessName: '',
-              businessTaxId: typedInput,
-            });
-            setActiveStep(4);
-          })
-          .catch((reason) => reason)
-          .finally(() => setLoading(false));
-        setError('institutionNotFound');
+        if (user) {
+          setLoading(true);
+          matchInstitutionAndUser(typedInput, user)
+            .then(() => {
+              setSelectedInstitution({
+                businessName: '',
+                businessTaxId: typedInput,
+              });
+              setSelectedInstitutionHistory({
+                businessName: '',
+                businessTaxId: typedInput,
+              });
+              setActiveStep(4);
+            })
+            .catch((reason) => reason)
+            .finally(() => setLoading(false));
+          setError('institutionNotFound');
+        }
       })
       .finally(() => setLoading(false));
   };
