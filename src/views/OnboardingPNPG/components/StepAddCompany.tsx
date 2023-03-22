@@ -4,6 +4,7 @@ import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
 import { useContext, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { BusinessPnpg } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
