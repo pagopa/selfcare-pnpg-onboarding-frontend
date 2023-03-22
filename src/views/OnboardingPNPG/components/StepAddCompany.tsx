@@ -23,6 +23,7 @@ type Props = {
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
   const { user } = useContext(UserContext);
+  const addError = useErrorDispatcher();
 
   const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
@@ -53,7 +54,15 @@ function StepAddCompany({ setActiveStep }: Props) {
               });
               setActiveStep(4);
             })
-            .catch((reason) => reason)
+            .catch((reason) => {
+              addError({
+                id: 'MATCH_INSTITUTION_AND_USER_ERROR',
+                blocking: false,
+                error: reason,
+                techDescription: `An error occurred while matching institution and user`,
+                toNotify: true,
+              });
+            })
             .finally(() => setLoading(false));
           setError('institutionNotFound');
         }
