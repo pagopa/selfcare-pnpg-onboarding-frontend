@@ -5,6 +5,14 @@ import {
   User,
 } from '../../types';
 
+export const loggedUser: User = {
+  uid: '00123',
+  email: 'email.test@mocked.com',
+  name: 'mockedUserName',
+  surname: 'mockedUserSurname',
+  taxCode: 'MCCDLL91C25B115B',
+};
+
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
     businessName: 'BusinessName success',
