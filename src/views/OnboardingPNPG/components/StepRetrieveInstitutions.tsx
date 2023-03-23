@@ -1,14 +1,14 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { useTranslation, Trans } from 'react-i18next';
 import { IllusError } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { InstitutionsPnpg, User } from '../../../types';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { InstitutionsPnpg } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
 import { getInstitutionsByUser } from '../../../services/onboardingService';
-import { UserContext } from '../../../lib/context';
 import { ENV } from '../../../utils/env';
 
 type Props = {
@@ -19,14 +19,15 @@ type Props = {
 function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
-  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const loggedUser = storageUserOps.read();
+
   const retrieveInstitutionsByUser = async () => {
     setLoading(true);
-    getInstitutionsByUser(user as User)
+    getInstitutionsByUser(loggedUser)
       .then((retrievedInstitutions) => {
         setRetrievedInstitutions(retrievedInstitutions);
         setActiveStep(
