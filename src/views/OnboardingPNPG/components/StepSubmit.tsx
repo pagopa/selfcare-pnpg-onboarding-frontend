@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { IllusError } from '@pagopa/mui-italia';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
+import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
@@ -89,12 +90,12 @@ function StepSubmit({ forward, setLoading }: Props) {
     />
   ) : error === 'alreadyOnboarded' ? (
     <EndingPage
-      icon={<IllusError size={60} />}
+      icon={<AlreadyOnboardedIcon />}
       title={t('alreadyOnboarded.title')}
       description={
         <Trans i18nKey="alreadyOnboarded.description">
-          L&apos;impresa selezionata ha già effettuato l&apos;adesione. <br />
-          Puoi entrare nel portale.
+          Questa impresa è già stata registrata. Accedi per leggere le <br />
+          notifiche e aggiungere altri utenti.
         </Trans>
       }
       variantTitle={'h4'}
