@@ -68,7 +68,7 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('institutionNotFound.close')}
-      onButtonClick={() => ENV.URL_FE.LOGOUT}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
     />
   ) : (
     <></>
