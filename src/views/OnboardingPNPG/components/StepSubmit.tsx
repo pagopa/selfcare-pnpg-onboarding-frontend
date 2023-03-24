@@ -1,13 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { IllusError } from '@pagopa/mui-italia';
 import { useTranslation, Trans } from 'react-i18next';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
+import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
-import { UserContext } from '../../../lib/context';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -16,11 +17,12 @@ type Props = StepperStepComponentProps & {
 function StepSubmit({ forward, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
-  const { user } = useContext(UserContext);
 
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
+
+  const loggedUser = storageUserOps.read();
 
   const productId = 'prod-pn-pg';
 
@@ -48,28 +50,26 @@ function StepSubmit({ forward, setLoading }: Props) {
     productId: string,
     selectedInstitution: BusinessPnpg
   ) => {
-    if (user) {
-      setLoading(true);
-      onboardingPGSubmit(externalInstitutionId, productId, user, selectedInstitution)
-        .then(() => {
-          trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
+    setLoading(true);
+    onboardingPGSubmit(externalInstitutionId, productId, loggedUser, selectedInstitution)
+      .then(() => {
+        trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
+        setSelectedInstitution(selectedInstitution);
+        setSelectedInstitutionHistory(selectedInstitution);
+        forward();
+      })
+      .catch((reason) => {
+        if (reason.httpStatus === 409) {
+          setError('alreadyOnboarded');
+          trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
           setSelectedInstitution(selectedInstitution);
           setSelectedInstitutionHistory(selectedInstitution);
-          forward();
-        })
-        .catch((reason) => {
-          if (reason.httpStatus === 409) {
-            setError('alreadyOnboarded');
-            trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
-            setSelectedInstitution(selectedInstitution);
-            setSelectedInstitutionHistory(selectedInstitution);
-          } else {
-            setError('genericError');
-            trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
-          }
-        })
-        .finally(() => setLoading(false));
-    }
+        } else {
+          setError('genericError');
+          trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return error === 'genericError' ? (
@@ -90,12 +90,12 @@ function StepSubmit({ forward, setLoading }: Props) {
     />
   ) : error === 'alreadyOnboarded' ? (
     <EndingPage
-      icon={<IllusError size={60} />}
+      icon={<AlreadyOnboardedIcon />}
       title={t('alreadyOnboarded.title')}
       description={
         <Trans i18nKey="alreadyOnboarded.description">
-          L&apos;impresa selezionata ha già effettuato l&apos;adesione. <br />
-          Puoi entrare nel portale.
+          Questa impresa è già stata registrata. Accedi per leggere le <br />
+          notifiche e aggiungere altri utenti.
         </Trans>
       }
       variantTitle={'h4'}

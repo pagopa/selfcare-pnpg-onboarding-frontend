@@ -20,9 +20,9 @@ export default {
     forwardAction: 'Continua',
   },
   alreadyOnboarded: {
-    title: "L'impresa che hai scelto ha già aderito",
+    title: 'Impresa già registrata',
     description:
-      "L'impresa selezionata ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
+      'Questa impresa è già stata registrata. Accedi per leggere le <1/>notifiche e aggiungere altri utenti.',
     signIn: 'Accedi',
   },
   institutionNotFound: {

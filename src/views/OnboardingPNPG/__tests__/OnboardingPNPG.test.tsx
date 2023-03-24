@@ -116,9 +116,7 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with alre
   fireEvent.click(registerAgencyButton);
 
   await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent(
-      "L'impresa che hai scelto ha già aderito"
-    )
+    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Impresa già registrata')
   );
   screen.getByText('Accedi');
 });

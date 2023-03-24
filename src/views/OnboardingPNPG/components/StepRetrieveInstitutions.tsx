@@ -1,14 +1,14 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { useTranslation, Trans } from 'react-i18next';
 import { IllusError } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { InstitutionsPnpg, User } from '../../../types';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { InstitutionsPnpg } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
 import { getInstitutionsByUser } from '../../../services/onboardingService';
-import { UserContext } from '../../../lib/context';
 import { ENV } from '../../../utils/env';
 
 type Props = {
@@ -19,14 +19,15 @@ type Props = {
 function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
-  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const loggedUser = storageUserOps.read();
+
   const retrieveInstitutionsByUser = async () => {
     setLoading(true);
-    getInstitutionsByUser(user as User)
+    getInstitutionsByUser(loggedUser)
       .then((retrievedInstitutions) => {
         setRetrievedInstitutions(retrievedInstitutions);
         setActiveStep(
@@ -58,16 +59,15 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
     <EndingPage
       minHeight="52vh"
       icon={<IllusError size={60} />}
-      title={t('outcome.error.title')}
+      title={t('institutionNotFound.title')}
       description={
-        <Trans i18nKey="outcome.error.description">
-          A causa di un problema tecnico, non riusciamo a registrare <br />
-          la tua impresa. Riprova più tardi.
+        <Trans i18nKey="institutionNotFound.message">
+          Dal tuo SPID non risulti essere Legale Rappresentante di <br /> alcuna impresa.
         </Trans>
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={t('outcome.error.close')}
+      buttonLabel={t('institutionNotFound.close')}
       onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
     />
   ) : (

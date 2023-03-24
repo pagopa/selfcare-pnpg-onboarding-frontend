@@ -1,7 +1,7 @@
 {
   "name": "selfcare-pnpg-onboarding-frontend",
   "version": "1.3.0",
-  "homepage": "onboarding-pnpg",
+  "homepage": "onboarding",
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.8.2",
