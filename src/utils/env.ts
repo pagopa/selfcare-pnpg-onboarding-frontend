@@ -1,8 +1,12 @@
 import * as env from 'env-var';
+import { Store } from 'redux';
+import { i18n } from 'i18next';
 
 const PUBLIC_URL_INNER: string | undefined = env.get('PUBLIC_URL').asString();
 
 export const ENV = {
+  STORE: {} as Store,
+  i18n: {} as i18n,
   ENV: env.get('REACT_APP_ENV').required().asString(),
   PUBLIC_URL: PUBLIC_URL_INNER ? PUBLIC_URL_INNER : '/onboarding',
 
@@ -27,6 +31,7 @@ export const ENV = {
   URL_API: {
     PARTY_PROCESS: env.get('REACT_APP_URL_API_PARTY_PROCESS').required().asString(),
     ONBOARDING: env.get('REACT_APP_URL_API_ONBOARDING').required().asString(),
+    DASHBOARD: 'https://api.dev.selfcare.pagopa.it/dashboard/v1',
     PARTY_REGISTRY_PROXY: env.get('REACT_APP_URL_API_PARTY_REGISTRY_PROXY').required().asString(),
   },
 
