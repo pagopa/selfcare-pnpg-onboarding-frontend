@@ -145,7 +145,9 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   renderComponent();
 
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText("Registra un'altra impresa");
+  const onboardingViaTaxCodeFlowButton = screen.getByText(
+    'Cercala tramite Codice Fiscale/Partita IVA'
+  );
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
   screen.getByText('Che impresa vuoi registrare?');
@@ -172,7 +174,9 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that MA
   renderComponent();
 
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText("Registra un'altra impresa");
+  const onboardingViaTaxCodeFlowButton = screen.getByText(
+    'Cercala tramite Codice Fiscale/Partita IVA'
+  );
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
   screen.getByText('Che impresa vuoi registrare?');
@@ -203,7 +207,9 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   renderComponent();
 
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText("Registra un'altra impresa");
+  const onboardingViaTaxCodeFlowButton = screen.getByText(
+    'Cercala tramite Codice Fiscale/Partita IVA'
+  );
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
   screen.getByText('Che impresa vuoi registrare?');

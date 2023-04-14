@@ -141,7 +141,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
               color={theme.palette.text.primary}
             >
               <Trans i18nKey="selectInstitutionReleated.registerAgencyByTaxCodeLink">
-                {'Sei un Legale Rappresentante? '}
+                {'Sei un Legale Rappresentante e non trovi la tua impresa? '}
                 <Link
                   onClick={forward}
                   sx={{
@@ -150,7 +150,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
                     color: theme.palette.primary.main,
                   }}
                 >
-                  {"Registra un'altra impresa"}
+                  {'Cercala tramite Codice Fiscale/Partita IVA'}
                 </Link>
               </Trans>
             </Typography>
