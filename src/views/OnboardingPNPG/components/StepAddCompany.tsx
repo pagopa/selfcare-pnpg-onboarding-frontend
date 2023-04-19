@@ -29,7 +29,7 @@ function StepAddCompany({ setActiveStep }: Props) {
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
-  const [error, setError] = useState<'matchedButNotLR' | 'institutionNotFound'>();
+  const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const loggedUser = storageUserOps.read();
@@ -65,24 +65,25 @@ function StepAddCompany({ setActiveStep }: Props) {
             });
           })
           .finally(() => setLoading(false));
-        setError('institutionNotFound');
+        setError('typedNotFound');
       })
       .finally(() => setLoading(false));
   };
 
-  return error === 'institutionNotFound' ? (
+  return error === 'typedNotFound' ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}
-        title={t('institutionNotFound.title')}
+        title={t('typedNotFound.title')}
         description={
-          <Trans i18nKey="institutionNotFound.message">
-            Dal tuo SPID non risulti essere Legale Rappresentante di <br /> alcuna impresa.
+          <Trans i18nKey="typedNotFound.message">
+            Dal tuo SPID non risulti essere Legale Rappresentante <br /> dell’impresa che stavi
+            cercando.
           </Trans>
         }
         variantTitle={'h4'}
         variantDescription={'body1'}
-        buttonLabel={t('institutionNotFound.close')}
+        buttonLabel={t('typedNotFound.close')}
         onButtonClick={() => ENV.URL_FE.LOGOUT}
       />
     </>

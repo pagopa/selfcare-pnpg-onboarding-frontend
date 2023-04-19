@@ -10,7 +10,8 @@ export default {
     title: 'Seleziona l’impresa',
     description:
       'Se hai accesso alle notifiche di più imprese, potrai modificare la tua scelta dopo avere effettuato l’accesso.',
-    registerAgencyByTaxCodeLink: "Sei un Legale Rappresentante? <1>Registra un'altra impresa</1>",
+    registerAgencyByTaxCodeLink:
+      'Sei un Legale Rappresentante e non trovi la tua impresa? <1>Cercala tramite Codice Fiscale/Partita IVA</1>',
     enter: 'Accedi',
   },
   addCompany: {
@@ -18,6 +19,12 @@ export default {
     description: 'Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <1/>registrare.',
     textfieldLabel: 'Codice Fiscale/Partita IVA',
     forwardAction: 'Continua',
+  },
+  typedNotFound: {
+    title: 'Nessuna impresa trovata',
+    message:
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa che stavi cercando.',
+    close: 'Chiudi',
   },
   alreadyOnboarded: {
     title: 'Impresa già registrata',
