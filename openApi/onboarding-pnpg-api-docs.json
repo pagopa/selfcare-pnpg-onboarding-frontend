@@ -464,7 +464,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/PnPGUserDto"
               }
             }
           }
@@ -617,7 +617,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/PnPGUserDto"
               }
             }
           }
@@ -734,16 +734,6 @@
           },
           "403": {
             "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Problem"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict Error",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -1315,12 +1305,17 @@
       },
       "PnPGBillingDataDto": {
         "title": "PnPGBillingDataDto",
-        "required": ["businessName", "taxCode"],
+        "required": ["businessName", "certified", "taxCode"],
         "type": "object",
         "properties": {
           "businessName": {
             "type": "string",
             "description": "Institution's legal name"
+          },
+          "certified": {
+            "type": "boolean",
+            "description": "Indicates whether the institution values come from INFOCAMERE (true) or MANUAL (false)",
+            "example": false
           },
           "taxCode": {
             "type": "string",
@@ -1368,8 +1363,36 @@
             "type": "array",
             "description": "List of onboarding users",
             "items": {
-              "$ref": "#/components/schemas/UserDto"
+              "$ref": "#/components/schemas/PnPGUserDto"
             }
+          }
+        }
+      },
+      "PnPGUserDto": {
+        "title": "PnPGUserDto",
+        "required": ["name", "role", "surname", "taxCode"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name"
+          },
+          "role": {
+            "type": "string",
+            "description": "User's role",
+            "enum": ["DELEGATE", "MANAGER", "OPERATOR", "SUB_DELEGATE"]
+          },
+          "surname": {
+            "type": "string",
+            "description": "User's surname"
+          },
+          "taxCode": {
+            "type": "string",
+            "description": "User's fiscal code"
           }
         }
       },
@@ -1494,15 +1517,9 @@
       },
       "UserDto": {
         "title": "UserDto",
-        "required": ["email", "name", "role", "surname", "taxCode"],
+        "required": ["name", "role", "surname", "taxCode"],
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email",
-            "example": "email@example.com"
-          },
           "name": {
             "type": "string",
             "description": "User's name"

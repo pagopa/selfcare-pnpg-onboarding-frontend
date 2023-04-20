@@ -7,6 +7,7 @@ import StepRetrieveInstitutions from './components/StepRetrieveInstitutions';
 import StepSelectInstitution from './components/StepSelectInstitution';
 import StepSubmit from './components/StepSubmit';
 import StepSuccess from './components/StepSuccess';
+import StepBusinessData from './components/StepBusinessData';
 
 function OnboardingPNPGComponent() {
   const [activeStep, setActiveStep] = useState(0);
@@ -43,11 +44,18 @@ function OnboardingPNPGComponent() {
         }),
     },
     {
+      label: 'Insert business data',
+      Component: () =>
+        StepBusinessData({
+          setActiveStep,
+        }),
+    },
+    {
       label: 'Submit',
       Component: () =>
         StepSubmit({
-          setLoading,
           forward,
+          setLoading,
         }),
     },
     {

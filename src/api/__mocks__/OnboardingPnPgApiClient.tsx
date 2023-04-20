@@ -1,9 +1,5 @@
-import {
-  BusinessPnpg,
-  InstitutionsPnpg,
-  PnpgInstitutionLegalAddressResource,
-  User,
-} from '../../types';
+import { InstitutionsPnpg, PnpgInstitutionLegalAddressResource, User } from '../../types';
+import { BusinessPnPGResource } from '../generated/b4f-onboarding-pnpg/BusinessPnPGResource';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -13,7 +9,7 @@ export const loggedUser: User = {
   taxCode: 'MCCDLL91C25B115B',
 };
 
-export const mockedAgencies: Array<BusinessPnpg> = [
+export const mockedAgencies: Array<BusinessPnPGResource> = [
   {
     businessName: 'BusinessName success',
     businessTaxId: '01113570442',

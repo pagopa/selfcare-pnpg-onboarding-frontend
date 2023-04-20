@@ -20,7 +20,6 @@ type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
@@ -46,14 +45,16 @@ function StepAddCompany({ setActiveStep }: Props) {
         matchInstitutionAndUser(typedInput, loggedUser)
           .then(() => {
             setSelectedInstitution({
+              certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
             setSelectedInstitutionHistory({
+              certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
-            setActiveStep(4);
+            setActiveStep(3);
           })
           .catch((reason) => {
             addError({

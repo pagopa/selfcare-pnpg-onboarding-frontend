@@ -20,6 +20,15 @@ export default {
     textfieldLabel: 'Codice Fiscale/Partita IVA',
     forwardAction: 'Continua',
   },
+  insertBusinessData: {
+    title: 'Inserisci i dati della tua impresa',
+    description:
+      'Inserisci l’indirizzo e-mail a cui vuoi ricevere la conferma della <1 />registrazione dell’impresa su SEND.',
+    businessNameLabel: 'Ragione sociale',
+    emailLabel: 'Indirizzo e-mail',
+    backAction: 'Indietro',
+    forwardAction: 'Continua',
+  },
   typedNotFound: {
     title: 'Nessuna impresa trovata',
     message:

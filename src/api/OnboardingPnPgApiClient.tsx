@@ -10,7 +10,7 @@ import {
   User,
 } from '../types';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
-import { RoleEnum } from './generated/b4f-onboarding-pnpg/UserDto';
+import { RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -66,6 +66,7 @@ export const OnboardingPnPgApi = {
       productId,
       body: {
         billingData: {
+          certified: selectedInstitution.certified,
           businessName: selectedInstitution.businessName,
           taxCode: selectedInstitution.businessTaxId,
         },
@@ -97,7 +98,6 @@ export const OnboardingPnPgApi = {
     const result = await apiClient.matchInstitutionAndUserUsingPOST({
       externalInstitutionId,
       body: {
-        email: loggedUser.email as EmailString,
         name: loggedUser.name,
         role: 'MANAGER' as RoleEnum,
         surname: loggedUser.surname,

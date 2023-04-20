@@ -20,8 +20,17 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
 
   useEffect(() => {
     if (retrievedInstitutions?.businesses.length === 1) {
-      setSelectedInstitution(retrievedInstitutions.businesses[0]);
-      setSelectedInstitutionHistory(retrievedInstitutions.businesses[0]);
+      setSelectedInstitution({
+        certified: true,
+        businessName: retrievedInstitutions.businesses[0].businessName,
+        businessTaxId: retrievedInstitutions.businesses[0].businessTaxId,
+      });
+      setSelectedInstitutionHistory({
+        ...selectedInstitution,
+        certified: true,
+        businessName: retrievedInstitutions.businesses[0].businessName,
+        businessTaxId: retrievedInstitutions.businesses[0].businessTaxId,
+      });
     } else {
       setSelectedInstitutionHistory(undefined);
       setSelectedInstitution(undefined);
@@ -29,6 +38,11 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
   }, [retrievedInstitutions]);
 
   const onForwardAction = () => {
+    setSelectedInstitutionHistory({
+      certified: true,
+      businessName: selectedInstitution?.businessName ?? '',
+      businessTaxId: selectedInstitution?.businessTaxId ?? '',
+    });
     setActiveStep(3);
   };
 
@@ -75,10 +89,10 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
         marginTop={4}
       >
         {retrievedInstitutions &&
-          retrievedInstitutions.businesses.map((a, index) => (
+          retrievedInstitutions.businesses.map((b, index) => (
             <Box key={index}>
               <Button
-                aria-label={a.businessName}
+                aria-label={b.businessName}
                 sx={{
                   marginBottom: 2,
                   width: '480px',
@@ -88,20 +102,24 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
                   backgroundColor: 'background.paper',
                   borderRadius: theme.spacing(2),
                   border:
-                    a.businessTaxId === selectedInstitution?.businessTaxId
+                    b.businessTaxId === selectedInstitution?.businessTaxId
                       ? 'solid 3px #0073E6'
                       : undefined,
                   boxShadow:
                     '0px 8px 10px -5px rgba(0, 43, 85, 0.1), 0px 16px 24px 2px rgba(0, 43, 85, 0.05), 0px 6px 30px 5px rgba(0, 43, 85, 0.1)',
                 }}
                 onClick={() => {
-                  setSelectedInstitution(a);
+                  setSelectedInstitution({
+                    certified: true,
+                    businessName: b.businessName,
+                    businessTaxId: b.businessTaxId,
+                  });
                 }}
               >
                 <PartyAccountItem
-                  aria-label={a.businessName}
-                  partyName={a.businessName}
-                  partyRole={a.businessTaxId}
+                  aria-label={b.businessName}
+                  partyName={b.businessName}
+                  partyRole={b.businessTaxId}
                   maxCharactersNumberMultiLine={20}
                   containerSx={{ marginInlineEnd: 'auto', marginLeft: 1 }}
                   infoContainerSx={{ textAlign: 'initial' }}
@@ -114,7 +132,6 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
           <OnboardingStepActions
             forward={{
               action: () => {
-                setSelectedInstitutionHistory(selectedInstitution);
                 onForwardAction();
               },
               label: moreThanTwoInstitutions
