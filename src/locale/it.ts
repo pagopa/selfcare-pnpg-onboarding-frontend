@@ -1,37 +1,41 @@
 export default {
   loadingText: 'Stiamo verificando i tuoi dati',
   selectFromAgencyList: {
-    title: 'A nome di quale azienda vuoi accedere?',
+    title: 'Che impresa vuoi registrare?',
     description:
-      'Queste sono le aziende di cui risulti essere Legale Rappresentante. <1 />Seleziona la società di cui vuoi visualizzare le notifiche su Piattaforma Notifiche.',
-    registerAgency: 'Registra azienda',
+      'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
+    registerAgency: 'Registra impresa',
   },
   selectInstitutionReleated: {
-    title: 'Seleziona l’azienda',
+    title: 'Seleziona l’impresa',
     description:
-      'Se operi per più enti, potrai modificare la tua scelta dopo aver effettuato l’accesso.',
-    registerAgencyByTaxCodeLink: "La tua azienda non è nell'elenco? <1>Registra nuova azienda</1>",
-    enter: 'Entra',
+      'Se hai accesso alle notifiche di più imprese, potrai modificare la tua scelta dopo avere effettuato l’accesso.',
+    registerAgencyByTaxCodeLink:
+      'Sei un Legale Rappresentante e non trovi la tua impresa? <1>Cercala tramite Codice Fiscale/Partita IVA</1>',
+    enter: 'Accedi',
   },
   addCompany: {
-    title: 'Aggiungi la tua impresa',
-    description:
-      'Inserisci il Codice Fiscale/Partita IVA dell’impresa con cui vuoi <1 />accedere a Piattaforma Notifiche',
+    title: 'Che impresa vuoi registrare?',
+    description: 'Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <1/>registrare.',
     textfieldLabel: 'Codice Fiscale/Partita IVA',
     forwardAction: 'Continua',
   },
+  typedNotFound: {
+    title: 'Nessuna impresa trovata',
+    message:
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa che stavi cercando.',
+    close: 'Chiudi',
+  },
   alreadyOnboarded: {
-    title: "L'Ente che hai scelto ha già aderito",
-    description: "L'ente selezionato ha già effettuato l'adesione. <1 />Puoi entrare nel portale.",
-    enter: 'Entra',
+    title: 'Impresa già registrata',
+    description:
+      'Questa impresa è già stata registrata. Accedi per leggere le <1/>notifiche e aggiungere altri utenti.',
+    signIn: 'Accedi',
   },
   institutionNotFound: {
-    title: 'Nessuna azienda trovata',
-    message:
-      'Per accedere alle notifiche, l’azienda deve essere registrata <1 />dal Legale Rappresentante.',
-    registerNewAgency:
-      'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
-    backToAccess: 'Torna all’accesso',
+    title: 'Nessuna impresa trovata',
+    message: 'Dal tuo SPID non risulti essere Legale Rappresentante di <1 /> alcuna impresa.',
+    close: 'Chiudi',
   },
   matchedButNotLR: {
     title:
@@ -42,52 +46,15 @@ export default {
   },
   outcome: {
     success: {
-      title: 'La registrazione è avvenuta con <1 />successo',
-      description:
-        'La tua azienda è su Piattaforma Notifiche. Puoi entrare per <1 />vedere le notifiche e per gestire i permessi di altri utenti.',
-      enterButton: 'Entra',
+      title: 'Impresa registrata!',
+      description: 'Accedi per leggere le notifiche e aggiungere altri utenti.',
+      signIn: 'Accedi',
     },
     error: {
-      title: 'Qualcosa è andato storto',
+      title: 'Impresa non registrata',
       description:
-        'A causa di un errore del sistema non è possibile completare <1 />la procedura. Ti chiediamo di riprovare più tardi.',
-      backToHome: 'Torna all’accesso',
-    },
-  },
-  dashboard: {
-    title: 'Panoramica',
-    subTitle: 'Qui puoi vedere un riepilogo dei dati di {{businessName}}.',
-    partyLogo: {
-      upload: 'Carica il logo dell’azienda',
-      modify: 'Modifica il logo dell’azienda',
-      uploadError: {
-        title: 'Caricamento non riuscito',
-        description:
-          'Il caricamento del logo non è andato a buon fine. Verifica che il formato e la dimensione siano corretti e caricalo di nuovo',
-      },
-      modifyError: {
-        title: 'Caricamento non riuscito',
-        description: 'Spiacenti, qualcosa è andato storto. Riprova più tardi',
-      },
-      info: 'Inserisci solo il logo della tua azienda. <1 />Sarai responsabile dell’inserimento di immagini diverse da quella indicata.',
-      size: 'Dimensione massima 300 x <1 /> 300px - Formato .png',
-    },
-    infoOverview: {
-      typology: 'Tipologia',
-      category: 'Categoria',
-      businessName: 'Ragione sociale',
-      fiscalCode: 'Codice Fiscale',
-      primaryPecEmail: 'Indirizzo PEC primario',
-      registeredOffice: 'Sede legale',
-    },
-    sideMenu: {
-      overview: 'Panoramica',
-      users: 'Utenti',
-      groups: 'Gruppi',
-    },
-    notificationArea: 'Area notifiche',
-    productCard: {
-      title: 'Vai alle <1 />notifiche',
+        'A causa di un problema tecnico, non riusciamo a registrare <1 />la tua impresa. Riprova più tardi.',
+      close: 'Chiudi',
     },
   },
   app: {

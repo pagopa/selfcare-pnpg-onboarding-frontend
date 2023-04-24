@@ -1,14 +1,12 @@
 import { IllusCompleted } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
-import { useTranslation, Trans } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import { BusinessPnpg } from '../../../types';
+import { useTranslation } from 'react-i18next';
 import { useHistoryState } from '../../../components/useHistoryState';
-import { ROUTES } from '../../../utils/constants';
+import { BusinessPnpg } from '../../../types';
+import { ENV } from '../../../utils/env';
 
 function StepSuccess() {
   const { t } = useTranslation();
-  const history = useHistory();
 
   const selectedInstitution = useHistoryState<BusinessPnpg | undefined>(
     'selected_institution',
@@ -19,24 +17,15 @@ function StepSuccess() {
     <EndingPage
       minHeight="52vh"
       icon={<IllusCompleted size={60} />}
-      title={
-        <Trans i18nKey="outcome.success.title">
-          La registrazione è avvenuta con <br />
-          successo
-        </Trans>
-      }
-      description={
-        <Trans i18nKey="outcome.success.description">
-          La tua azienda è su Piattaforma Notifiche. Puoi entrare per <br />
-          vedere le notifiche e per gestire i permessi di altri utenti.
-        </Trans>
-      }
+      title={t('outcome.success.title')}
+      description={t('outcome.success.description')}
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={t('outcome.success.enterButton')}
-      onButtonClick={() => history.push(ROUTES.PNPG_DASHBOARD.PATH, selectedInstitution)}
+      buttonLabel={t('outcome.success.signIn')}
+      onButtonClick={() =>
+        window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${selectedInstitution?.businessTaxId}`)
+      }
     />
   );
 }
-
 export default StepSuccess;

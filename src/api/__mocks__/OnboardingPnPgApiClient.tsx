@@ -4,28 +4,26 @@ import {
   PnpgInstitutionLegalAddressResource,
   User,
 } from '../../types';
-import { InstitutionPnPGResourceArray } from '../generated/b4f-dashboard-pnpg/InstitutionPnPGResourceArray';
 
-// TODO Actually, this user simulate the loggedUser, when login service is available, this will be removed
 export const loggedUser: User = {
-  taxCode: 'DLLDGI53T30I324E',
-  uid: '111',
-  name: 'Diego',
-  surname: 'Della Valle',
-  email: 'd.dellavalle@test.it',
+  uid: '00123',
+  email: 'email.test@mocked.com',
+  name: 'mockedUserName',
+  surname: 'mockedUserSurname',
+  taxCode: 'MCCDLL91C25B115B',
 };
 
 export const mockedAgencies: Array<BusinessPnpg> = [
   {
-    businessName: 'Ragione Sociale success',
-    businessTaxId: '00000000000',
+    businessName: 'BusinessName success',
+    businessTaxId: '01113570442',
   },
   {
-    businessName: 'Ragione Sociale alreadyOnboarded',
-    businessTaxId: '11111111111',
+    businessName: 'BusinessName alreadyOnboarded',
+    businessTaxId: '01501320442',
   },
   {
-    businessName: 'Ragione Sociale genericError',
+    businessName: 'BusinessName genericError',
     businessTaxId: '22222222222',
   },
 ];
@@ -35,51 +33,6 @@ export const mockedInstitutionPnPG: InstitutionsPnpg = {
   legalTaxId: '1234567',
   requestDateTime: 'x',
 };
-
-export const mockedPnPGInstitutionsResource: InstitutionPnPGResourceArray = [
-  {
-    externalId: mockedAgencies[0]?.businessTaxId,
-    fiscalCode: mockedAgencies[0]?.businessTaxId,
-    geographicTaxonomies: [{ code: '', desc: '' }],
-    id: mockedAgencies[0]?.businessTaxId,
-    institutionType: 'GSP',
-    name: mockedAgencies[0]?.businessName,
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus1',
-    address: 'LegalAddressTest1',
-    category: 'categoryTest1',
-    origin: 'originTest1',
-    originId: 'originIdTest1',
-  },
-  {
-    externalId: mockedAgencies[1]?.businessTaxId,
-    fiscalCode: mockedAgencies[1]?.businessTaxId,
-    geographicTaxonomies: [{ code: '', desc: '' }],
-    id: mockedAgencies[1]?.businessTaxId,
-    institutionType: 'GSP',
-    name: mockedAgencies[1]?.businessName,
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus2',
-    address: 'LegalAddressTest2',
-    category: 'categoryTest2',
-    origin: 'originTest2',
-    originId: 'originIdTest2',
-  },
-  {
-    externalId: '44444444444',
-    fiscalCode: '44444444444',
-    geographicTaxonomies: [{ code: '', desc: '' }],
-    id: '44444444444',
-    institutionType: 'GSP',
-    name: 'Ragione sociale 4',
-    recipientCode: 'MDSSFDF',
-    status: 'TestStatus1',
-    address: 'LegalAddressTest2',
-    category: 'categoryTest2',
-    origin: 'originTest2',
-    originId: 'originIdTest2',
-  },
-];
 
 export const mockedRetrievedInstitutionLegalAddress: Array<PnpgInstitutionLegalAddressResource> = [
   {
@@ -135,7 +88,7 @@ export const mockedOnboardingPnPgApi = {
     new Promise((resolve) => resolve(mockedInstitutionPnPG)),
 
   onboardingPGSubmit: (externalInstitutionId: string): Promise<boolean> => {
-    if (externalInstitutionId === '11111111111') {
+    if (externalInstitutionId === '01501320442') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

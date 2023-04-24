@@ -1,11 +1,12 @@
-import { Grid, Typography, Card, TextField, Link } from '@mui/material';
+import { Grid, Typography, Card, TextField } from '@mui/material';
 import { IllusError, theme } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { BusinessPnpg } from '../../../types';
-import { loggedUser } from '../../../api/__mocks__/DashboardPnPgApiClient';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
@@ -22,15 +23,17 @@ type Props = {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
+  const addError = useErrorDispatcher();
 
   const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
-  const [error, setError] = useState<'matchedButNotLR' | 'institutionNotFound'>();
+  const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  // TODO When service login is available, the loggedUser mockedObject, will be replace with the real loggedUser contained into userContext
+  const loggedUser = storageUserOps.read();
+
   const handleSubmit = (typedInput: string) => {
     setLoading(true);
     getInstitutionLegalAddress(typedInput)
@@ -52,55 +55,37 @@ function StepAddCompany({ setActiveStep }: Props) {
             });
             setActiveStep(4);
           })
-          .catch((reason) => reason)
+          .catch((reason) => {
+            addError({
+              id: 'MATCH_INSTITUTION_AND_USER_ERROR',
+              blocking: false,
+              error: reason,
+              techDescription: `An error occurred while matching institution and user`,
+              toNotify: true,
+            });
+          })
           .finally(() => setLoading(false));
-        setError('institutionNotFound');
+        setError('typedNotFound');
       })
       .finally(() => setLoading(false));
   };
 
-  return error === 'institutionNotFound' ? (
+  return error === 'typedNotFound' ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}
-        title={t('institutionNotFound.title')}
+        title={t('typedNotFound.title')}
         description={
-          <Trans i18nKey="institutionNotFound.message">
-            Per accedere alle notifiche, l’azienda deve essere registrata <br /> dal Legale
-            Rappresentante.
+          <Trans i18nKey="typedNotFound.message">
+            Dal tuo SPID non risulti essere Legale Rappresentante <br /> dell’impresa che stavi
+            cercando.
           </Trans>
         }
         variantTitle={'h4'}
         variantDescription={'body1'}
-        buttonLabel={t('institutionNotFound.backToAccess')}
+        buttonLabel={t('typedNotFound.close')}
         onButtonClick={() => ENV.URL_FE.LOGOUT}
       />
-      <Typography
-        sx={{
-          textAlign: 'center',
-          display: 'block',
-          marginTop: 4,
-        }}
-        variant="caption"
-        color={theme.palette.text.primary}
-      >
-        <Trans i18nKey="institutionNotFound.registerNewAgency">
-          {'Sei il Legale Rappresentante di un’azienda? '}
-          <Link
-            sx={{
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              color: theme.palette.primary.main,
-            }}
-            onClick={() => {
-              setError(undefined);
-              setTypedInput('');
-            }}
-          >
-            {'Registra nuova azienda'}
-          </Link>
-        </Trans>
-      </Typography>
     </>
   ) : error === 'matchedButNotLR' ? (
     <>
@@ -135,8 +120,8 @@ function StepAddCompany({ setActiveStep }: Props) {
         <Grid item xs={12}>
           <Typography align="center" color={theme.palette.text.primary} m={1} mb={3}>
             <Trans i18next="addCompany.description">
-              Inserisci il Codice Fiscale/Partita IVA dell’impresa con cui vuoi <br />
-              accedere a Piattaforma Notifiche
+              Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <br />
+              registrare.
             </Trans>
           </Typography>
         </Grid>

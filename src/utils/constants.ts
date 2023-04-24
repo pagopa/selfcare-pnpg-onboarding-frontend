@@ -1,5 +1,4 @@
 import { RoutesObject } from '../types';
-import Dashboard from '../views/dashboard/Dashboard';
 import OnboardingPNPG from '../views/OnboardingPNPG/OnboardingPNPG';
 import { ENV } from './env';
 
@@ -13,15 +12,9 @@ export const BASE_ROUTE = ENV.PUBLIC_URL;
 
 export const ROUTES: RoutesObject = {
   PNPG_ONBOARDING: {
-    PATH: '/onboarding-pnpg',
-    LABEL: 'Onboarding-pnpg',
+    PATH: '/onboarding',
+    LABEL: 'Onboarding PNPG',
     EXACT: true,
     COMPONENT: OnboardingPNPG,
-  },
-  PNPG_DASHBOARD: {
-    PATH: '/dashboardpg',
-    LABEL: 'Onboarding-pnpg dashboard',
-    EXACT: false,
-    COMPONENT: Dashboard,
   },
 };
