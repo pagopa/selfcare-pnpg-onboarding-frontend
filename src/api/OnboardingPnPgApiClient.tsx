@@ -1,7 +1,8 @@
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
 import { EmailString } from '@pagopa/ts-commons/lib/strings';
+import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ENV } from '../utils/env';
 import {
   BusinessPnpg,
@@ -9,6 +10,7 @@ import {
   PnpgInstitutionLegalAddressResource,
   User,
 } from '../types';
+import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
 import { RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
 
@@ -29,15 +31,15 @@ const apiClient = createClient({
 });
 
 const onRedirectToLogin = () =>
-  ENV.STORE.dispatch(
+  store.dispatch(
     appStateActions.addError({
       id: 'tokenNotValid',
       error: new Error(),
       techDescription: 'token expired or not valid',
       toNotify: false,
       blocking: false,
-      displayableTitle: ENV.i18n.t('session.expired.title'),
-      displayableDescription: ENV.i18n.t('session.expired.message'),
+      displayableTitle: i18n.t('session.expired.title'),
+      displayableDescription: i18n.t('session.expired.message'),
     })
   );
 

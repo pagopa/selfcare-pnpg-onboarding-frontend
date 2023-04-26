@@ -39,18 +39,24 @@ function StepBusinessData({ setActiveStep }: Props) {
     setActiveStep(4);
   };
 
+  const isCertifiedBusinessName = selectedInstitution?.certified;
+
   return (
     <Grid container>
       <Grid item textAlign="center" display="contents">
         <TitleBox
-          title={t('insertBusinessData.title')}
+          title={
+            isCertifiedBusinessName ? t('insertBusinessEmail.title') : t('insertBusinessData.title')
+          }
           subTitle={
-            (
-              <Trans i18nKey="insertBusinessData. description">
-                Inserisci l’indirizzo e-mail a cui vuoi ricevere la conferma della <br />
-                registrazione dell’impresa su SEND.
-              </Trans>
-            ) as unknown as string
+            isCertifiedBusinessName
+              ? t('insertBusinessEmail.subTitle')
+              : ((
+                  <Trans i18nKey="insertBusinessData.subTitle">
+                    Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <br />
+                    registrare.
+                  </Trans>
+                ) as unknown as string)
           }
           variantTitle="h4"
           variantSubTitle="body2"
@@ -89,7 +95,7 @@ function StepBusinessData({ setActiveStep }: Props) {
           )}
           <TextField
             id="email-textfield"
-            label={t('insertBusinessData.emailLabel')}
+            label={t('insertBusinessData.pecEmailLabel')}
             variant="outlined"
             type="tel"
             onChange={(e) => {

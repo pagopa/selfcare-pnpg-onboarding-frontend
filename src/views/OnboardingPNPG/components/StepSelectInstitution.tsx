@@ -55,12 +55,11 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
         <Grid item xs={12}>
           <Typography variant="h3" component="h2" align="center" color={theme.palette.text.primary}>
             {moreThanTwoInstitutions
-              ? t('selectFromAgencyList.title')
-              : t('selectInstitutionReleated.title')}
+              ? t('chooseBusiness.selectFromBusinessList.title')
+              : t('chooseBusiness.selectReleatedBusiness.title')}
           </Typography>
         </Grid>
       </Grid>
-
       <Grid container item justifyContent="center" mt={1}>
         <Grid item xs={12}>
           <Typography
@@ -69,17 +68,16 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
             sx={{ fontSize: 'fontSize' }}
           >
             {moreThanTwoInstitutions ? (
-              <Trans i18nKey={'selectFromAgencyList.description'}>
+              <Trans i18nKey={'chooseBusiness.selectFromBusinessList.subTitle'}>
                 Queste sono le imprese di cui risulti essere Legale Rappresentante. <br />
                 Seleziona quella che vuoi registrare.
               </Trans>
             ) : (
-              t('selectInstitutionReleated.description')
+              t('chooseBusiness.selectReleatedBusiness.subTitle')
             )}
           </Typography>
         </Grid>
       </Grid>
-
       <Grid
         container
         direction={'column'}
@@ -134,14 +132,11 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
               action: () => {
                 onForwardAction();
               },
-              label: moreThanTwoInstitutions
-                ? t('selectFromAgencyList.registerAgency')
-                : t('selectInstitutionReleated.enter'),
+              label: t('chooseBusiness.registerBusiness'),
               disabled: !selectedInstitution,
             }}
           />
         </Grid>
-
         <Grid item xs={6} mt={6}>
           <Box
             sx={{
@@ -157,7 +152,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
               variant="caption"
               color={theme.palette.text.primary}
             >
-              <Trans i18nKey="selectInstitutionReleated.registerAgencyByTaxCodeLink">
+              <Trans i18nKey="chooseBusiness.registerBusinessByTaxCodeLink">
                 {'Sei un Legale Rappresentante e non trovi la tua impresa? '}
                 <Link
                   onClick={forward}
@@ -167,7 +162,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
                     color: theme.palette.primary.main,
                   }}
                 >
-                  {'Cercala tramite Codice Fiscale/Partita IVA'}
+                  {'Cercala tramite Codice Fiscale'}
                 </Link>
               </Trans>
             </Typography>

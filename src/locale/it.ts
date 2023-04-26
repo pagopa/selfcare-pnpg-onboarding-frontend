@@ -1,31 +1,36 @@
 export default {
   loadingText: 'Stiamo verificando i tuoi dati',
-  selectFromAgencyList: {
-    title: 'Che impresa vuoi registrare?',
-    description:
-      'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
-    registerAgency: 'Registra impresa',
-  },
-  selectInstitutionReleated: {
-    title: 'Seleziona l’impresa',
-    description:
-      'Se hai accesso alle notifiche di più imprese, potrai modificare la tua scelta dopo avere effettuato l’accesso.',
-    registerAgencyByTaxCodeLink:
-      'Sei un Legale Rappresentante e non trovi la tua impresa? <1>Cercala tramite Codice Fiscale/Partita IVA</1>',
-    enter: 'Accedi',
+  chooseBusiness: {
+    selectFromBusinessList: {
+      title: 'Che impresa vuoi registrare?',
+      subTitle:
+        'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
+    },
+    selectReleatedBusiness: {
+      title: 'Registra la tua impresa',
+      subTitle: 'Questa è l’impresa cui risulti essere Legale Rappresentante. ',
+    },
+    registerBusiness: 'Registra impresa',
+    registerBusinessByTaxCodeLink:
+      'Non trovi la tua impresa? <1>Cercala tramite Codice Fiscale</1>',
   },
   addCompany: {
     title: 'Che impresa vuoi registrare?',
-    description: 'Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <1/>registrare.',
-    textfieldLabel: 'Codice Fiscale/Partita IVA',
+    subTitle: 'Inserisci il Codice Fiscale dell’impresa che vuoi <1/>registrare.',
+    textfieldLabel: 'Codice Fiscale',
     forwardAction: 'Continua',
+  },
+  insertBusinessEmail: {
+    title: 'Qual è l’indirizzo PEC dell’impresa?',
+    subTitle: 'Inserisci l’indirizzo PEC dell’impresa che vuoi registrare.',
+    pecLabel: 'Indirizzo PEC',
   },
   insertBusinessData: {
     title: 'Inserisci i dati della tua impresa',
-    description:
-      'Inserisci l’indirizzo e-mail a cui vuoi ricevere la conferma della <1 />registrazione dell’impresa su SEND.',
+    subTitle:
+      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1/>registrare.',
     businessNameLabel: 'Ragione sociale',
-    emailLabel: 'Indirizzo e-mail',
+    pecEmailLabel: 'Indirizzo PEC',
     backAction: 'Indietro',
     forwardAction: 'Continua',
   },
@@ -41,7 +46,7 @@ export default {
       'Questa impresa è già stata registrata. Accedi per leggere le <1/>notifiche e aggiungere altri utenti.',
     signIn: 'Accedi',
   },
-  institutionNotFound: {
+  businessNotFound: {
     title: 'Nessuna impresa trovata',
     message: 'Dal tuo SPID non risulti essere Legale Rappresentante di <1 /> alcuna impresa.',
     close: 'Chiudi',
@@ -49,8 +54,6 @@ export default {
   matchedButNotLR: {
     title:
       'Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale rappresentante. <1 />Contatta il Registro delle imprese per farti aggiungere.',
-    registerNewAgency:
-      'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
     backToAccess: 'Torna all’accesso',
   },
   outcome: {
