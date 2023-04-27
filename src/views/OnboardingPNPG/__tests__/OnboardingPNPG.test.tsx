@@ -95,9 +95,20 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
 
   fireEvent.click(registerAgencyButton);
 
-  await waitFor(() => screen.getByText('Impresa registrata!'));
-  const enterDashboardButton = screen.getByText('Accedi');
-  fireEvent.click(enterDashboardButton);
+  screen.getByText('Qual è l’indirizzo PEC dell’impresa?');
+
+  const continueButton = screen.getByRole('button', { name: 'Continua' });
+  expect(continueButton).toBeDisabled();
+
+  const businessEmailInputField = document.getElementById('email-textfield');
+  await waitFor(() =>
+    fireEvent.change(businessEmailInputField as HTMLElement, {
+      target: { value: 'mockemail@email.com' },
+    })
+  );
+
+  expect(continueButton).toBeEnabled();
+  fireEvent.click(continueButton);
 });
 
 test('Test: Onboarding flow after retrieve institution from Infocamere with alreadyOnboarded outcome on submit', async () => {
@@ -115,10 +126,20 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with alre
 
   fireEvent.click(registerAgencyButton);
 
+  screen.getByText('Qual è l’indirizzo PEC dell’impresa?');
+
+  const continueButton = screen.getByRole('button', { name: 'Continua' });
+  expect(continueButton).toBeDisabled();
+
+  const businessEmailInputField = document.getElementById('email-textfield');
   await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Impresa già registrata')
+    fireEvent.change(businessEmailInputField as HTMLElement, {
+      target: { value: 'mockemail@email.com' },
+    })
   );
-  screen.getByText('Accedi');
+
+  expect(continueButton).toBeEnabled();
+  fireEvent.click(continueButton);
 });
 
 test('Test: Onboarding flow after retrieve institution from Infocamere with genericError outcome on submit', async () => {
@@ -134,20 +155,27 @@ test('Test: Onboarding flow after retrieve institution from Infocamere with gene
 
   fireEvent.click(registerAgencyButton);
 
+  screen.getByText('Qual è l’indirizzo PEC dell’impresa?');
+
+  const continueButton = screen.getByRole('button', { name: 'Continua' });
+  expect(continueButton).toBeDisabled();
+
+  const businessEmailInputField = document.getElementById('email-textfield');
   await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Impresa non registrata')
+    fireEvent.change(businessEmailInputField as HTMLElement, {
+      target: { value: 'mockemail@email.com' },
+    })
   );
-  const enterDashboardButton = screen.getByText('Chiudi');
-  fireEvent.click(enterDashboardButton);
+
+  expect(continueButton).toBeEnabled();
+  await waitFor(() => fireEvent.click(continueButton));
 });
 
 test('Test: In the add agency flow via taxCode, when inserting a taxCode that NOT match with legalAddress and AdE APIs, the "no companies found" UI will be show', async () => {
   renderComponent();
 
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText(
-    'Cercala tramite Codice Fiscale/Partita IVA'
-  );
+  const onboardingViaTaxCodeFlowButton = screen.getByText('Cercala tramite Codice Fiscale');
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
   screen.getByText('Che impresa vuoi registrare?');
@@ -174,9 +202,7 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that MA
   renderComponent();
 
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText(
-    'Cercala tramite Codice Fiscale/Partita IVA'
-  );
+  const onboardingViaTaxCodeFlowButton = screen.getByText('Cercala tramite Codice Fiscale');
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
   screen.getByText('Che impresa vuoi registrare?');
@@ -207,9 +233,7 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   renderComponent();
 
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const onboardingViaTaxCodeFlowButton = screen.getByText(
-    'Cercala tramite Codice Fiscale/Partita IVA'
-  );
+  const onboardingViaTaxCodeFlowButton = screen.getByText('Cercala tramite Codice Fiscale');
   fireEvent.click(onboardingViaTaxCodeFlowButton);
 
   screen.getByText('Che impresa vuoi registrare?');
@@ -227,8 +251,25 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
 
   fireEvent.click(continueButton);
 
+  await waitFor(() => screen.getByText('Inserisci i dati della tua impresa'));
+
+  const forwardButton = screen.getByRole('button', { name: 'Continua' });
+  expect(forwardButton).toBeDisabled();
+
+  const businessNameInputField = document.getElementById('businessname-textfield');
   await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 4 })).toHaveTextContent('Impresa registrata!')
+    fireEvent.change(businessNameInputField as HTMLElement, {
+      target: { value: 'testBusinessName1' },
+    })
   );
-  screen.getByText('Accedi');
+
+  const businessEmailInputField = document.getElementById('email-textfield');
+  await waitFor(() =>
+    fireEvent.change(businessEmailInputField as HTMLElement, {
+      target: { value: 'mockemail@email.com' },
+    })
+  );
+
+  expect(forwardButton).toBeEnabled();
+  await waitFor(() => fireEvent.click(forwardButton));
 });

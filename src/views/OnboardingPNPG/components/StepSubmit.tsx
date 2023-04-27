@@ -20,6 +20,9 @@ function StepSubmit({ forward, setLoading }: Props) {
 
   const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
     useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [insertedBusinessEmail, _setInsertedBusinessEmail, setInsertedBusinessEmailHistory] =
+    useHistoryState<string>('inserted_business_email', undefined);
+
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
 
   const loggedUser = storageUserOps.read();
@@ -51,7 +54,18 @@ function StepSubmit({ forward, setLoading }: Props) {
     selectedInstitution: BusinessPnpg
   ) => {
     setLoading(true);
-    onboardingPGSubmit(externalInstitutionId, productId, loggedUser, selectedInstitution)
+    onboardingPGSubmit(
+      externalInstitutionId,
+      productId,
+      {
+        uid: loggedUser.uid,
+        taxCode: loggedUser.taxCode,
+        name: loggedUser.name,
+        surname: loggedUser.surname,
+        email: insertedBusinessEmail,
+      },
+      selectedInstitution
+    )
       .then(() => {
         trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
         setSelectedInstitution(selectedInstitution);
@@ -69,7 +83,10 @@ function StepSubmit({ forward, setLoading }: Props) {
           trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
         }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setInsertedBusinessEmailHistory('');
+      });
   };
 
   return error === 'genericError' ? (

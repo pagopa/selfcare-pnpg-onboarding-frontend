@@ -1,3 +1,5 @@
+import { BusinessPnPGResource } from './api/generated/b4f-onboarding-pnpg/BusinessPnPGResource';
+
 export type RoutesObject = { [key: string]: RouteConfig };
 
 export type RouteConfig = {
@@ -43,10 +45,10 @@ export type Product = {
   title: string;
 };
 
-export type BusinessPnpg = { businessName: string; businessTaxId: string };
+export type BusinessPnpg = { certified: boolean; businessName: string; businessTaxId: string };
 
 export type InstitutionsPnpg = {
-  businesses: Array<BusinessPnpg>;
+  businesses: Array<BusinessPnPGResource>;
   legalTaxId: string;
   requestDateTime: string;
 };
