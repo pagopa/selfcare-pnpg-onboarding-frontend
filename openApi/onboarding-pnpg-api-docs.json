@@ -742,6 +742,16 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -1517,9 +1527,15 @@
       },
       "UserDto": {
         "title": "UserDto",
-        "required": ["name", "role", "surname", "taxCode"],
+        "required": ["email", "name", "role", "surname", "taxCode"],
         "type": "object",
         "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "email@example.com"
+          },
           "name": {
             "type": "string",
             "description": "User's name"
