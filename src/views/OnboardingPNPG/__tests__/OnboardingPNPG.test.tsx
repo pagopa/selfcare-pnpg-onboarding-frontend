@@ -219,13 +219,9 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that MA
   expect(continueButton).toBeEnabled();
 
   fireEvent.click(continueButton);
-  await waitFor(() =>
-    expect(screen.getByRole('heading', { level: 5 })).toHaveTextContent(
-      'Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale rappresentante.'
-    )
-  );
+  await waitFor(() => screen.getByText(`Non puoi registrare\ questa impresa`));
 
-  const backToAccessButton = screen.getByText('Torna all’accesso');
+  const backToAccessButton = screen.getByText('Chiudi');
   fireEvent.click(backToAccessButton);
 });
 
