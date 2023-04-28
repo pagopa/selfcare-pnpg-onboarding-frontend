@@ -16,7 +16,7 @@ export default {
   },
   addCompany: {
     title: 'Che impresa vuoi registrare?',
-    subTitle: 'Inserisci il Codice Fiscale dell’impresa che vuoi <1/>registrare.',
+    subTitle: 'Inserisci il Codice Fiscale dell’impresa che vuoi <1 />registrare.',
     textfieldLabel: 'Codice Fiscale',
     forwardAction: 'Continua',
   },
@@ -28,7 +28,7 @@ export default {
   insertBusinessData: {
     title: 'Inserisci i dati della tua impresa',
     subTitle:
-      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1/>registrare.',
+      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
     businessNameLabel: 'Ragione sociale',
     pecEmailLabel: 'Indirizzo PEC',
     backAction: 'Indietro',
@@ -43,7 +43,7 @@ export default {
   alreadyOnboarded: {
     title: 'Impresa già registrata',
     description:
-      'Questa impresa è già stata registrata. Accedi per leggere le <1/>notifiche e aggiungere altri utenti.',
+      'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Accedi',
   },
   businessNotFound: {
@@ -52,9 +52,10 @@ export default {
     close: 'Chiudi',
   },
   matchedButNotLR: {
-    title:
-      'Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale rappresentante. <1 />Contatta il Registro delle imprese per farti aggiungere.',
-    backToAccess: 'Torna all’accesso',
+    title: 'Non puoi registrare <1/>questa impresa',
+    description:
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
+    close: 'Chiudi',
   },
   outcome: {
     success: {

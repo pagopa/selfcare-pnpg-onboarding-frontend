@@ -94,14 +94,20 @@ function StepAddCompany({ setActiveStep }: Props) {
         icon={<IllusError size={60} />}
         title={
           <Trans i18nKey="matchedButNotLR.title">
-            Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale
-            rappresentante. <br />
-            Contatta il Registro delle imprese per farti aggiungere.
+            Non puoi registrare <br />
+            questa impresa
           </Trans>
         }
-        description={''}
-        variantTitle={'h5'}
-        buttonLabel={t('matchedButNotLR.backToAccess')}
+        description={
+          <Trans i18nKey="matchedButNotLR.description">
+            Dal tuo SPID non risulti essere Legale Rappresentante <br />
+            dell’impresa associata a questo Codice Fiscale. Puoi <br />
+            registrare solo le imprese di cui sei Legale Rappresentante.
+          </Trans>
+        }
+        variantTitle={'h4'}
+        variantDescription={'body1'}
+        buttonLabel={t('matchedButNotLR.close')}
         onButtonClick={() => {
           setError(undefined);
           setTypedInput('');
