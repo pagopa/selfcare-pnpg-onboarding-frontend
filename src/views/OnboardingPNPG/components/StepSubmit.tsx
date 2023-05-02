@@ -62,9 +62,10 @@ function StepSubmit({ forward, setLoading }: Props) {
         taxCode: loggedUser.taxCode,
         name: loggedUser.name,
         surname: loggedUser.surname,
-        email: insertedBusinessEmail,
+        email: loggedUser.email,
       },
-      selectedInstitution
+      selectedInstitution,
+      insertedBusinessEmail
     )
       .then(() => {
         trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
