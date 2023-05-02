@@ -31,6 +31,7 @@ export default {
       'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
     businessNameLabel: 'Ragione sociale',
     pecEmailLabel: 'Indirizzo PEC',
+    invalidEmail: "L'indirizzo e-mail inserito non è corretto",
     backAction: 'Indietro',
     forwardAction: 'Continua',
   },
