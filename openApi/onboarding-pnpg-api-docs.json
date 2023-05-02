@@ -46,6 +46,19 @@
         "summary": "getInstitutions",
         "description": "The service retrieves all the onboarded institutions related to the logged user",
         "operationId": "getInstitutionsUsingGET",
+        "parameters": [
+          {
+            "name": "productFilter",
+            "in": "query",
+            "description": "A list of products to filter the institutions based on whether the institution has an ACTIVE onboarding on the specified products. For multiple values insert a single string with comma separated values.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1315,7 +1328,7 @@
       },
       "PnPGBillingDataDto": {
         "title": "PnPGBillingDataDto",
-        "required": ["businessName", "certified", "taxCode"],
+        "required": ["businessName", "certified", "digitalAddress", "taxCode"],
         "type": "object",
         "properties": {
           "businessName": {
@@ -1326,6 +1339,10 @@
             "type": "boolean",
             "description": "Indicates whether the institution values come from INFOCAMERE (true) or MANUAL (false)",
             "example": false
+          },
+          "digitalAddress": {
+            "type": "string",
+            "description": "Institution's email address"
           },
           "taxCode": {
             "type": "string",
@@ -1383,10 +1400,6 @@
         "required": ["name", "role", "surname", "taxCode"],
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "description": "User's email"
-          },
           "name": {
             "type": "string",
             "description": "User's name"

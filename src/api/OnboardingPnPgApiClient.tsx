@@ -1,6 +1,5 @@
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
-import { EmailString } from '@pagopa/ts-commons/lib/strings';
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ENV } from '../utils/env';
@@ -48,7 +47,6 @@ export const OnboardingPnPgApi = {
     const result = await apiClient.getInstitutionsByUserUsingPOST({
       body: {
         taxCode: loggedUser.taxCode,
-        email: loggedUser.email as EmailString,
         name: loggedUser.name,
         surname: loggedUser.surname,
         role: 'MANAGER' as RoleEnum,
@@ -61,7 +59,8 @@ export const OnboardingPnPgApi = {
     externalInstitutionId: string,
     productId: string,
     loggedUser: User,
-    selectedInstitution: BusinessPnpg
+    selectedInstitution: BusinessPnpg,
+    digitalAddress: string
   ): Promise<boolean> => {
     const result = await apiClient.onboardingPGUsingPOST({
       externalInstitutionId,
@@ -71,13 +70,13 @@ export const OnboardingPnPgApi = {
           certified: selectedInstitution.certified,
           businessName: selectedInstitution.businessName,
           taxCode: selectedInstitution.businessTaxId,
+          digitalAddress,
         },
         users: [
           {
             taxCode: loggedUser.taxCode,
             name: loggedUser.name,
             surname: loggedUser.surname,
-            email: loggedUser.email as EmailString,
             role: 'MANAGER' as RoleEnum,
           },
         ],
