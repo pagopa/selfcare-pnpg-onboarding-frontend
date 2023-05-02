@@ -8,6 +8,8 @@ import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 
+const emailRegexp = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
+
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 } & StepperStepComponentProps;
@@ -21,6 +23,7 @@ function StepBusinessData({ setActiveStep }: Props) {
     useHistoryState<string>('inserted_business_email', undefined);
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     const isUncertifiedEmptyFields =
@@ -32,6 +35,10 @@ function StepBusinessData({ setActiveStep }: Props) {
       selectedInstitution?.certified && insertedBusinessEmail?.length > 0;
     setIsDisabled(!(isCertifiedEmptyField || isUncertifiedEmptyFields));
   }, [insertedBusinessEmail, selectedInstitution]);
+
+  useEffect(() => {
+    setIsError(insertedBusinessEmail ? !emailRegexp.test(insertedBusinessEmail) : false);
+  }, [insertedBusinessEmail]);
 
   const onForwardAction = () => {
     setSelectedInstitutionHistory(selectedInstitution);
@@ -101,6 +108,8 @@ function StepBusinessData({ setActiveStep }: Props) {
             onChange={(e) => {
               setInsertedBusinessEmail(e.target.value);
             }}
+            error={isError}
+            helperText={isError ? t('insertBusinessData.invalidEmail') : undefined}
             sx={{ width: '416px' }}
           />
         </Card>
@@ -114,7 +123,7 @@ function StepBusinessData({ setActiveStep }: Props) {
             },
           }}
           forward={{
-            disabled: isDisabled,
+            disabled: isDisabled || isError,
             label: t('insertBusinessData.forwardAction'),
             action: onForwardAction,
           }}
