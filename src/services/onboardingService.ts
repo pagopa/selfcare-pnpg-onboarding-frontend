@@ -44,7 +44,8 @@ export const onboardingPGSubmit = (
   externalInstitutionId: string,
   productId: string,
   loggedUser: User,
-  selectedInstitution: BusinessPnpg
+  selectedInstitution: BusinessPnpg,
+  digitalAddress: string
 ): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
@@ -54,7 +55,8 @@ export const onboardingPGSubmit = (
       externalInstitutionId,
       productId,
       loggedUser,
-      selectedInstitution
+      selectedInstitution,
+      digitalAddress
     );
   }
 };

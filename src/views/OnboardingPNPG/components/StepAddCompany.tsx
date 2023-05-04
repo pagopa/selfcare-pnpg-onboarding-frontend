@@ -20,7 +20,6 @@ type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
@@ -46,14 +45,16 @@ function StepAddCompany({ setActiveStep }: Props) {
         matchInstitutionAndUser(typedInput, loggedUser)
           .then(() => {
             setSelectedInstitution({
+              certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
             setSelectedInstitutionHistory({
+              certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
-            setActiveStep(4);
+            setActiveStep(3);
           })
           .catch((reason) => {
             addError({
@@ -93,14 +94,20 @@ function StepAddCompany({ setActiveStep }: Props) {
         icon={<IllusError size={60} />}
         title={
           <Trans i18nKey="matchedButNotLR.title">
-            Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale
-            rappresentante. <br />
-            Contatta il Registro delle imprese per farti aggiungere.
+            Non puoi registrare <br />
+            questa impresa
           </Trans>
         }
-        description={''}
-        variantTitle={'h5'}
-        buttonLabel={t('matchedButNotLR.backToAccess')}
+        description={
+          <Trans i18nKey="matchedButNotLR.description">
+            Dal tuo SPID non risulti essere Legale Rappresentante <br />
+            dell’impresa associata a questo Codice Fiscale. Puoi <br />
+            registrare solo le imprese di cui sei Legale Rappresentante.
+          </Trans>
+        }
+        variantTitle={'h4'}
+        variantDescription={'body1'}
+        buttonLabel={t('matchedButNotLR.close')}
         onButtonClick={() => {
           setError(undefined);
           setTypedInput('');
@@ -119,8 +126,8 @@ function StepAddCompany({ setActiveStep }: Props) {
         </Grid>
         <Grid item xs={12}>
           <Typography align="center" color={theme.palette.text.primary} m={1} mb={3}>
-            <Trans i18next="addCompany.description">
-              Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <br />
+            <Trans i18next="addCompany.subTitle">
+              Inserisci il Codice Fiscale dell’impresa che vuoi <br />
               registrare.
             </Trans>
           </Typography>

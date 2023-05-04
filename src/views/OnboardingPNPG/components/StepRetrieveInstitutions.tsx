@@ -59,15 +59,15 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
     <EndingPage
       minHeight="52vh"
       icon={<IllusError size={60} />}
-      title={t('institutionNotFound.title')}
+      title={t('businessNotFound.title')}
       description={
-        <Trans i18nKey="institutionNotFound.message">
+        <Trans i18nKey="businessNotFound.message">
           Dal tuo SPID non risulti essere Legale Rappresentante di <br /> alcuna impresa.
         </Trans>
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={t('institutionNotFound.close')}
+      buttonLabel={t('businessNotFound.close')}
       onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
     />
   ) : (

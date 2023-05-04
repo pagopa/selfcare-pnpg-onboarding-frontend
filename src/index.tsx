@@ -13,6 +13,7 @@ import { ENV } from './utils/env';
 import './consentAndAnalyticsConfiguration.ts';
 import './locale';
 import { store } from './redux/store';
+import { testToken } from './hooks/useLogin';
 
 // eslint-disable-next-line functional/immutable-data
 CONFIG.MOCKS.MOCK_USER = MOCK_USER;
@@ -22,6 +23,8 @@ CONFIG.URL_FE.LOGIN = `${ENV.URL_FE.LOGIN}`;
 CONFIG.URL_FE.LOGOUT = ENV.URL_FE.LOGOUT;
 // eslint-disable-next-line functional/immutable-data
 CONFIG.URL_FE.ASSISTANCE = ENV.URL_FE.ASSISTANCE;
+// eslint-disable-next-line functional/immutable-data
+CONFIG.TEST.JWT = testToken;
 
 ReactDOM.render(
   <React.StrictMode>
