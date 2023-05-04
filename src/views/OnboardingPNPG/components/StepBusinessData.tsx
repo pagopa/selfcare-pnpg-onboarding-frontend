@@ -23,7 +23,6 @@ function StepBusinessData({ setActiveStep }: Props) {
     useHistoryState<string>('inserted_business_email', undefined);
 
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     const isUncertifiedEmptyFields =
@@ -35,11 +34,6 @@ function StepBusinessData({ setActiveStep }: Props) {
       selectedInstitution?.certified && insertedBusinessEmail?.length > 0;
     setIsDisabled(!(isCertifiedEmptyField || isUncertifiedEmptyFields));
   }, [insertedBusinessEmail, selectedInstitution]);
-
-  useEffect(() => {
-    setIsError(insertedBusinessEmail ? !emailRegexp.test(insertedBusinessEmail) : false);
-  }, [insertedBusinessEmail]);
-
   const onForwardAction = () => {
     setSelectedInstitutionHistory(selectedInstitution);
     setInsertedBusinessEmailHistory(insertedBusinessEmail);
@@ -47,6 +41,10 @@ function StepBusinessData({ setActiveStep }: Props) {
   };
 
   const isCertifiedBusinessName = selectedInstitution?.certified;
+
+  const notValidBusinessEmail = !!insertedBusinessEmail && !emailRegexp.test(insertedBusinessEmail);
+  const notValidBusinessName =
+    !!selectedInstitution?.businessName && selectedInstitution?.businessName.trim().length === 0;
 
   return (
     <Grid container>
@@ -89,7 +87,6 @@ function StepBusinessData({ setActiveStep }: Props) {
               id="businessname-textfield"
               label={t('insertBusinessData.businessNameLabel')}
               variant="outlined"
-              type="tel"
               onChange={(e) => {
                 setSelectedInstitution({
                   certified: selectedInstitution?.certified ?? true,
@@ -97,6 +94,10 @@ function StepBusinessData({ setActiveStep }: Props) {
                   businessName: e.target.value,
                 });
               }}
+              error={notValidBusinessName}
+              helperText={
+                notValidBusinessName ? t('insertBusinessData.invalidBusinessName') : undefined
+              }
               sx={{ width: '416px', marginBottom: 4 }}
             />
           )}
@@ -104,12 +105,11 @@ function StepBusinessData({ setActiveStep }: Props) {
             id="email-textfield"
             label={t('insertBusinessData.pecEmailLabel')}
             variant="outlined"
-            type="tel"
             onChange={(e) => {
               setInsertedBusinessEmail(e.target.value);
             }}
-            error={isError}
-            helperText={isError ? t('insertBusinessData.invalidEmail') : undefined}
+            error={notValidBusinessEmail}
+            helperText={notValidBusinessEmail ? t('insertBusinessData.invalidEmail') : undefined}
             sx={{ width: '416px' }}
           />
         </Card>
@@ -123,7 +123,7 @@ function StepBusinessData({ setActiveStep }: Props) {
             },
           }}
           forward={{
-            disabled: isDisabled || isError,
+            disabled: isDisabled || notValidBusinessName || notValidBusinessEmail,
             label: t('insertBusinessData.forwardAction'),
             action: onForwardAction,
           }}
