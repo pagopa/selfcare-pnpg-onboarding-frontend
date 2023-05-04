@@ -32,6 +32,7 @@ export default {
     businessNameLabel: 'Ragione sociale',
     pecEmailLabel: 'Indirizzo PEC',
     invalidEmail: "L'indirizzo e-mail inserito non è corretto",
+    invalidBusinessName: 'Inserisci una ragione sociale',
     backAction: 'Indietro',
     forwardAction: 'Continua',
   },
