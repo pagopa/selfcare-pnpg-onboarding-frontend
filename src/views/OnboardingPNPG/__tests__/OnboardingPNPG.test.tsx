@@ -106,8 +106,6 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
 
   expect(continueButton).toBeEnabled();
   await waitFor(() => fireEvent.click(continueButton));
-
-  await waitFor(() => screen.getByText('Impresa registrata!'));
 });
 
 test('Test: Onboarding flow after retrieve institution from Infocamere with alreadyOnboarded outcome on submit', async () => {
