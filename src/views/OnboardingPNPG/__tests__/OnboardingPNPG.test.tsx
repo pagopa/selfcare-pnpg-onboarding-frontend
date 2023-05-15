@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, getByText, render, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
 import { User } from '../../../types';
 import { HeaderContext, UserContext } from '../../../lib/context';
@@ -8,7 +8,6 @@ import { createStore } from '../../../redux/store';
 import { Provider } from 'react-redux';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Router } from 'react-router';
-import { useHistory } from 'react-router-dom';
 
 const oldWindowLocation = global.window.location;
 const initialLocation = {
@@ -82,8 +81,7 @@ test('Test: Render test', async () => {
 
 test('Test: Onboarding flow after retrieve institution from Infocamere, with successful registration on submit', async () => {
   renderComponent();
-  const history = useHistory();
-  const pushSpy = jest.spyOn(history, 'push');
+
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
   const registerAgencyButton = screen.getByText('Registra impresa');
   expect(registerAgencyButton).toBeDisabled();
@@ -101,14 +99,15 @@ test('Test: Onboarding flow after retrieve institution from Infocamere, with suc
   expect(continueButton).toBeDisabled();
 
   const businessEmailInputField = document.getElementById('email-textfield');
-  await waitFor(() =>
-    fireEvent.change(businessEmailInputField as HTMLElement, {
-      target: { value: 'mockemail@email.com' },
-    })
-  );
+
+  fireEvent.change(businessEmailInputField as HTMLElement, {
+    target: { value: 'mockemail@email.com' },
+  });
 
   expect(continueButton).toBeEnabled();
-  fireEvent.click(continueButton);
+  await waitFor(() => fireEvent.click(continueButton));
+
+  await waitFor(() => screen.getByText('Impresa registrata!'));
 });
 
 test('Test: Onboarding flow after retrieve institution from Infocamere with alreadyOnboarded outcome on submit', async () => {

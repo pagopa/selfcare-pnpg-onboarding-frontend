@@ -4,6 +4,7 @@ import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
+import { uniqueId } from 'lodash';
 import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
 import { ENV } from '../../../utils/env';
@@ -26,6 +27,7 @@ function StepSubmit({ forward, setLoading }: Props) {
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
 
   const loggedUser = storageUserOps.read();
+  const requestId = uniqueId();
 
   const productId = 'prod-pn-pg';
 
@@ -68,7 +70,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       insertedBusinessEmail
     )
       .then(() => {
-        trackEvent('ONBOARDING_PNPG_SEND_SUCCESS', {});
+        trackEvent('ONBOARDING_SUBMIT_SUCCESS', { requestId, productId });
         setSelectedInstitution(selectedInstitution);
         setSelectedInstitutionHistory(selectedInstitution);
         forward();
@@ -76,12 +78,12 @@ function StepSubmit({ forward, setLoading }: Props) {
       .catch((reason) => {
         if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
-          trackEvent('ONBOARDING_PNPG_SEND_ALREADY_ONBOARDED', {});
+          trackEvent('ONBOARDING_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
           setSelectedInstitution(selectedInstitution);
           setSelectedInstitutionHistory(selectedInstitution);
         } else {
           setError('genericError');
-          trackEvent('ONBOARDING_PNPG_SEND_GENERIC_ERROR', {});
+          trackEvent('ONBOARDING_SUBMIT_GENERIC_ERROR', { requestId, productId });
         }
       })
       .finally(() => {

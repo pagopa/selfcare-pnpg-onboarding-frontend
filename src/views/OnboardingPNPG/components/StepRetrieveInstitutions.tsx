@@ -5,6 +5,7 @@ import { IllusError } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { uniqueId } from 'lodash';
 import { InstitutionsPnpg } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
@@ -23,19 +24,24 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
   const retrieveInstitutionsByUser = async () => {
     setLoading(true);
     getInstitutionsByUser(loggedUser)
       .then((retrievedInstitutions) => {
+        trackEvent('ONBOARDING_BUSINESS_SUCCESS_RETRIEVED', { requestId, productId: 'prod-pn-pg' });
         setRetrievedInstitutions(retrievedInstitutions);
         setActiveStep(
           retrievedInstitutions && retrievedInstitutions.businesses.length !== 0 ? 1 : 2
         );
       })
       .catch(() => {
-        trackEvent('GENERIC ERROR', {});
+        trackEvent('ONBOARDING_BUSINESS_RETRIEVED_GENERIC_ERROR', {
+          requestId,
+          productId: 'prod-pn-pg',
+        });
         setError(true);
       })
       .finally(() => setLoading(false));

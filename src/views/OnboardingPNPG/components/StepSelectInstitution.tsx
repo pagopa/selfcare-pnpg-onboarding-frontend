@@ -2,6 +2,8 @@ import { Button, Grid, Typography, Box, Link } from '@mui/material';
 import { PartyAccountItem, theme } from '@pagopa/mui-italia';
 import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { uniqueId } from 'lodash';
 import { BusinessPnpg, InstitutionsPnpg, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
@@ -38,6 +40,8 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
   }, [retrievedInstitutions]);
 
   const onForwardAction = () => {
+    const requestId = uniqueId();
+    trackEvent('ONBOARDING_BUSINESS_SELECTION', { requestId, productId: 'prod-pn-pg' });
     setSelectedInstitutionHistory({
       certified: true,
       businessName: selectedInstitution?.businessName ?? '',

@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { uniqueId } from 'lodash';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { BusinessPnpg } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
@@ -31,19 +33,26 @@ function StepAddCompany({ setActiveStep }: Props) {
   const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
+  const productId = 'prod-pn-pg';
+
   const handleSubmit = (typedInput: string) => {
+    trackEvent('ONBOARDING_BY_ENTERING_TAXCODE', { requestId, productId });
     setLoading(true);
     getInstitutionLegalAddress(typedInput)
       .then(() => {
         setLoading(false);
+        trackEvent('ONBOARDING_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setError('matchedButNotLR');
       })
       .catch(() => {
+        trackEvent('ONBOARDING_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setLoading(true);
         matchInstitutionAndUser(typedInput, loggedUser)
           .then(() => {
+            trackEvent('ONBOARDING_MATCHED_ADE', { requestId, productId });
             setSelectedInstitution({
               certified: false,
               businessName: '',
@@ -57,6 +66,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             setActiveStep(3);
           })
           .catch((reason) => {
+            trackEvent('ONBOARDING_NOT_MATCHED_ADE', { requestId, productId });
             addError({
               id: 'MATCH_INSTITUTION_AND_USER_ERROR',
               blocking: false,

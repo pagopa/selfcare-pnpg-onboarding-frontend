@@ -3,6 +3,8 @@ import { theme } from '@pagopa/mui-italia';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import { uniqueId } from 'lodash';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
@@ -34,7 +36,10 @@ function StepBusinessData({ setActiveStep }: Props) {
       selectedInstitution?.certified && insertedBusinessEmail?.length > 0;
     setIsDisabled(!(isCertifiedEmptyField || isUncertifiedEmptyFields));
   }, [insertedBusinessEmail, selectedInstitution]);
+
   const onForwardAction = () => {
+    const requestId = uniqueId();
+    trackEvent('ONBOARDING_BUSINESS_DATA', { requestId, productId: 'prod-pn-pg' });
     setSelectedInstitutionHistory(selectedInstitution);
     setInsertedBusinessEmailHistory(insertedBusinessEmail);
     setActiveStep(4);
