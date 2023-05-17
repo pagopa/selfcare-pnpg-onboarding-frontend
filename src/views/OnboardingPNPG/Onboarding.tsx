@@ -1,18 +1,18 @@
 import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { InstitutionsPnpg, StepperStep } from '../../types';
+import { LegalEntity, StepperStep } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import StepAddCompany from './components/StepAddCompany';
-import StepRetrieveInstitutions from './components/StepRetrieveInstitutions';
-import StepSelectInstitution from './components/StepSelectInstitution';
+import StepRetrieveBusinesses from './components/StepRetrieveBusinesses';
+import StepSelectBusiness from './components/StepSelectBusiness';
 import StepSubmit from './components/StepSubmit';
 import StepSuccess from './components/StepSuccess';
 import StepBusinessData from './components/StepBusinessData';
 
-function OnboardingPNPGComponent() {
-  const [activeStep, setActiveStep] = useState(0);
-  const [retrievedInstitutions, setRetrievedInstitutions] = useState<InstitutionsPnpg>();
+function OnboardingComponent() {
   const [_loading, setLoading] = useState<boolean>(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [retrievedBusinesses, setRetrievedBusinesses] = useState<LegalEntity>();
 
   const forward = () => {
     setActiveStep(activeStep + 1);
@@ -20,18 +20,18 @@ function OnboardingPNPGComponent() {
 
   const steps: Array<StepperStep> = [
     {
-      label: 'Retrieve institutions',
+      label: 'Retrieve businesses',
       Component: () =>
-        StepRetrieveInstitutions({
-          setRetrievedInstitutions,
+        StepRetrieveBusinesses({
+          setRetrievedBusinesses,
           setActiveStep,
         }),
     },
     {
-      label: 'Select Institution',
+      label: 'Select business',
       Component: () =>
-        StepSelectInstitution({
-          retrievedInstitutions,
+        StepSelectBusiness({
+          retrievedBusinesses,
           setActiveStep,
           forward,
         }),
@@ -73,4 +73,4 @@ function OnboardingPNPGComponent() {
   );
 }
 
-export default withLogin(OnboardingPNPGComponent);
+export default withLogin(OnboardingComponent);

@@ -1,4 +1,4 @@
-import { BusinessPnPGResource } from './api/generated/b4f-onboarding-pnpg/BusinessPnPGResource';
+import { BusinessResourceIC } from './api/generated/b4f-onboarding-pnpg/BusinessResourceIC';
 
 export type RoutesObject = { [key: string]: RouteConfig };
 
@@ -45,16 +45,16 @@ export type Product = {
   title: string;
 };
 
-export type BusinessPnpg = { certified: boolean; businessName: string; businessTaxId: string };
+export type Business = { certified: boolean; businessName: string; businessTaxId: string };
 
-export type InstitutionsPnpg = {
-  businesses: Array<BusinessPnPGResource>;
+export type LegalEntity = {
+  businesses: Array<BusinessResourceIC>;
   legalTaxId: string;
   requestDateTime: string;
 };
 
-export type PnpgInstitutionLegalAddressResource = {
-  externalInstitutionId: string;
+export type BusinessLegalAddress = {
+  taxCode: string;
   address: string;
   zipCode: string;
 };

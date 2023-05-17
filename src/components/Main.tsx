@@ -15,7 +15,7 @@ export function Main() {
           </Route>
         ))}
         <Route path="*">
-          <Redirect to={ROUTES.PNPG_ONBOARDING.PATH} />
+          <Redirect to={ROUTES.ONBOARDING.PATH} />
         </Route>
       </Switch>
     </Box>

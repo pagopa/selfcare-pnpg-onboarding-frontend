@@ -8,14 +8,11 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { BusinessPnpg } from '../../../types';
+import { Business } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import {
-  getInstitutionLegalAddress,
-  matchInstitutionAndUser,
-} from '../../../services/onboardingService';
+import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 
 type Props = {
@@ -26,8 +23,9 @@ function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
-  const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
+    Business | undefined
+  >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
@@ -41,7 +39,7 @@ function StepAddCompany({ setActiveStep }: Props) {
   const handleSubmit = (typedInput: string) => {
     trackEvent('ONBOARDING_BY_ENTERING_TAXCODE', { requestId, productId });
     setLoading(true);
-    getInstitutionLegalAddress(typedInput)
+    getBusinessLegalAddress(typedInput)
       .then(() => {
         setLoading(false);
         trackEvent('ONBOARDING_MATCHED_LEGAL_ADDRESS', { requestId, productId });
@@ -50,15 +48,15 @@ function StepAddCompany({ setActiveStep }: Props) {
       .catch(() => {
         trackEvent('ONBOARDING_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setLoading(true);
-        matchInstitutionAndUser(typedInput, loggedUser)
+        matchBusinessAndUser(typedInput, loggedUser)
           .then(() => {
             trackEvent('ONBOARDING_MATCHED_ADE', { requestId, productId });
-            setSelectedInstitution({
+            setSelectedBusiness({
               certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
-            setSelectedInstitutionHistory({
+            setSelectedBusinessHistory({
               certified: false,
               businessName: '',
               businessTaxId: typedInput,

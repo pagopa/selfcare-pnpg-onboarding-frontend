@@ -1,21 +1,22 @@
-import { loggedUser } from '../../api/__mocks__/OnboardingPnPgApiClient';
-import { mockedAgencies } from '../../api/__mocks__/OnboardingPnPgApiClient';
+import { RoleEnum } from '../../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { loggedUser } from '../../api/__mocks__/OnboardingApiClient';
+import { mockedBusinesses } from '../../api/__mocks__/OnboardingApiClient';
 import {
-  getInstitutionLegalAddress,
+  getBusinessLegalAddress,
   onboardingPGSubmit,
-  matchInstitutionAndUser,
-  getInstitutionsByUser,
+  matchBusinessAndUser,
+  getBusinessesByUser,
 } from '../onboardingService';
 
 beforeEach(() => {
-  jest.spyOn(require('../onboardingService'), 'getInstitutionsByUser');
-  jest.spyOn(require('../onboardingService'), 'getInstitutionLegalAddress');
+  jest.spyOn(require('../onboardingService'), 'getBusinessesByUser');
+  jest.spyOn(require('../onboardingService'), 'getBusinessLegalAddress');
   jest.spyOn(require('../onboardingService'), 'onboardingPGSubmit');
-  jest.spyOn(require('../onboardingService'), 'matchInstitutionAndUser');
+  jest.spyOn(require('../onboardingService'), 'matchBusinessAndUser');
 });
 
-test('Test: getInstitutionsByUser', async () => {
-  const fetchGetInstitutionsByUser = await getInstitutionsByUser({
+test('Test: getBusinessesByUser', async () => {
+  const fetchGetBusinessesByUser = await getBusinessesByUser({
     uid: loggedUser.uid,
     email: loggedUser.email,
     name: loggedUser.name,
@@ -23,7 +24,7 @@ test('Test: getInstitutionsByUser', async () => {
     taxCode: loggedUser.taxCode,
   });
 
-  expect(fetchGetInstitutionsByUser).toMatchObject({
+  expect(fetchGetBusinessesByUser).toMatchObject({
     businesses: [
       { businessName: 'BusinessName success', businessTaxId: '01113570442' },
       { businessName: 'BusinessName alreadyOnboarded', businessTaxId: '01501320442' },
@@ -33,27 +34,38 @@ test('Test: getInstitutionsByUser', async () => {
     requestDateTime: 'x',
   });
 
-  expect(getInstitutionsByUser).toBeCalledTimes(1);
+  expect(getBusinessesByUser).toBeCalledTimes(1);
 });
 
-test('Test: getInstitutionLegalAddress', async () => {
-  const fetchGetInstitutionLegalAddress = await getInstitutionLegalAddress('77777777777');
+test('Test: getBusinessLegalAddress', async () => {
+  const fetchGetBusinessLegalAddress = await getBusinessLegalAddress('77777777777');
 
-  expect(fetchGetInstitutionLegalAddress).toMatchObject({
-    externalInstitutionId: '77777777777',
+  expect(fetchGetBusinessLegalAddress).toMatchObject({
+    taxCode: '77777777777',
     address: 'Via retrievedInstitutionLegalAddress1',
     zipCode: '98765',
   });
 
-  expect(getInstitutionLegalAddress).toBeCalledTimes(1);
+  expect(getBusinessLegalAddress).toBeCalledTimes(1);
 });
 
 test('Test: onboardingPGSubmit', async () => {
   const fetchOnboardingPGSubmit = await onboardingPGSubmit(
-    '00000000000',
+    mockedBusinesses[0].businessTaxId,
     'prod-pn-pg',
-    loggedUser,
-    mockedAgencies[0]
+    {
+      taxCode: loggedUser.taxCode,
+      name: loggedUser.name,
+      surname: loggedUser.surname,
+      role: 'MANAGER' as RoleEnum,
+      email: loggedUser.email,
+    },
+    {
+      businessName: mockedBusinesses[0].businessName,
+      businessTaxId: mockedBusinesses[0].businessTaxId,
+      certified: false,
+    },
+    'mockedemail@mock.it'
   );
 
   expect(fetchOnboardingPGSubmit).toBeTruthy();
@@ -61,10 +73,10 @@ test('Test: onboardingPGSubmit', async () => {
   expect(onboardingPGSubmit).toBeCalledTimes(1);
 });
 
-test('Test: matchInstitutionAndUser', async () => {
-  const fetchMatchInstitutionAndUser = await matchInstitutionAndUser('55555555555', loggedUser);
+test('Test: matchBusinessAndUser', async () => {
+  const fetchMatchBusinessAndUser = await matchBusinessAndUser('55555555555', loggedUser);
 
-  expect(fetchMatchInstitutionAndUser).toBeTruthy();
+  expect(fetchMatchBusinessAndUser).toBeTruthy();
 
-  expect(matchInstitutionAndUser).toBeCalledTimes(1);
+  expect(matchBusinessAndUser).toBeCalledTimes(1);
 });

@@ -6,18 +6,18 @@ import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
-import { InstitutionsPnpg } from '../../../types';
+import { LegalEntity } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { LoadingOverlay } from '../../../components/LoadingOverlay';
-import { getInstitutionsByUser } from '../../../services/onboardingService';
+import { getBusinessesByUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 
 type Props = {
-  setRetrievedInstitutions: React.Dispatch<React.SetStateAction<InstitutionsPnpg | undefined>>;
+  setRetrievedBusinesses: React.Dispatch<React.SetStateAction<LegalEntity | undefined>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: Props) {
+function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -27,15 +27,13 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
   const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
-  const retrieveInstitutionsByUser = async () => {
+  const retrieveBusinessesByUser = async () => {
     setLoading(true);
-    getInstitutionsByUser(loggedUser)
-      .then((retrievedInstitutions) => {
+    getBusinessesByUser(loggedUser)
+      .then((retrievedBusinesses) => {
         trackEvent('ONBOARDING_BUSINESS_SUCCESS_RETRIEVED', { requestId, productId: 'prod-pn-pg' });
-        setRetrievedInstitutions(retrievedInstitutions);
-        setActiveStep(
-          retrievedInstitutions && retrievedInstitutions.businesses.length !== 0 ? 1 : 2
-        );
+        setRetrievedBusinesses(retrievedBusinesses);
+        setActiveStep(retrievedBusinesses && retrievedBusinesses.businesses.length !== 0 ? 1 : 2);
       })
       .catch(() => {
         trackEvent('ONBOARDING_BUSINESS_RETRIEVED_GENERIC_ERROR', {
@@ -48,12 +46,12 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
   };
 
   useEffect(() => {
-    retrieveInstitutionsByUser().catch((reason) => {
+    retrieveBusinessesByUser().catch((reason) => {
       addError({
-        id: 'RETRIEVE_INSTITUTIONS_BY_USER_ERROR',
+        id: 'RETRIEVE_BUSINESSES_BY_USER_ERROR',
         blocking: false,
         error: reason,
-        techDescription: `An error occurred while retrieving institution by user`,
+        techDescription: `An error occurred while retrieving businesses by user`,
         toNotify: true,
       });
     });
@@ -81,4 +79,4 @@ function StepRetrieveInstitutions({ setRetrievedInstitutions, setActiveStep }: P
   );
 }
 
-export default withLogin(StepRetrieveInstitutions);
+export default withLogin(StepRetrieveBusinesses);

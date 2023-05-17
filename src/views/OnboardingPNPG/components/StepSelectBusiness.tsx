@@ -4,54 +4,54 @@ import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { uniqueId } from 'lodash';
-import { BusinessPnpg, InstitutionsPnpg, StepperStepComponentProps } from '../../../types';
+import { Business, LegalEntity, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 
 type Props = {
-  retrievedInstitutions?: InstitutionsPnpg;
+  retrievedBusinesses?: LegalEntity;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 } & StepperStepComponentProps;
 
-function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }: Props) {
+function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Props) {
   const { t } = useTranslation();
 
-  const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
+    Business | undefined
+  >('selected_business', undefined);
 
   useEffect(() => {
-    if (retrievedInstitutions?.businesses.length === 1) {
-      setSelectedInstitution({
+    if (retrievedBusinesses?.businesses.length === 1) {
+      setSelectedBusiness({
         certified: true,
-        businessName: retrievedInstitutions.businesses[0].businessName,
-        businessTaxId: retrievedInstitutions.businesses[0].businessTaxId,
+        businessName: retrievedBusinesses.businesses[0].businessName,
+        businessTaxId: retrievedBusinesses.businesses[0].businessTaxId,
       });
-      setSelectedInstitutionHistory({
-        ...selectedInstitution,
+      setSelectedBusinessHistory({
+        ...selectedBusiness,
         certified: true,
-        businessName: retrievedInstitutions.businesses[0].businessName,
-        businessTaxId: retrievedInstitutions.businesses[0].businessTaxId,
+        businessName: retrievedBusinesses.businesses[0].businessName,
+        businessTaxId: retrievedBusinesses.businesses[0].businessTaxId,
       });
     } else {
-      setSelectedInstitutionHistory(undefined);
-      setSelectedInstitution(undefined);
+      setSelectedBusinessHistory(undefined);
+      setSelectedBusiness(undefined);
     }
-  }, [retrievedInstitutions]);
+  }, [retrievedBusinesses]);
 
   const onForwardAction = () => {
     const requestId = uniqueId();
     trackEvent('ONBOARDING_BUSINESS_SELECTION', { requestId, productId: 'prod-pn-pg' });
-    setSelectedInstitutionHistory({
+    setSelectedBusinessHistory({
       certified: true,
-      businessName: selectedInstitution?.businessName ?? '',
-      businessTaxId: selectedInstitution?.businessTaxId ?? '',
+      businessName: selectedBusiness?.businessName ?? '',
+      businessTaxId: selectedBusiness?.businessTaxId ?? '',
     });
     setActiveStep(3);
   };
 
-  const moreThanTwoInstitutions =
-    retrievedInstitutions && retrievedInstitutions.businesses.length >= 2;
+  const moreThanTwoInstitutions = retrievedBusinesses && retrievedBusinesses.businesses.length >= 2;
 
   return (
     <Grid container direction="column" my={16}>
@@ -90,8 +90,8 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
         marginY={4}
         marginTop={4}
       >
-        {retrievedInstitutions &&
-          retrievedInstitutions.businesses.map((b, index) => (
+        {retrievedBusinesses &&
+          retrievedBusinesses.businesses.map((b, index) => (
             <Box key={index}>
               <Button
                 aria-label={b.businessName}
@@ -104,14 +104,14 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
                   backgroundColor: 'background.paper',
                   borderRadius: theme.spacing(2),
                   border:
-                    b.businessTaxId === selectedInstitution?.businessTaxId
+                    b.businessTaxId === selectedBusiness?.businessTaxId
                       ? 'solid 3px #0073E6'
                       : undefined,
                   boxShadow:
                     '0px 8px 10px -5px rgba(0, 43, 85, 0.1), 0px 16px 24px 2px rgba(0, 43, 85, 0.05), 0px 6px 30px 5px rgba(0, 43, 85, 0.1)',
                 }}
                 onClick={() => {
-                  setSelectedInstitution({
+                  setSelectedBusiness({
                     certified: true,
                     businessName: b.businessName,
                     businessTaxId: b.businessTaxId,
@@ -137,7 +137,7 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
                 onForwardAction();
               },
               label: t('chooseBusiness.registerBusiness'),
-              disabled: !selectedInstitution,
+              disabled: !selectedBusiness,
             }}
           />
         </Grid>
@@ -176,4 +176,4 @@ function StepSelectInstitution({ forward, retrievedInstitutions, setActiveStep }
     </Grid>
   );
 }
-export default withLogin(StepSelectInstitution);
+export default withLogin(StepSelectBusiness);

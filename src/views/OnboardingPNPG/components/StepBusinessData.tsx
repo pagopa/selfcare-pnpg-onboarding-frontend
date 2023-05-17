@@ -8,7 +8,7 @@ import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsS
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import { BusinessPnpg, StepperStepComponentProps } from '../../../types';
+import { Business, StepperStepComponentProps } from '../../../types';
 
 const emailRegexp = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
 
@@ -19,8 +19,9 @@ type Props = {
 function StepBusinessData({ setActiveStep }: Props) {
   const { t } = useTranslation();
 
-  const [selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
+    Business | undefined
+  >('selected_business', undefined);
   const [insertedBusinessEmail, setInsertedBusinessEmail, setInsertedBusinessEmailHistory] =
     useHistoryState<string>('inserted_business_email', undefined);
 
@@ -28,28 +29,27 @@ function StepBusinessData({ setActiveStep }: Props) {
 
   useEffect(() => {
     const isUncertifiedEmptyFields =
-      !selectedInstitution?.certified &&
+      !selectedBusiness?.certified &&
       insertedBusinessEmail?.length > 0 &&
-      selectedInstitution &&
-      selectedInstitution.businessName.length > 0;
-    const isCertifiedEmptyField =
-      selectedInstitution?.certified && insertedBusinessEmail?.length > 0;
+      selectedBusiness &&
+      selectedBusiness.businessName.length > 0;
+    const isCertifiedEmptyField = selectedBusiness?.certified && insertedBusinessEmail?.length > 0;
     setIsDisabled(!(isCertifiedEmptyField || isUncertifiedEmptyFields));
-  }, [insertedBusinessEmail, selectedInstitution]);
+  }, [insertedBusinessEmail, selectedBusiness]);
 
   const onForwardAction = () => {
     const requestId = uniqueId();
     trackEvent('ONBOARDING_BUSINESS_DATA', { requestId, productId: 'prod-pn-pg' });
-    setSelectedInstitutionHistory(selectedInstitution);
+    setSelectedBusinessHistory(selectedBusiness);
     setInsertedBusinessEmailHistory(insertedBusinessEmail);
     setActiveStep(4);
   };
 
-  const isCertifiedBusinessName = selectedInstitution?.certified;
+  const isCertifiedBusinessName = selectedBusiness?.certified;
 
   const notValidBusinessEmail = !!insertedBusinessEmail && !emailRegexp.test(insertedBusinessEmail);
   const notValidBusinessName =
-    !!selectedInstitution?.businessName && selectedInstitution?.businessName.trim().length === 0;
+    !!selectedBusiness?.businessName && selectedBusiness?.businessName.trim().length === 0;
 
   return (
     <Grid container>
@@ -87,15 +87,15 @@ function StepBusinessData({ setActiveStep }: Props) {
             padding: 4,
           }}
         >
-          {!selectedInstitution?.certified && (
+          {!selectedBusiness?.certified && (
             <TextField
               id="businessname-textfield"
               label={t('insertBusinessData.businessNameLabel')}
               variant="outlined"
               onChange={(e) => {
-                setSelectedInstitution({
-                  certified: selectedInstitution?.certified ?? true,
-                  businessTaxId: selectedInstitution?.businessTaxId ?? '',
+                setSelectedBusiness({
+                  certified: selectedBusiness?.certified ?? true,
+                  businessTaxId: selectedBusiness?.businessTaxId ?? '',
                   businessName: e.target.value,
                 });
               }}
@@ -124,7 +124,7 @@ function StepBusinessData({ setActiveStep }: Props) {
           back={{
             label: t('insertBusinessData.backAction'),
             action: () => {
-              setActiveStep(selectedInstitution?.certified ? 1 : 2);
+              setActiveStep(selectedBusiness?.certified ? 1 : 2);
             },
           }}
           forward={{
