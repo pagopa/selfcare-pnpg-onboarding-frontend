@@ -3,15 +3,10 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ENV } from '../utils/env';
-import {
-  BusinessPnpg,
-  InstitutionsPnpg,
-  PnpgInstitutionLegalAddressResource,
-  User,
-} from '../types';
+import { Business, LegalEntity, BusinessLegalAddress, User } from '../types';
 import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
-import { RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { PnPGUserDto, RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -42,8 +37,8 @@ const onRedirectToLogin = () =>
     })
   );
 
-export const OnboardingPnPgApi = {
-  getInstitutionsByUser: async (loggedUser: User): Promise<InstitutionsPnpg> => {
+export const OnboardingApi = {
+  getBusinessesByUser: async (loggedUser: User): Promise<LegalEntity> => {
     const result = await apiClient.getInstitutionsByUserUsingPOST({
       body: {
         taxCode: loggedUser.taxCode,
@@ -56,20 +51,20 @@ export const OnboardingPnPgApi = {
   },
 
   onboardingPGSubmit: async (
-    externalInstitutionId: string,
+    businessId: string,
     productId: string,
-    loggedUser: User,
-    selectedInstitution: BusinessPnpg,
+    loggedUser: PnPGUserDto,
+    selectedBusiness: Business,
     digitalAddress: string
   ): Promise<boolean> => {
     const result = await apiClient.onboardingPGUsingPOST({
-      externalInstitutionId,
+      externalInstitutionId: businessId,
       productId,
       body: {
         billingData: {
-          certified: selectedInstitution.certified,
-          businessName: selectedInstitution.businessName,
-          taxCode: selectedInstitution.businessTaxId,
+          certified: selectedBusiness.certified,
+          businessName: selectedBusiness.businessName,
+          taxCode: selectedBusiness.businessTaxId,
           digitalAddress,
         },
         users: [
@@ -77,6 +72,7 @@ export const OnboardingPnPgApi = {
             taxCode: loggedUser.taxCode,
             name: loggedUser.name,
             surname: loggedUser.surname,
+            email: loggedUser.email,
             role: 'MANAGER' as RoleEnum,
           },
         ],
@@ -85,19 +81,16 @@ export const OnboardingPnPgApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  getInstitutionLegalAddress: async (
-    externalInstitutionId: string
-  ): Promise<PnpgInstitutionLegalAddressResource> => {
-    const result = await apiClient.getInstitutionLegalAddressUsingGET({ externalInstitutionId });
+  getBusinessLegalAddress: async (businessId: string): Promise<BusinessLegalAddress> => {
+    const result = await apiClient.getInstitutionLegalAddressUsingGET({
+      externalInstitutionId: businessId,
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  matchInstitutionAndUser: async (
-    externalInstitutionId: string,
-    loggedUser: User
-  ): Promise<boolean> => {
+  matchBusinessAndUser: async (businessId: string, loggedUser: User): Promise<boolean> => {
     const result = await apiClient.matchInstitutionAndUserUsingPOST({
-      externalInstitutionId,
+      externalInstitutionId: businessId,
       body: {
         name: loggedUser.name,
         role: 'MANAGER' as RoleEnum,

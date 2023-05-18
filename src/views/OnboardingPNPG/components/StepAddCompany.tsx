@@ -6,14 +6,13 @@ import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { BusinessPnpg } from '../../../types';
+import { uniqueId } from 'lodash';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { Business } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import {
-  getInstitutionLegalAddress,
-  matchInstitutionAndUser,
-} from '../../../services/onboardingService';
+import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 
 type Props = {
@@ -24,32 +23,40 @@ function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
-  const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
+    Business | undefined
+  >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
+  const productId = 'prod-pn-pg';
+
   const handleSubmit = (typedInput: string) => {
+    trackEvent('ONBOARDING_BY_ENTERING_TAXCODE', { requestId, productId });
     setLoading(true);
-    getInstitutionLegalAddress(typedInput)
+    getBusinessLegalAddress(typedInput)
       .then(() => {
         setLoading(false);
+        trackEvent('ONBOARDING_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setError('matchedButNotLR');
       })
       .catch(() => {
+        trackEvent('ONBOARDING_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setLoading(true);
-        matchInstitutionAndUser(typedInput, loggedUser)
+        matchBusinessAndUser(typedInput, loggedUser)
           .then(() => {
-            setSelectedInstitution({
+            trackEvent('ONBOARDING_MATCHED_ADE', { requestId, productId });
+            setSelectedBusiness({
               certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
-            setSelectedInstitutionHistory({
+            setSelectedBusinessHistory({
               certified: false,
               businessName: '',
               businessTaxId: typedInput,
@@ -57,6 +64,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             setActiveStep(3);
           })
           .catch((reason) => {
+            trackEvent('ONBOARDING_NOT_MATCHED_ADE', { requestId, productId });
             addError({
               id: 'MATCH_INSTITUTION_AND_USER_ERROR',
               blocking: false,

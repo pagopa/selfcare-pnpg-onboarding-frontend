@@ -1,14 +1,14 @@
 import { RoutesObject } from './types';
 import { ENV } from './utils/env';
-import OnboardingPNPG from './views/OnboardingPNPG/OnboardingPNPG';
+import Onboarding from './views/OnboardingPNPG/Onboarding';
 
 export const BASE_ROUTE = ENV.PUBLIC_URL;
 
 export const ROUTES: RoutesObject = {
-  PNPG_ONBOARDING: {
+  ONBOARDING: {
     PATH: '/onboarding',
-    LABEL: 'Onboarding PNPG',
+    LABEL: 'Onboarding',
     EXACT: true,
-    COMPONENT: OnboardingPNPG,
+    COMPONENT: Onboarding,
   },
 };
