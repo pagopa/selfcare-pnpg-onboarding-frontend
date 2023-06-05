@@ -1,60 +1,57 @@
-import {
-  BusinessPnpg,
-  InstitutionsPnpg,
-  PnpgInstitutionLegalAddressResource,
-  User,
-} from '../types';
-import { OnboardingPnPgApi } from '../api/OnboardingPnPgApiClient';
-import { mockedOnboardingPnPgApi } from '../api/__mocks__/OnboardingPnPgApiClient';
-import { mockedInstitutionPnPG } from '../api/__mocks__/OnboardingPnPgApiClient';
+import { Business, LegalEntity, BusinessLegalAddress, User } from '../types';
+import { OnboardingApi } from '../api/OnboardingApiClient';
+import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
+import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
+import { PnPGUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
 
-export const getInstitutionsByUser = (user: User): Promise<InstitutionsPnpg> => {
+export const getBusinessesByUser = (user: User): Promise<LegalEntity> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    return new Promise((resolve) => resolve(mockedInstitutionPnPG));
+    return new Promise((resolve) => resolve(mockedLegalEntity));
   } else {
-    return OnboardingPnPgApi.getInstitutionsByUser(user);
+    return OnboardingApi.getBusinessesByUser(user);
   }
 };
 
-export const matchInstitutionAndUser = (
-  externalInstitutionId: string,
-  loggedUser: User
-): Promise<boolean> => {
+export const matchBusinessAndUser = (businessId: string, loggedUser: User): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingPnPgApi.matchInstitutionAndUser(externalInstitutionId, loggedUser);
+    return mockedOnboardingApi.matchBusinessAndUser(businessId, loggedUser);
   } else {
-    return OnboardingPnPgApi.matchInstitutionAndUser(externalInstitutionId, loggedUser);
+    return OnboardingApi.matchBusinessAndUser(businessId, loggedUser);
   }
 };
 
-export const getInstitutionLegalAddress = (
-  externalInstitutionId: string
-): Promise<PnpgInstitutionLegalAddressResource> => {
+export const getBusinessLegalAddress = (businessId: string): Promise<BusinessLegalAddress> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
+    return mockedOnboardingApi.getBusinessLegalAddress(businessId);
   } else {
-    return OnboardingPnPgApi.getInstitutionLegalAddress(externalInstitutionId);
+    return OnboardingApi.getBusinessLegalAddress(businessId);
   }
 };
 
 export const onboardingPGSubmit = (
-  externalInstitutionId: string,
+  businessId: string,
   productId: string,
-  loggedUser: User,
-  selectedInstitution: BusinessPnpg,
+  loggedUser: PnPGUserDto,
+  selectedInstitution: Business,
   digitalAddress: string
 ): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingPnPgApi.onboardingPGSubmit(externalInstitutionId);
+    return mockedOnboardingApi.onboardingPGSubmit(businessId);
   } else {
-    return OnboardingPnPgApi.onboardingPGSubmit(
-      externalInstitutionId,
+    return OnboardingApi.onboardingPGSubmit(
+      businessId,
       productId,
-      loggedUser,
+      {
+        name: loggedUser.name,
+        surname: loggedUser.surname,
+        role: 'MANAGER' as RoleEnum,
+        taxCode: loggedUser.taxCode,
+        email: loggedUser.email,
+      },
       selectedInstitution,
       digitalAddress
     );
