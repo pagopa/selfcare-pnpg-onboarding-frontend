@@ -169,7 +169,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             forward={{
               action: () => handleSubmit(typedInput),
               label: t('addCompany.forwardAction'),
-              disabled: typedInput.length !== 11,
+              disabled: typedInput.length !== 11 && typedInput.length !== 16,
             }}
           />
         </Grid>
