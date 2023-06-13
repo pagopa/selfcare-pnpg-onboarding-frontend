@@ -99,7 +99,7 @@ function StepAddCompany({ setActiveStep }: Props) {
         variantTitle={'h4'}
         variantDescription={'body1'}
         buttonLabel={t('cannotRegisterBusiness.close')}
-        onButtonClick={() => ENV.URL_FE.LOGOUT}
+        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
       />
     </>
   ) : loading ? (
