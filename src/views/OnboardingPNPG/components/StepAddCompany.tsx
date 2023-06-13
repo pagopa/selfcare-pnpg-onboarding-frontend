@@ -93,7 +93,7 @@ function StepAddCompany({ setActiveStep }: Props) {
         variantTitle={'h4'}
         variantDescription={'body1'}
         buttonLabel={t('typedNotFound.close')}
-        onButtonClick={() => ENV.URL_FE.LOGOUT}
+        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
       />
     </>
   ) : error === 'matchedButNotLR' ? (
@@ -169,7 +169,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             forward={{
               action: () => handleSubmit(typedInput),
               label: t('addCompany.forwardAction'),
-              disabled: typedInput.length !== 11,
+              disabled: typedInput.length !== 11 && typedInput.length !== 16,
             }}
           />
         </Grid>
