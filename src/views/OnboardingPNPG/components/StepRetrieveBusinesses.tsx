@@ -63,15 +63,16 @@ function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props
     <EndingPage
       minHeight="52vh"
       icon={<IllusError size={60} />}
-      title={t('businessNotFound.title')}
+      title={t('genericError.title')}
       description={
-        <Trans i18nKey="businessNotFound.message">
-          Dal tuo SPID non risulti essere Legale Rappresentante di <br /> alcuna impresa.
+        <Trans i18nKey="genericError.message">
+          A causa di un problema tecnico, non riusciamo a registrare <br /> l’impresa. Riprova più
+          tardi.
         </Trans>
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
-      buttonLabel={t('businessNotFound.close')}
+      buttonLabel={t('genericError.close')}
       onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
     />
   ) : (
