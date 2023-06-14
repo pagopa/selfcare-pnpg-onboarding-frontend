@@ -48,9 +48,10 @@ export default {
       'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Accedi',
   },
-  businessNotFound: {
-    title: 'Nessuna impresa trovata',
-    message: 'Dal tuo SPID non risulti essere Legale Rappresentante di <1 /> alcuna impresa.',
+  genericError: {
+    title: 'Si è verificato un errore',
+    message:
+      'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
     close: 'Chiudi',
   },
   outcome: {
