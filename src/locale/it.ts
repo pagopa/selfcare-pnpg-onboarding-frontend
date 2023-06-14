@@ -36,10 +36,10 @@ export default {
     backAction: 'Indietro',
     forwardAction: 'Continua',
   },
-  typedNotFound: {
-    title: 'Nessuna impresa trovata',
-    message:
-      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa che stavi cercando.',
+  cannotRegisterBusiness: {
+    title: 'Non puoi registrare <1/>questa impresa',
+    description:
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
     close: 'Chiudi',
   },
   alreadyOnboarded: {
@@ -48,15 +48,10 @@ export default {
       'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Accedi',
   },
-  businessNotFound: {
-    title: 'Nessuna impresa trovata',
-    message: 'Dal tuo SPID non risulti essere Legale Rappresentante di <1 /> alcuna impresa.',
-    close: 'Chiudi',
-  },
-  matchedButNotLR: {
-    title: 'Non puoi registrare <1/>questa impresa',
-    description:
-      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
+  genericError: {
+    title: 'Si è verificato un errore',
+    message:
+      'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
     close: 'Chiudi',
   },
   outcome: {

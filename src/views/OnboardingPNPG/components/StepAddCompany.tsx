@@ -79,35 +79,18 @@ function StepAddCompany({ setActiveStep }: Props) {
       .finally(() => setLoading(false));
   };
 
-  return error === 'typedNotFound' ? (
-    <>
-      <EndingPage
-        icon={<IllusError size={60} />}
-        title={t('typedNotFound.title')}
-        description={
-          <Trans i18nKey="typedNotFound.message">
-            Dal tuo SPID non risulti essere Legale Rappresentante <br /> dell’impresa che stavi
-            cercando.
-          </Trans>
-        }
-        variantTitle={'h4'}
-        variantDescription={'body1'}
-        buttonLabel={t('typedNotFound.close')}
-        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
-      />
-    </>
-  ) : error === 'matchedButNotLR' ? (
+  return error === 'typedNotFound' || error === 'matchedButNotLR' ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}
         title={
-          <Trans i18nKey="matchedButNotLR.title">
+          <Trans i18nKey="cannotRegisterBusiness.title">
             Non puoi registrare <br />
             questa impresa
           </Trans>
         }
         description={
-          <Trans i18nKey="matchedButNotLR.description">
+          <Trans i18nKey="cannotRegisterBusiness.message">
             Dal tuo SPID non risulti essere Legale Rappresentante <br />
             dell’impresa associata a questo Codice Fiscale. Puoi <br />
             registrare solo le imprese di cui sei Legale Rappresentante.
@@ -115,11 +98,8 @@ function StepAddCompany({ setActiveStep }: Props) {
         }
         variantTitle={'h4'}
         variantDescription={'body1'}
-        buttonLabel={t('matchedButNotLR.close')}
-        onButtonClick={() => {
-          setError(undefined);
-          setTypedInput('');
-        }}
+        buttonLabel={t('cannotRegisterBusiness.close')}
+        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
       />
     </>
   ) : loading ? (
