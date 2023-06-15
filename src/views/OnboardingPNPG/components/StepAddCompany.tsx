@@ -13,7 +13,6 @@ import { OnboardingStepActions } from '../../../components/OnboardingStepActions
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
-import { ENV } from '../../../utils/env';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -99,7 +98,7 @@ function StepAddCompany({ setActiveStep }: Props) {
         variantTitle={'h4'}
         variantDescription={'body1'}
         buttonLabel={t('cannotRegisterBusiness.close')}
-        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
+        onButtonClick={() => setActiveStep(0)}
       />
     </>
   ) : loading ? (
