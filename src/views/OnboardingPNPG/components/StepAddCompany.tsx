@@ -36,20 +36,20 @@ function StepAddCompany({ setActiveStep }: Props) {
   const productId = 'prod-pn-pg';
 
   const handleSubmit = (typedInput: string) => {
-    trackEvent('ONBOARDING_BY_ENTERING_TAXCODE', { requestId, productId });
+    trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
     setLoading(true);
     getBusinessLegalAddress(typedInput)
       .then(() => {
         setLoading(false);
-        trackEvent('ONBOARDING_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+        trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setError('matchedButNotLR');
       })
       .catch(() => {
-        trackEvent('ONBOARDING_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+        trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setLoading(true);
         matchBusinessAndUser(typedInput, loggedUser)
           .then(() => {
-            trackEvent('ONBOARDING_MATCHED_ADE', { requestId, productId });
+            trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
             setSelectedBusiness({
               certified: false,
               businessName: '',
@@ -63,7 +63,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             setActiveStep(3);
           })
           .catch((reason) => {
-            trackEvent('ONBOARDING_NOT_MATCHED_ADE', { requestId, productId });
+            trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
             addError({
               id: 'MATCH_INSTITUTION_AND_USER_ERROR',
               blocking: false,

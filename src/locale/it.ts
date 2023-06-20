@@ -63,7 +63,7 @@ export default {
     error: {
       title: 'Impresa non registrata',
       description:
-        'A causa di un problema tecnico, non riusciamo a registrare <1 />la tua impresa. Riprova più tardi.',
+        "A causa di un problema tecnico, non riusciamo a registrare <1 />l'impresa. Riprova più tardi.",
       close: 'Chiudi',
     },
   },
