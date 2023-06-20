@@ -31,12 +31,12 @@ function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props
     setLoading(true);
     getBusinessesByUser(loggedUser)
       .then((retrievedBusinesses) => {
-        trackEvent('ONBOARDING_BUSINESS_SUCCESS_RETRIEVED', { requestId, productId: 'prod-pn-pg' });
+        trackEvent('ONBOARDING_PG_SUCCESS_RETRIEVED', { requestId, productId: 'prod-pn-pg' });
         setRetrievedBusinesses(retrievedBusinesses);
         setActiveStep(retrievedBusinesses && retrievedBusinesses.businesses.length !== 0 ? 1 : 2);
       })
       .catch(() => {
-        trackEvent('ONBOARDING_BUSINESS_RETRIEVED_GENERIC_ERROR', {
+        trackEvent('ONBOARDING_PG_RETRIEVED_GENERIC_ERROR', {
           requestId,
           productId: 'prod-pn-pg',
         });

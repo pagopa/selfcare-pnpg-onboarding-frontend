@@ -70,7 +70,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       insertedBusinessEmail
     )
       .then(() => {
-        trackEvent('ONBOARDING_SUBMIT_SUCCESS', { requestId, productId });
+        trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', { requestId, productId });
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
         forward();
@@ -78,12 +78,12 @@ function StepSubmit({ forward, setLoading }: Props) {
       .catch((reason) => {
         if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
-          trackEvent('ONBOARDING_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
+          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
           setSelectedBusiness(selectedBusiness);
           setSelectedBusinessHistory(selectedBusiness);
         } else {
           setError('genericError');
-          trackEvent('ONBOARDING_SUBMIT_GENERIC_ERROR', { requestId, productId });
+          trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', { requestId, productId });
         }
       })
       .finally(() => {
@@ -99,7 +99,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       description={
         <Trans i18nKey="outcome.error.description">
           A causa di un problema tecnico, non riusciamo a registrare <br />
-          la tua impresa. Riprova più tardi.
+          l&apos;impresa. Riprova più tardi.
         </Trans>
       }
       variantTitle={'h4'}

@@ -42,7 +42,7 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
 
   const onForwardAction = () => {
     const requestId = uniqueId();
-    trackEvent('ONBOARDING_BUSINESS_SELECTION', { requestId, productId: 'prod-pn-pg' });
+    trackEvent('ONBOARDING_PG_SELECTION', { requestId, productId: 'prod-pn-pg' });
     setSelectedBusinessHistory({
       certified: true,
       businessName: selectedBusiness?.businessName ?? '',
