@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useLocation } from 'react-router';
-import { ROUTES } from '../utils/constants';
+import { ROUTES } from '../routes';
 
 export function Main() {
   const location = useLocation();
@@ -15,7 +15,7 @@ export function Main() {
           </Route>
         ))}
         <Route path="*">
-          <Redirect to={ROUTES.PNPG_ONBOARDING.PATH} />
+          <Redirect to={ROUTES.ONBOARDING.PATH} />
         </Route>
       </Switch>
     </Box>

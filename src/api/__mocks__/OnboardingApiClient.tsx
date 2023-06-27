@@ -1,19 +1,15 @@
-import {
-  BusinessPnpg,
-  InstitutionsPnpg,
-  PnpgInstitutionLegalAddressResource,
-  User,
-} from '../../types';
+import { LegalEntity, BusinessLegalAddress, User } from '../../types';
+import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
 
 export const loggedUser: User = {
   uid: '00123',
-  email: 'email.test@mocked.com',
   name: 'mockedUserName',
   surname: 'mockedUserSurname',
   taxCode: 'MCCDLL91C25B115B',
+  email: 'email@mockemail.com',
 };
 
-export const mockedAgencies: Array<BusinessPnpg> = [
+export const mockedBusinesses: Array<BusinessResourceIC> = [
   {
     businessName: 'BusinessName success',
     businessTaxId: '01113570442',
@@ -28,20 +24,20 @@ export const mockedAgencies: Array<BusinessPnpg> = [
   },
 ];
 
-export const mockedInstitutionPnPG: InstitutionsPnpg = {
-  businesses: mockedAgencies,
+export const mockedLegalEntity: LegalEntity = {
+  businesses: mockedBusinesses,
   legalTaxId: '1234567',
   requestDateTime: 'x',
 };
 
-export const mockedRetrievedInstitutionLegalAddress: Array<PnpgInstitutionLegalAddressResource> = [
+export const mockedRetrievedBusinessesLegalAddress: Array<BusinessLegalAddress> = [
   {
-    externalInstitutionId: '77777777777',
+    taxCode: '77777777777',
     address: 'Via retrievedInstitutionLegalAddress1',
     zipCode: '98765',
   },
   {
-    externalInstitutionId: '88888888888',
+    taxCode: '88888888888',
     address: 'Via retrievedInstitutionLegalAddress2',
     zipCode: '56789',
   },
@@ -83,14 +79,14 @@ export const mockedEdAOccurrences = [
   },
 ];
 
-export const mockedOnboardingPnPgApi = {
-  getInstitutionsByUser: async (_loggedUser: User): Promise<InstitutionsPnpg> =>
-    new Promise((resolve) => resolve(mockedInstitutionPnPG)),
+export const mockedOnboardingApi = {
+  getBusinessesByUser: async (_loggedUser: User): Promise<LegalEntity> =>
+    new Promise((resolve) => resolve(mockedLegalEntity)),
 
-  onboardingPGSubmit: (externalInstitutionId: string): Promise<boolean> => {
-    if (externalInstitutionId === '01501320442') {
+  onboardingPGSubmit: (businessId: string): Promise<boolean> => {
+    if (businessId === '01501320442') {
       return new Promise(() => {
-        const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 400`);
+        const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 409`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line functional/immutable-data
@@ -105,7 +101,7 @@ export const mockedOnboardingPnPgApi = {
         console.error(JSON.stringify(error));
         throw error;
       });
-    } else if (externalInstitutionId === '22222222222') {
+    } else if (businessId === '22222222222') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 404`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -126,11 +122,11 @@ export const mockedOnboardingPnPgApi = {
     return new Promise((resolve) => resolve(true));
   },
 
-  matchInstitutionAndUser: (externalInstitutionId: string, _loggedUser: User): Promise<boolean> => {
-    const matchedPartyInEdAByExternalId = mockedEdAOccurrences.find(
-      (p) => p.externalId === externalInstitutionId
+  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<boolean> => {
+    const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
+      (p) => p.externalId === taxCode
     );
-    if (matchedPartyInEdAByExternalId) {
+    if (matchedBusinessInEdAByExternalId) {
       return new Promise((resolve) => resolve(true));
     } else {
       return new Promise(() => {
@@ -152,14 +148,12 @@ export const mockedOnboardingPnPgApi = {
     }
   },
 
-  getInstitutionLegalAddress: (
-    externalInstitutionId: string
-  ): Promise<PnpgInstitutionLegalAddressResource> => {
-    const matchedInstitutionLegalAddressByExternalId = mockedRetrievedInstitutionLegalAddress.find(
-      (i) => i.externalInstitutionId === externalInstitutionId
+  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress> => {
+    const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
+      (i) => i.taxCode === taxCode
     );
-    if (matchedInstitutionLegalAddressByExternalId) {
-      return new Promise((resolve) => resolve(matchedInstitutionLegalAddressByExternalId));
+    if (matchedBusinessLegalAddressByExternalId) {
+      return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId));
     } else {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);

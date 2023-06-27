@@ -6,56 +6,64 @@ import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { BusinessPnpg } from '../../../types';
+import { uniqueId } from 'lodash';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { Business } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import {
-  getInstitutionLegalAddress,
-  matchInstitutionAndUser,
-} from '../../../services/onboardingService';
-import { ENV } from '../../../utils/env';
+import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
-  const [_selectedInstitution, setSelectedInstitution, setSelectedInstitutionHistory] =
-    useHistoryState<BusinessPnpg | undefined>('selected_institution', undefined);
+  const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
+    Business | undefined
+  >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
+  const productId = 'prod-pn-pg';
+
   const handleSubmit = (typedInput: string) => {
+    trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
     setLoading(true);
-    getInstitutionLegalAddress(typedInput)
+    getBusinessLegalAddress(typedInput)
       .then(() => {
         setLoading(false);
+        trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setError('matchedButNotLR');
       })
       .catch(() => {
+        trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setLoading(true);
-        matchInstitutionAndUser(typedInput, loggedUser)
+        matchBusinessAndUser(typedInput, loggedUser)
           .then(() => {
-            setSelectedInstitution({
+            trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
+            setSelectedBusiness({
+              certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
-            setSelectedInstitutionHistory({
+            setSelectedBusinessHistory({
+              certified: false,
               businessName: '',
               businessTaxId: typedInput,
             });
-            setActiveStep(4);
+            setActiveStep(3);
           })
           .catch((reason) => {
+            trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
             addError({
               id: 'MATCH_INSTITUTION_AND_USER_ERROR',
               blocking: false,
@@ -70,41 +78,27 @@ function StepAddCompany({ setActiveStep }: Props) {
       .finally(() => setLoading(false));
   };
 
-  return error === 'typedNotFound' ? (
-    <>
-      <EndingPage
-        icon={<IllusError size={60} />}
-        title={t('typedNotFound.title')}
-        description={
-          <Trans i18nKey="typedNotFound.message">
-            Dal tuo SPID non risulti essere Legale Rappresentante <br /> dell’impresa che stavi
-            cercando.
-          </Trans>
-        }
-        variantTitle={'h4'}
-        variantDescription={'body1'}
-        buttonLabel={t('typedNotFound.close')}
-        onButtonClick={() => ENV.URL_FE.LOGOUT}
-      />
-    </>
-  ) : error === 'matchedButNotLR' ? (
+  return error === 'typedNotFound' || error === 'matchedButNotLR' ? (
     <>
       <EndingPage
         icon={<IllusError size={60} />}
         title={
-          <Trans i18nKey="matchedButNotLR.title">
-            Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale
-            rappresentante. <br />
-            Contatta il Registro delle imprese per farti aggiungere.
+          <Trans i18nKey="cannotRegisterBusiness.title">
+            Non puoi registrare <br />
+            questa impresa
           </Trans>
         }
-        description={''}
-        variantTitle={'h5'}
-        buttonLabel={t('matchedButNotLR.backToAccess')}
-        onButtonClick={() => {
-          setError(undefined);
-          setTypedInput('');
-        }}
+        description={
+          <Trans i18nKey="cannotRegisterBusiness.message">
+            Dal tuo SPID non risulti essere Legale Rappresentante <br />
+            dell’impresa associata a questo Codice Fiscale. Puoi <br />
+            registrare solo le imprese di cui sei Legale Rappresentante.
+          </Trans>
+        }
+        variantTitle={'h4'}
+        variantDescription={'body1'}
+        buttonLabel={t('cannotRegisterBusiness.close')}
+        onButtonClick={() => setActiveStep(0)}
       />
     </>
   ) : loading ? (
@@ -119,8 +113,8 @@ function StepAddCompany({ setActiveStep }: Props) {
         </Grid>
         <Grid item xs={12}>
           <Typography align="center" color={theme.palette.text.primary} m={1} mb={3}>
-            <Trans i18next="addCompany.description">
-              Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <br />
+            <Trans i18next="addCompany.subTitle">
+              Inserisci il Codice Fiscale dell’impresa che vuoi <br />
               registrare.
             </Trans>
           </Typography>
@@ -154,7 +148,7 @@ function StepAddCompany({ setActiveStep }: Props) {
             forward={{
               action: () => handleSubmit(typedInput),
               label: t('addCompany.forwardAction'),
-              disabled: typedInput.length !== 11,
+              disabled: typedInput.length !== 11 && typedInput.length !== 16,
             }}
           />
         </Grid>

@@ -1,48 +1,58 @@
 export default {
   loadingText: 'Stiamo verificando i tuoi dati',
-  selectFromAgencyList: {
-    title: 'Che impresa vuoi registrare?',
-    description:
-      'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
-    registerAgency: 'Registra impresa',
-  },
-  selectInstitutionReleated: {
-    title: 'Seleziona l’impresa',
-    description:
-      'Se hai accesso alle notifiche di più imprese, potrai modificare la tua scelta dopo avere effettuato l’accesso.',
-    registerAgencyByTaxCodeLink:
-      'Sei un Legale Rappresentante e non trovi la tua impresa? <1>Cercala tramite Codice Fiscale/Partita IVA</1>',
-    enter: 'Accedi',
+  chooseBusiness: {
+    selectFromBusinessList: {
+      title: 'Che impresa vuoi registrare?',
+      subTitle:
+        'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
+    },
+    selectReleatedBusiness: {
+      title: 'Registra la tua impresa',
+      subTitle: 'Questa è l’impresa cui risulti essere Legale Rappresentante. ',
+    },
+    registerBusiness: 'Registra impresa',
+    registerBusinessByTaxCodeLink:
+      'Non trovi la tua impresa? <1>Cercala tramite Codice Fiscale</1>',
   },
   addCompany: {
     title: 'Che impresa vuoi registrare?',
-    description: 'Inserisci il Codice Fiscale/Partita IVA dell’impresa che vuoi <1/>registrare.',
-    textfieldLabel: 'Codice Fiscale/Partita IVA',
+    subTitle: 'Inserisci il Codice Fiscale dell’impresa che vuoi <1 />registrare.',
+    textfieldLabel: 'Codice Fiscale',
     forwardAction: 'Continua',
   },
-  typedNotFound: {
-    title: 'Nessuna impresa trovata',
-    message:
-      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa che stavi cercando.',
+  insertBusinessEmail: {
+    title: 'Qual è l’indirizzo PEC dell’impresa?',
+    subTitle: 'Inserisci l’indirizzo PEC dell’impresa che vuoi registrare.',
+    pecLabel: 'Indirizzo PEC',
+  },
+  insertBusinessData: {
+    title: 'Inserisci i dati della tua impresa',
+    subTitle:
+      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
+    businessNameLabel: 'Ragione sociale',
+    pecEmailLabel: 'Indirizzo PEC',
+    invalidEmail: "L'indirizzo e-mail inserito non è corretto",
+    invalidBusinessName: 'Inserisci una ragione sociale',
+    backAction: 'Indietro',
+    forwardAction: 'Continua',
+  },
+  cannotRegisterBusiness: {
+    title: 'Non puoi registrare <1/>questa impresa',
+    description:
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
     close: 'Chiudi',
   },
   alreadyOnboarded: {
     title: 'Impresa già registrata',
     description:
-      'Questa impresa è già stata registrata. Accedi per leggere le <1/>notifiche e aggiungere altri utenti.',
+      'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Accedi',
   },
-  institutionNotFound: {
-    title: 'Nessuna impresa trovata',
-    message: 'Dal tuo SPID non risulti essere Legale Rappresentante di <1 /> alcuna impresa.',
+  genericError: {
+    title: 'Si è verificato un errore',
+    message:
+      'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
     close: 'Chiudi',
-  },
-  matchedButNotLR: {
-    title:
-      'Abbiamo riscontrato la tua azienda nel nostro database, ma non ne risulti il legale rappresentante. <1 />Contatta il Registro delle imprese per farti aggiungere.',
-    registerNewAgency:
-      'Sei il Legale Rappresentante di un’azienda? <1> Registra una nuova azienda </1>',
-    backToAccess: 'Torna all’accesso',
   },
   outcome: {
     success: {
@@ -53,7 +63,7 @@ export default {
     error: {
       title: 'Impresa non registrata',
       description:
-        'A causa di un problema tecnico, non riusciamo a registrare <1 />la tua impresa. Riprova più tardi.',
+        "A causa di un problema tecnico, non riusciamo a registrare <1 />l'impresa. Riprova più tardi.",
       close: 'Chiudi',
     },
   },

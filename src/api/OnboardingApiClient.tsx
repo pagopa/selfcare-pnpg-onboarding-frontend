@@ -1,16 +1,12 @@
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
-import { EmailString } from '@pagopa/ts-commons/lib/strings';
+import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ENV } from '../utils/env';
-import {
-  BusinessPnpg,
-  InstitutionsPnpg,
-  PnpgInstitutionLegalAddressResource,
-  User,
-} from '../types';
+import { Business, LegalEntity, BusinessLegalAddress, User } from '../types';
+import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
-import { RoleEnum } from './generated/b4f-onboarding-pnpg/UserDto';
+import { PnPGUserDto, RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -29,24 +25,23 @@ const apiClient = createClient({
 });
 
 const onRedirectToLogin = () =>
-  ENV.STORE.dispatch(
+  store.dispatch(
     appStateActions.addError({
       id: 'tokenNotValid',
       error: new Error(),
       techDescription: 'token expired or not valid',
       toNotify: false,
       blocking: false,
-      displayableTitle: ENV.i18n.t('session.expired.title'),
-      displayableDescription: ENV.i18n.t('session.expired.message'),
+      displayableTitle: i18n.t('session.expired.title'),
+      displayableDescription: i18n.t('session.expired.message'),
     })
   );
 
-export const OnboardingPnPgApi = {
-  getInstitutionsByUser: async (loggedUser: User): Promise<InstitutionsPnpg> => {
+export const OnboardingApi = {
+  getBusinessesByUser: async (loggedUser: User): Promise<LegalEntity> => {
     const result = await apiClient.getInstitutionsByUserUsingPOST({
       body: {
         taxCode: loggedUser.taxCode,
-        email: loggedUser.email as EmailString,
         name: loggedUser.name,
         surname: loggedUser.surname,
         role: 'MANAGER' as RoleEnum,
@@ -56,25 +51,28 @@ export const OnboardingPnPgApi = {
   },
 
   onboardingPGSubmit: async (
-    externalInstitutionId: string,
+    businessId: string,
     productId: string,
-    loggedUser: User,
-    selectedInstitution: BusinessPnpg
+    loggedUser: PnPGUserDto,
+    selectedBusiness: Business,
+    digitalAddress: string
   ): Promise<boolean> => {
     const result = await apiClient.onboardingPGUsingPOST({
-      externalInstitutionId,
+      externalInstitutionId: businessId,
       productId,
       body: {
         billingData: {
-          businessName: selectedInstitution.businessName,
-          taxCode: selectedInstitution.businessTaxId,
+          certified: selectedBusiness.certified,
+          businessName: selectedBusiness.businessName,
+          taxCode: selectedBusiness.businessTaxId,
+          digitalAddress,
         },
         users: [
           {
             taxCode: loggedUser.taxCode,
             name: loggedUser.name,
             surname: loggedUser.surname,
-            email: loggedUser.email as EmailString,
+            email: loggedUser.email,
             role: 'MANAGER' as RoleEnum,
           },
         ],
@@ -83,21 +81,17 @@ export const OnboardingPnPgApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  getInstitutionLegalAddress: async (
-    externalInstitutionId: string
-  ): Promise<PnpgInstitutionLegalAddressResource> => {
-    const result = await apiClient.getInstitutionLegalAddressUsingGET({ externalInstitutionId });
+  getBusinessLegalAddress: async (businessId: string): Promise<BusinessLegalAddress> => {
+    const result = await apiClient.getInstitutionLegalAddressUsingGET({
+      externalInstitutionId: businessId,
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  matchInstitutionAndUser: async (
-    externalInstitutionId: string,
-    loggedUser: User
-  ): Promise<boolean> => {
+  matchBusinessAndUser: async (businessId: string, loggedUser: User): Promise<boolean> => {
     const result = await apiClient.matchInstitutionAndUserUsingPOST({
-      externalInstitutionId,
+      externalInstitutionId: businessId,
       body: {
-        email: loggedUser.email as EmailString,
         name: loggedUser.name,
         role: 'MANAGER' as RoleEnum,
         surname: loggedUser.surname,
