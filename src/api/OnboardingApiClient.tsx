@@ -38,15 +38,8 @@ const onRedirectToLogin = () =>
   );
 
 export const OnboardingApi = {
-  getBusinessesByUser: async (loggedUser: User): Promise<LegalEntity> => {
-    const result = await apiClient.getInstitutionsByUserUsingPOST({
-      body: {
-        taxCode: loggedUser.taxCode,
-        name: loggedUser.name,
-        surname: loggedUser.surname,
-        role: 'MANAGER' as RoleEnum,
-      },
-    });
+  getBusinessesByUser: async (): Promise<LegalEntity> => {
+    const result = await apiClient.getInstitutionsFromInfocamereUsingGET({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
 

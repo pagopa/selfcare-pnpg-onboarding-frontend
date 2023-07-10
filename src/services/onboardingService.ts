@@ -4,12 +4,12 @@ import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
 import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
 import { PnPGUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
 
-export const getBusinessesByUser = (user: User): Promise<LegalEntity> => {
+export const getBusinessesByUser = (): Promise<LegalEntity> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return new Promise((resolve) => resolve(mockedLegalEntity));
   } else {
-    return OnboardingApi.getBusinessesByUser(user);
+    return OnboardingApi.getBusinessesByUser();
   }
 };
 
