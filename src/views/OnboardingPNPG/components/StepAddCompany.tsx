@@ -4,7 +4,6 @@ import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
@@ -13,6 +12,7 @@ import { OnboardingStepActions } from '../../../components/OnboardingStepActions
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
+import { ENV } from '../../../utils/env';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -20,14 +20,13 @@ type Props = {
 
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
-  const addError = useErrorDispatcher();
 
   const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
     Business | undefined
   >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
-  const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound'>();
+  const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound' | 'genericError'>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const requestId = uniqueId();
@@ -48,32 +47,29 @@ function StepAddCompany({ setActiveStep }: Props) {
         trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
         setLoading(true);
         matchBusinessAndUser(typedInput, loggedUser)
-          .then(() => {
-            trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
-            setSelectedBusiness({
-              certified: false,
-              businessName: '',
-              businessTaxId: typedInput,
-            });
-            setSelectedBusinessHistory({
-              certified: false,
-              businessName: '',
-              businessTaxId: typedInput,
-            });
-            setActiveStep(3);
+          .then((matched) => {
+            if (matched) {
+              trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
+              setSelectedBusiness({
+                certified: false,
+                businessName: '',
+                businessTaxId: typedInput,
+              });
+              setSelectedBusinessHistory({
+                certified: false,
+                businessName: '',
+                businessTaxId: typedInput,
+              });
+              setActiveStep(3);
+            } else {
+              trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
+              setError('typedNotFound');
+            }
           })
-          .catch((reason) => {
-            trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
-            addError({
-              id: 'MATCH_INSTITUTION_AND_USER_ERROR',
-              blocking: false,
-              error: reason,
-              techDescription: `An error occurred while matching institution and user`,
-              toNotify: true,
-            });
+          .catch(() => {
+            setError('genericError');
           })
           .finally(() => setLoading(false));
-        setError('typedNotFound');
       })
       .finally(() => setLoading(false));
   };
@@ -101,6 +97,22 @@ function StepAddCompany({ setActiveStep }: Props) {
         onButtonClick={() => setActiveStep(0)}
       />
     </>
+  ) : error === 'genericError' ? (
+    <EndingPage
+      minHeight="52vh"
+      icon={<IllusError size={60} />}
+      title={t('genericError.title')}
+      description={
+        <Trans i18nKey="genericError.message">
+          A causa di un problema tecnico, non riusciamo a registrare <br /> l’impresa. Riprova più
+          tardi.
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('genericError.close')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
+    />
   ) : loading ? (
     <LoadingOverlay />
   ) : (
