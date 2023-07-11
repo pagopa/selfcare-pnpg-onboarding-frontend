@@ -25,14 +25,14 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
     if (retrievedBusinesses?.businesses.length === 1) {
       setSelectedBusiness({
         certified: true,
-        businessName: retrievedBusinesses.businesses[0].businessName,
-        businessTaxId: retrievedBusinesses.businesses[0].businessTaxId,
+        businessName: retrievedBusinesses.businesses[0].businessName ?? '',
+        businessTaxId: retrievedBusinesses.businesses[0].businessTaxId ?? '',
       });
       setSelectedBusinessHistory({
         ...selectedBusiness,
         certified: true,
-        businessName: retrievedBusinesses.businesses[0].businessName,
-        businessTaxId: retrievedBusinesses.businesses[0].businessTaxId,
+        businessName: retrievedBusinesses.businesses[0].businessName ?? '',
+        businessTaxId: retrievedBusinesses.businesses[0].businessTaxId ?? '',
       });
     } else {
       setSelectedBusinessHistory(undefined);
@@ -113,14 +113,14 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
                 onClick={() => {
                   setSelectedBusiness({
                     certified: true,
-                    businessName: b.businessName,
-                    businessTaxId: b.businessTaxId,
+                    businessName: b.businessName ?? '',
+                    businessTaxId: b.businessTaxId ?? '',
                   });
                 }}
               >
                 <PartyAccountItem
                   aria-label={b.businessName}
-                  partyName={b.businessName}
+                  partyName={b.businessName ?? ''}
                   partyRole={b.businessTaxId}
                   maxCharactersNumberMultiLine={20}
                   containerSx={{ marginInlineEnd: 'auto', marginLeft: 1 }}

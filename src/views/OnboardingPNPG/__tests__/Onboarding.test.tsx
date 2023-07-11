@@ -131,7 +131,9 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   await executeStepSelectBusiness();
   await executeStepAddCompany('33333333333');
 
-  await waitFor(() => screen.getByText('Non puoi registrare questa impresa', { exact: false }));
+  await waitFor(() =>
+    screen.getByText('A causa di un problema tecnico, non riusciamo a registrare', { exact: false })
+  );
 
   const backToAccessButton = screen.getByText('Chiudi');
   fireEvent.click(backToAccessButton);
