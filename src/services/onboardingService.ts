@@ -13,7 +13,10 @@ export const getBusinessesByUser = (user: User): Promise<LegalEntity> => {
   }
 };
 
-export const matchBusinessAndUser = (businessId: string, loggedUser: User): Promise<boolean> => {
+export const matchBusinessAndUser = (
+  businessId: string,
+  loggedUser: User
+): Promise<boolean | null> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.matchBusinessAndUser(businessId, loggedUser);
@@ -22,7 +25,9 @@ export const matchBusinessAndUser = (businessId: string, loggedUser: User): Prom
   }
 };
 
-export const getBusinessLegalAddress = (businessId: string): Promise<BusinessLegalAddress> => {
+export const getBusinessLegalAddress = (
+  businessId: string
+): Promise<BusinessLegalAddress | null> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getBusinessLegalAddress(businessId);

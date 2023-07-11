@@ -132,7 +132,10 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   await executeStepAddCompany('33333333333');
 
   await waitFor(() =>
-    screen.getByText('A causa di un problema tecnico, non riusciamo a registrare', { exact: false })
+    screen.getByText(
+      'Dal tuo SPID non risulti essere Legale Rappresentante dell’impresa associata a questo Codice Fiscale',
+      { exact: false }
+    )
   );
 
   const backToAccessButton = screen.getByText('Chiudi');
