@@ -122,55 +122,25 @@ export const mockedOnboardingApi = {
     return new Promise((resolve) => resolve(true));
   },
 
-  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<boolean> => {
+  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<boolean | null> => {
     const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === taxCode
     );
     if (matchedBusinessInEdAByExternalId) {
       return new Promise((resolve) => resolve(true));
     } else {
-      return new Promise(() => {
-        const error = new Error(`Unexpected mocked HTTP status!! Expected 200 obtained 400`);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
+      return new Promise((resolve) => resolve(null));
     }
   },
 
-  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress> => {
+  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress | null> => {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
     if (matchedBusinessLegalAddressByExternalId) {
       return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId));
     } else {
-      return new Promise(() => {
-        const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
+      return new Promise((resolve) => resolve(null));
     }
   },
 };
