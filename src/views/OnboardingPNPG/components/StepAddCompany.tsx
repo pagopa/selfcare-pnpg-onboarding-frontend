@@ -18,6 +18,7 @@ type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
 
@@ -38,38 +39,41 @@ function StepAddCompany({ setActiveStep }: Props) {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
     setLoading(true);
     getBusinessLegalAddress(typedInput)
-      .then(() => {
-        setLoading(false);
-        trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-        setError('matchedButNotLR');
+      .then((res) => {
+        if (res) {
+          trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+          setError('matchedButNotLR');
+        } else {
+          trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+          setLoading(true);
+          matchBusinessAndUser(typedInput, loggedUser)
+            .then((matched) => {
+              if (matched) {
+                trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
+                setSelectedBusiness({
+                  certified: false,
+                  businessName: '',
+                  businessTaxId: typedInput,
+                });
+                setSelectedBusinessHistory({
+                  certified: false,
+                  businessName: '',
+                  businessTaxId: typedInput,
+                });
+                setActiveStep(3);
+              } else {
+                trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
+                setError('typedNotFound');
+              }
+            })
+            .catch(() => {
+              setError('genericError');
+            })
+            .finally(() => setLoading(false));
+        }
       })
       .catch(() => {
-        trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-        setLoading(true);
-        matchBusinessAndUser(typedInput, loggedUser)
-          .then((matched) => {
-            if (matched) {
-              trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
-              setSelectedBusiness({
-                certified: false,
-                businessName: '',
-                businessTaxId: typedInput,
-              });
-              setSelectedBusinessHistory({
-                certified: false,
-                businessName: '',
-                businessTaxId: typedInput,
-              });
-              setActiveStep(3);
-            } else {
-              trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
-              setError('typedNotFound');
-            }
-          })
-          .catch(() => {
-            setError('genericError');
-          })
-          .finally(() => setLoading(false));
+        setError('genericError');
       })
       .finally(() => setLoading(false));
   };
