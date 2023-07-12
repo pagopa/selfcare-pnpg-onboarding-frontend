@@ -131,7 +131,12 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   await executeStepSelectBusiness();
   await executeStepAddCompany('33333333333');
 
-  await waitFor(() => screen.getByText('Non puoi registrare questa impresa', { exact: false }));
+  await waitFor(() =>
+    screen.getByText(
+      'Dal tuo SPID non risulti essere Legale Rappresentante dell’impresa associata a questo Codice Fiscale',
+      { exact: false }
+    )
+  );
 
   const backToAccessButton = screen.getByText('Chiudi');
   fireEvent.click(backToAccessButton);
