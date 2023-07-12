@@ -29,7 +29,6 @@ function StepAddCompany({ setActiveStep }: Props) {
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound' | 'genericError'>();
   const [loading, setLoading] = useState<boolean>(false);
-
   const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
@@ -45,7 +44,6 @@ function StepAddCompany({ setActiveStep }: Props) {
           setError('matchedButNotLR');
         } else {
           trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-          setLoading(true);
           matchBusinessAndUser(typedInput, loggedUser)
             .then((matched) => {
               if (matched) {
@@ -65,17 +63,16 @@ function StepAddCompany({ setActiveStep }: Props) {
                 trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
                 setError('typedNotFound');
               }
+              setLoading(false);
             })
             .catch(() => {
               setError('genericError');
-            })
-            .finally(() => setLoading(false));
+            });
         }
       })
       .catch(() => {
         setError('genericError');
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   return error === 'typedNotFound' || error === 'matchedButNotLR' ? (
