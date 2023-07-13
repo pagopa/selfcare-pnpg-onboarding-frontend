@@ -1,5 +1,6 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
+import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -122,14 +123,14 @@ export const mockedOnboardingApi = {
     return new Promise((resolve) => resolve(true));
   },
 
-  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<boolean | null> => {
+  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<MatchInfoResultResource> => {
     const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === taxCode
     );
     if (matchedBusinessInEdAByExternalId) {
-      return new Promise((resolve) => resolve(true));
+      return new Promise((resolve) => resolve({ verificationResult: true }));
     } else {
-      return new Promise((resolve) => resolve(null));
+      return new Promise((resolve) => resolve({ verificationResult: false }));
     }
   },
 

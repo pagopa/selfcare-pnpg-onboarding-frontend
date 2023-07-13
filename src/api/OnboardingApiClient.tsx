@@ -7,6 +7,7 @@ import { Business, LegalEntity, BusinessLegalAddress, User } from '../types';
 import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
 import { PnPGUserDto, RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -88,7 +89,10 @@ export const OnboardingApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  matchBusinessAndUser: async (businessId: string, loggedUser: User): Promise<boolean> => {
+  matchBusinessAndUser: async (
+    businessId: string,
+    loggedUser: User
+  ): Promise<MatchInfoResultResource> => {
     const result = await apiClient.matchInstitutionAndUserUsingPOST({
       externalInstitutionId: businessId,
       body: {
