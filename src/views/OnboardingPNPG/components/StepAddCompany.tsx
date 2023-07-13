@@ -34,19 +34,19 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   const productId = 'prod-pn-pg';
 
-  const handleSubmit = (typedInput: string) => {
+  const handleSubmit = async (typedInput: string) => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
     setLoading(true);
-    getBusinessLegalAddress(typedInput)
-      .then((res) => {
+    await getBusinessLegalAddress(typedInput)
+      .then(async (res) => {
         if (res) {
           trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
           setError('matchedButNotLR');
         } else {
           trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-          matchBusinessAndUser(typedInput, loggedUser)
-            .then((matched) => {
-              if (matched) {
+          await matchBusinessAndUser(typedInput, loggedUser)
+            .then((res) => {
+              if (res.verificationResult) {
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
                 setSelectedBusiness({
                   certified: false,
@@ -73,6 +73,7 @@ function StepAddCompany({ setActiveStep }: Props) {
       .catch(() => {
         setError('genericError');
       });
+    setLoading(false);
   };
 
   return error === 'typedNotFound' || error === 'matchedButNotLR' ? (
