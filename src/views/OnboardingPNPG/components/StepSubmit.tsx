@@ -70,7 +70,11 @@ function StepSubmit({ forward, setLoading }: Props) {
       insertedBusinessEmail
     )
       .then(() => {
-        trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', { requestId, productId });
+        trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
+          requestId,
+          productId,
+          external_id: selectedBusiness.businessTaxId,
+        });
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
         forward();
@@ -78,12 +82,20 @@ function StepSubmit({ forward, setLoading }: Props) {
       .catch((reason) => {
         if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
-          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
+          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+            requestId,
+            productId,
+            external_id: selectedBusiness.businessTaxId,
+          });
           setSelectedBusiness(selectedBusiness);
           setSelectedBusinessHistory(selectedBusiness);
         } else {
           setError('genericError');
-          trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', { requestId, productId });
+          trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', {
+            requestId,
+            productId,
+            external_id: selectedBusiness.businessTaxId,
+          });
         }
       })
       .finally(() => {

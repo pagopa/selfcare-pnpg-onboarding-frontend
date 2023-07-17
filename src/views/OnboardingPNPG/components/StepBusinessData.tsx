@@ -29,7 +29,11 @@ function StepBusinessData({ setActiveStep }: Props) {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
   useEffect(() => {
-    trackEvent('ONBOARDING_PG_DATA_INPUT', { requestId, productId: 'prod-pn-pg' });
+    trackEvent('ONBOARDING_PG_DATA_INPUT', {
+      requestId,
+      productId: 'prod-pn-pg',
+      external_id: selectedBusiness?.businessTaxId,
+    });
     const isUncertifiedEmptyFields =
       !selectedBusiness?.certified &&
       insertedBusinessEmail?.length > 0 &&
@@ -40,7 +44,11 @@ function StepBusinessData({ setActiveStep }: Props) {
   }, [insertedBusinessEmail, selectedBusiness]);
 
   const onForwardAction = () => {
-    trackEvent('ONBOARDING_PG_DATA_CONFIRMED', { requestId, productId: 'prod-pn-pg' });
+    trackEvent('ONBOARDING_PG_DATA_CONFIRMED', {
+      requestId,
+      productId: 'prod-pn-pg',
+      external_id: selectedBusiness?.businessTaxId,
+    });
     setSelectedBusinessHistory(selectedBusiness);
     setInsertedBusinessEmailHistory(insertedBusinessEmail);
     setActiveStep(4);
