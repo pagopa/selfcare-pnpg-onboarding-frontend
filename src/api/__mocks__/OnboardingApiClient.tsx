@@ -1,5 +1,6 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
+import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -122,55 +123,25 @@ export const mockedOnboardingApi = {
     return new Promise((resolve) => resolve(true));
   },
 
-  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<boolean> => {
+  matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<MatchInfoResultResource> => {
     const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === taxCode
     );
     if (matchedBusinessInEdAByExternalId) {
-      return new Promise((resolve) => resolve(true));
+      return new Promise((resolve) => resolve({ verificationResult: true }));
     } else {
-      return new Promise(() => {
-        const error = new Error(`Unexpected mocked HTTP status!! Expected 200 obtained 400`);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
+      return new Promise((resolve) => resolve({ verificationResult: false }));
     }
   },
 
-  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress> => {
+  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress | null> => {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
     if (matchedBusinessLegalAddressByExternalId) {
       return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId));
     } else {
-      return new Promise(() => {
-        const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 400;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 400,
-          description: 'Bad Request',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
+      return new Promise((resolve) => resolve(null));
     }
   },
 };
