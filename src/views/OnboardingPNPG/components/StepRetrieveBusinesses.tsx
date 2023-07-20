@@ -4,7 +4,6 @@ import { useTranslation, Trans } from 'react-i18next';
 import { IllusError } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
 import { LegalEntity } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
@@ -25,11 +24,10 @@ function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props
   const [error, setError] = useState<boolean>(false);
 
   const requestId = uniqueId();
-  const loggedUser = storageUserOps.read();
 
   const retrieveBusinessesByUser = async () => {
     setLoading(true);
-    getBusinessesByUser(loggedUser)
+    getBusinessesByUser()
       .then((retrievedBusinesses) => {
         trackEvent('ONBOARDING_PG_SUCCESS_RETRIEVED', { requestId, productId: 'prod-pn-pg' });
         setRetrievedBusinesses(retrievedBusinesses);
