@@ -1,5 +1,6 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
+import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 export const loggedUser: User = {
@@ -134,7 +135,7 @@ export const mockedOnboardingApi = {
     }
   },
 
-  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress | null> => {
+  getBusinessLegalAddress: (taxCode: string): Promise<InstitutionLegalAddressResource | null> => {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
