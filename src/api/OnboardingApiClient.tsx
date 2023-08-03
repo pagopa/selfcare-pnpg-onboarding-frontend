@@ -3,11 +3,12 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ENV } from '../utils/env';
-import { Business, LegalEntity, BusinessLegalAddress, User } from '../types';
+import { Business, LegalEntity, User } from '../types';
 import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
 import { PnPGUserDto, RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
 import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
+import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -75,9 +76,11 @@ export const OnboardingApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  getBusinessLegalAddress: async (businessId: string): Promise<BusinessLegalAddress> => {
-    const result = await apiClient.getInstitutionLegalAddressUsingGET({
-      externalInstitutionId: businessId,
+  getBusinessLegalAddress: async (businessId: string): Promise<InstitutionLegalAddressResource> => {
+    const result = await apiClient.postVerificationLegalAddressUsingPOST({
+      body: {
+        taxCode: businessId,
+      },
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
@@ -86,13 +89,15 @@ export const OnboardingApi = {
     businessId: string,
     loggedUser: User
   ): Promise<MatchInfoResultResource> => {
-    const result = await apiClient.matchInstitutionAndUserUsingPOST({
-      externalInstitutionId: businessId,
+    const result = await apiClient.postVerificationMatchUsingPOST({
       body: {
-        name: loggedUser.name,
-        role: 'MANAGER' as RoleEnum,
-        surname: loggedUser.surname,
-        taxCode: loggedUser.taxCode,
+        taxCode: businessId,
+        userDto: {
+          taxCode: loggedUser.taxCode,
+          name: loggedUser.name,
+          surname: loggedUser.surname,
+          role: 'MANAGER' as RoleEnum,
+        },
       },
     });
     return extractResponse(result, 200, onRedirectToLogin);
