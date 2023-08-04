@@ -9,6 +9,7 @@ import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/cli
 import { PnPGUserDto, RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
 import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
+import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/OnboardingProductDto';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -52,16 +53,21 @@ export const OnboardingApi = {
     selectedBusiness: Business,
     digitalAddress: string
   ): Promise<boolean> => {
-    const result = await apiClient.onboardingPGUsingPOST({
-      externalInstitutionId: businessId,
-      productId,
+    const result = await apiClient.onboardingUsingPOST({
       body: {
+        productId,
         billingData: {
           certified: selectedBusiness.certified,
           businessName: selectedBusiness.businessName,
           taxCode: selectedBusiness.businessTaxId,
           digitalAddress,
+          vatNumber: '',
+          recipientCode: '',
+          registeredOffice: '',
+          zipCode: '',
         },
+        institutionType: 'PG' as InstitutionTypeEnum,
+        taxCode: businessId,
         users: [
           {
             taxCode: loggedUser.taxCode,
