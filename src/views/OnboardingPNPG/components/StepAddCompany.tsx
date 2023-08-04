@@ -38,13 +38,14 @@ function StepAddCompany({ setActiveStep }: Props) {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
     setLoading(true);
     await getBusinessLegalAddress(typedInput)
-      .then(async (res) => {
-        if (res) {
-          trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-          setError('matchedButNotLR');
-        } else {
+      .then(() => {
+        trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+        setError('matchedButNotLR');
+      })
+      .catch((reason) => {
+        if (reason.httpStatus === 404) {
           trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-          await matchBusinessAndUser(typedInput, loggedUser)
+          matchBusinessAndUser(typedInput, loggedUser)
             .then((res) => {
               if (res.verificationResult) {
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
@@ -63,17 +64,15 @@ function StepAddCompany({ setActiveStep }: Props) {
                 trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
                 setError('typedNotFound');
               }
-              setLoading(false);
             })
             .catch(() => {
               setError('genericError');
             });
+        } else {
+          setError('genericError');
         }
-      })
-      .catch(() => {
-        setError('genericError');
+        setLoading(false);
       });
-    setLoading(false);
   };
 
   return error === 'typedNotFound' || error === 'matchedButNotLR' ? (

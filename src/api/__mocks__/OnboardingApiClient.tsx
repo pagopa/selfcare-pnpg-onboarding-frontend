@@ -128,21 +128,34 @@ export const mockedOnboardingApi = {
     const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === taxCode
     );
-    if (matchedBusinessInEdAByExternalId) {
-      return new Promise((resolve) => resolve({ verificationResult: true }));
-    } else {
-      return new Promise((resolve) => resolve({ verificationResult: false }));
-    }
+    return new Promise((resolve) =>
+      resolve({ verificationResult: !!matchedBusinessInEdAByExternalId })
+    );
   },
 
-  getBusinessLegalAddress: (taxCode: string): Promise<InstitutionLegalAddressResource | null> => {
+  getBusinessLegalAddress: (taxCode: string): Promise<InstitutionLegalAddressResource> => {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
     if (matchedBusinessLegalAddressByExternalId) {
       return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId));
     } else {
-      return new Promise((resolve) => resolve(null));
+      return new Promise(() => {
+        const error = new Error(`Taxcode not found in legal address!`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 404;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 404,
+          description: 'Not found',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
     }
   },
 };
