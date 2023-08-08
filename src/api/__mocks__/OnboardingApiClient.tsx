@@ -137,6 +137,26 @@ export const mockedOnboardingApi = {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
-    return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId ?? null));
+    // Introduced this use case for invalid input format
+    if (taxCode === '11111111111') {
+      return new Promise(() => {
+        const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 400;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 400,
+          description: 'Not found',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
+    } else {
+      return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId ?? null));
+    }
   },
 };

@@ -54,6 +54,11 @@ export default {
       'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
     close: 'Chiudi',
   },
+  invalidInputFormat: {
+    title: 'Il Codice Fiscale/Partita IVA non è corretto',
+    message: 'Torna indietro, assicurati che sia corretto e inseriscilo di <1 /> nuovo.',
+    goBack: 'Torna indietro',
+  },
   outcome: {
     success: {
       title: 'Impresa registrata!',

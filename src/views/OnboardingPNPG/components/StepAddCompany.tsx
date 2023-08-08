@@ -19,6 +19,7 @@ type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
 
@@ -27,7 +28,9 @@ function StepAddCompany({ setActiveStep }: Props) {
   >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
-  const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound' | 'genericError'>();
+  const [error, setError] = useState<
+    'matchedButNotLR' | 'typedNotFound' | 'genericError' | 'invalidInputFormat'
+  >();
   const setLoading = useLoading(LOADING_TASK_VERIFY_INPUT);
   const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
@@ -69,8 +72,12 @@ function StepAddCompany({ setActiveStep }: Props) {
             });
         }
       })
-      .catch(() => {
-        setError('genericError');
+      .catch((reason) => {
+        if (reason.httpStatus === 400) {
+          setError('invalidInputFormat');
+        } else {
+          setError('genericError');
+        }
       })
       .finally(() => setLoading(false));
   };
@@ -113,6 +120,21 @@ function StepAddCompany({ setActiveStep }: Props) {
       variantDescription={'body1'}
       buttonLabel={t('genericError.close')}
       onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
+    />
+  ) : error === 'invalidInputFormat' ? (
+    <EndingPage
+      minHeight="52vh"
+      icon={<IllusError size={60} />}
+      title={t('invalidInputFormat.title')}
+      description={
+        <Trans i18nKey="invalidInputFormat.message">
+          Torna indietro, assicurati che sia corretto e inseriscilo di <br /> nuovo.
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('invalidInputFormat.goBack')}
+      onButtonClick={() => setError(undefined)}
     />
   ) : (
     <Grid container direction="column" my={16}>
