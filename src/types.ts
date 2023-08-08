@@ -58,3 +58,5 @@ export type BusinessLegalAddress = {
   address: string;
   zipCode: string;
 };
+
+export type ErrorType = 'matchedButNotLR' | 'typedNotFound' | 'genericError' | 'invalidInputFormat';
