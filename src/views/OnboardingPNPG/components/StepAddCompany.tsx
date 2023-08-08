@@ -1,24 +1,24 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { IllusError, theme } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
-import LoadingOverlay from '@pagopa/selfcare-common-frontend/components/Loading/LoadingOverlay';
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { Business } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
+import { LOADING_TASK_VERIFY_INPUT } from '../../../utils/constants';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
 
@@ -28,7 +28,7 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound' | 'genericError'>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const setLoading = useLoading(LOADING_TASK_VERIFY_INPUT);
   const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
@@ -38,14 +38,13 @@ function StepAddCompany({ setActiveStep }: Props) {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
     setLoading(true);
     await getBusinessLegalAddress(typedInput)
-      .then(() => {
-        trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-        setError('matchedButNotLR');
-      })
-      .catch((reason) => {
-        if (reason.httpStatus === 404) {
+      .then(async (resp) => {
+        if (resp) {
+          trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+          setError('matchedButNotLR');
+        } else {
           trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
-          matchBusinessAndUser(typedInput, loggedUser)
+          await matchBusinessAndUser(typedInput, loggedUser)
             .then((res) => {
               if (res.verificationResult) {
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
@@ -68,11 +67,12 @@ function StepAddCompany({ setActiveStep }: Props) {
             .catch(() => {
               setError('genericError');
             });
-        } else {
-          setError('genericError');
         }
-        setLoading(false);
-      });
+      })
+      .catch(() => {
+        setError('genericError');
+      })
+      .finally(() => setLoading(false));
   };
 
   return error === 'typedNotFound' || error === 'matchedButNotLR' ? (
@@ -114,8 +114,6 @@ function StepAddCompany({ setActiveStep }: Props) {
       buttonLabel={t('genericError.close')}
       onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
     />
-  ) : loading ? (
-    <LoadingOverlay />
   ) : (
     <Grid container direction="column" my={16}>
       <Grid container item justifyContent="center">

@@ -10,7 +10,7 @@ import { Business, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
-import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
