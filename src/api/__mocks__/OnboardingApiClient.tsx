@@ -133,29 +133,30 @@ export const mockedOnboardingApi = {
     );
   },
 
-  getBusinessLegalAddress: (taxCode: string): Promise<InstitutionLegalAddressResource> => {
+  getBusinessLegalAddress: (taxCode: string): Promise<InstitutionLegalAddressResource | null> => {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
-    if (matchedBusinessLegalAddressByExternalId) {
-      return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId));
-    } else {
+    // Introduced this use case for invalid input format
+    if (taxCode === '11111111111') {
       return new Promise(() => {
-        const error = new Error(`Taxcode not found in legal address!`);
+        const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 404;
+        error.httpStatus = 400;
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line functional/immutable-data
         error.httpBody = {
-          statusCode: 404,
-          description: 'Not found',
+          statusCode: 400,
+          description: 'Bad request',
         };
         console.error(JSON.stringify(error));
         throw error;
       });
+    } else {
+      return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId ?? null));
     }
   },
 };
