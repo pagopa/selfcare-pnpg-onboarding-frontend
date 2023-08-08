@@ -150,7 +150,7 @@ export const mockedOnboardingApi = {
         // eslint-disable-next-line functional/immutable-data
         error.httpBody = {
           statusCode: 400,
-          description: 'Not found',
+          description: 'Bad request',
         };
         console.error(JSON.stringify(error));
         throw error;
