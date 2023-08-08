@@ -6,10 +6,10 @@ import { ENV } from '../utils/env';
 import { Business, LegalEntity, User } from '../types';
 import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
-import { PnPGUserDto, RoleEnum } from './generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/CompanyOnboardingDto';
+import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding-pnpg/CompanyUserDto';
 import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/OnboardingProductDto';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -49,7 +49,7 @@ export const OnboardingApi = {
   onboardingPGSubmit: async (
     businessId: string,
     productId: string,
-    loggedUser: PnPGUserDto,
+    loggedUser: CompanyUserDto,
     selectedBusiness: Business,
     digitalAddress: string
   ): Promise<boolean> => {
@@ -61,10 +61,6 @@ export const OnboardingApi = {
           businessName: selectedBusiness.businessName,
           taxCode: selectedBusiness.businessTaxId,
           digitalAddress,
-          vatNumber: '',
-          recipientCode: '',
-          registeredOffice: '',
-          zipCode: '',
         },
         institutionType: 'PG' as InstitutionTypeEnum,
         taxCode: businessId,
