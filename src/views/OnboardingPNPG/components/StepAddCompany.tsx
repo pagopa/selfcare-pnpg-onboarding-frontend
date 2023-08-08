@@ -1,24 +1,24 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
-import { IllusError, theme } from '@pagopa/mui-italia';
-import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
+import { theme } from '@pagopa/mui-italia';
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import { Business } from '../../../types';
+import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
-import { ENV } from '../../../utils/env';
 import { LOADING_TASK_VERIFY_INPUT } from '../../../utils/constants';
+import ErrorHandler from './ErrorHandler';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepAddCompany({ setActiveStep }: Props) {
   const { t } = useTranslation();
 
@@ -27,7 +27,7 @@ function StepAddCompany({ setActiveStep }: Props) {
   >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
-  const [error, setError] = useState<'matchedButNotLR' | 'typedNotFound' | 'genericError'>();
+  const [error, setError] = useState<ErrorType>();
   const setLoading = useLoading(LOADING_TASK_VERIFY_INPUT);
   const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
@@ -69,51 +69,18 @@ function StepAddCompany({ setActiveStep }: Props) {
             });
         }
       })
-      .catch(() => {
-        setError('genericError');
+      .catch((reason) => {
+        if (reason.httpStatus === 400) {
+          setError('invalidInputFormat');
+        } else {
+          setError('genericError');
+        }
       })
       .finally(() => setLoading(false));
   };
 
-  return error === 'typedNotFound' || error === 'matchedButNotLR' ? (
-    <>
-      <EndingPage
-        icon={<IllusError size={60} />}
-        title={
-          <Trans i18nKey="cannotRegisterBusiness.title">
-            Non puoi registrare <br />
-            questa impresa
-          </Trans>
-        }
-        description={
-          <Trans i18nKey="cannotRegisterBusiness.message">
-            Dal tuo SPID non risulti essere Legale Rappresentante <br />
-            dell’impresa associata a questo Codice Fiscale. Puoi <br />
-            registrare solo le imprese di cui sei Legale Rappresentante.
-          </Trans>
-        }
-        variantTitle={'h4'}
-        variantDescription={'body1'}
-        buttonLabel={t('cannotRegisterBusiness.close')}
-        onButtonClick={() => setActiveStep(0)}
-      />
-    </>
-  ) : error === 'genericError' ? (
-    <EndingPage
-      minHeight="52vh"
-      icon={<IllusError size={60} />}
-      title={t('genericError.title')}
-      description={
-        <Trans i18nKey="genericError.message">
-          A causa di un problema tecnico, non riusciamo a registrare <br /> l’impresa. Riprova più
-          tardi.
-        </Trans>
-      }
-      variantTitle={'h4'}
-      variantDescription={'body1'}
-      buttonLabel={t('genericError.close')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
-    />
+  return error ? (
+    <ErrorHandler error={error} setActiveStep={setActiveStep} setError={setError} />
   ) : (
     <Grid container direction="column" my={16}>
       <Grid container item justifyContent="center">
