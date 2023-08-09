@@ -1,5 +1,6 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
+import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 export const loggedUser: User = {
@@ -127,21 +128,35 @@ export const mockedOnboardingApi = {
     const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === taxCode
     );
-    if (matchedBusinessInEdAByExternalId) {
-      return new Promise((resolve) => resolve({ verificationResult: true }));
-    } else {
-      return new Promise((resolve) => resolve({ verificationResult: false }));
-    }
+    return new Promise((resolve) =>
+      resolve({ verificationResult: !!matchedBusinessInEdAByExternalId })
+    );
   },
 
-  getBusinessLegalAddress: (taxCode: string): Promise<BusinessLegalAddress | null> => {
+  getBusinessLegalAddress: (taxCode: string): Promise<InstitutionLegalAddressResource | null> => {
     const matchedBusinessLegalAddressByExternalId = mockedRetrievedBusinessesLegalAddress.find(
       (i) => i.taxCode === taxCode
     );
-    if (matchedBusinessLegalAddressByExternalId) {
-      return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId));
+    // Introduced this use case for invalid input format
+    if (taxCode === '11111111111') {
+      return new Promise(() => {
+        const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 400`);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpStatus = 400;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        // eslint-disable-next-line functional/immutable-data
+        error.httpBody = {
+          statusCode: 400,
+          description: 'Bad request',
+        };
+        console.error(JSON.stringify(error));
+        throw error;
+      });
     } else {
-      return new Promise((resolve) => resolve(null));
+      return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId ?? null));
     }
   },
 };

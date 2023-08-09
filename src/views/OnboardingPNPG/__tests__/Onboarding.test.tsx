@@ -165,6 +165,17 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that NO
   fireEvent.click(signInButton);
 });
 
+test('Test: In the add agency flow via taxCode, when inserting a taxCode written in an incorrect data format, the invalidInputFormat page will be show', async () => {
+  renderComponent();
+  await executeStepSelectBusiness();
+  await executeStepAddCompany('11111111111');
+
+  await waitFor(() => screen.getByText('Il Codice Fiscale/Partita IVA non è corretto'));
+
+  const goBackButton = screen.getByText('Torna indietro');
+  fireEvent.click(goBackButton);
+});
+
 const executeStepSelectBusiness = async (businessName?: string) => {
   await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
   const registerAgencyButton = screen.getByText('Registra impresa');

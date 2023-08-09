@@ -122,42 +122,26 @@
             "bearerAuth": ["global"]
           }
         ]
-      },
+      }
+    },
+    "/institutions/company/onboarding": {
       "post": {
         "tags": ["institutions"],
-        "summary": "getInstitutionsByUser",
-        "description": "Get Legal Representative's PN PG institution List",
-        "operationId": "getInstitutionsByUserUsingPOST",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "style": "form",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "summary": "onboarding",
+        "description": "The service allows the onboarding of Users to a subunit of an Institution",
+        "operationId": "onboardingUsingPOST",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/CompanyOnboardingDto"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InstitutionResourceIC"
-                }
-              }
-            }
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request",
@@ -179,6 +163,26 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -190,7 +194,6 @@
             }
           }
         },
-        "deprecated": true,
         "security": [
           {
             "bearerAuth": ["global"]
@@ -279,7 +282,7 @@
         "tags": ["institutions"],
         "summary": "onboarding",
         "description": "The service allows the onboarding of Users to a subunit of an Institution",
-        "operationId": "onboardingUsingPOST",
+        "operationId": "onboardingUsingPOST_1",
         "requestBody": {
           "content": {
             "application/json": {
@@ -536,6 +539,134 @@
         ]
       }
     },
+    "/institutions/verification/legal-address": {
+      "post": {
+        "tags": ["institutions"],
+        "summary": "postVerificationLegalAddress",
+        "description": "Get legal address by business tax id",
+        "operationId": "postVerificationLegalAddressUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationLegalAddressRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstitutionLegalAddressResource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": ["global"]
+          }
+        ]
+      }
+    },
+    "/institutions/verification/match": {
+      "post": {
+        "tags": ["institutions"],
+        "summary": "postVerificationMatch",
+        "description": "MatchLegal Representative and inserted Institution by querying on Agenzia delle Entrate",
+        "operationId": "postVerificationMatchUsingPOST",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerificationMatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchInfoResultResource"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": ["global"]
+          }
+        ]
+      }
+    },
     "/institutions/{externalInstitutionId}/geographicTaxonomy": {
       "get": {
         "tags": ["institutions"],
@@ -686,6 +817,7 @@
             }
           }
         },
+        "deprecated": true,
         "security": [
           {
             "bearerAuth": ["global"]
@@ -762,6 +894,7 @@
             }
           }
         },
+        "deprecated": true,
         "security": [
           {
             "bearerAuth": ["global"]
@@ -952,7 +1085,7 @@
         "tags": ["institutions"],
         "summary": "onboarding",
         "description": "The service allows the onboarding of Users to an Institution",
-        "operationId": "onboardingUsingPOST_1",
+        "operationId": "onboardingUsingPOST_2",
         "parameters": [
           {
             "name": "externalInstitutionId",
@@ -1147,7 +1280,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PnPGUserDto"
+                "$ref": "#/components/schemas/CompanyUserDto"
               }
             }
           }
@@ -1234,7 +1367,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PnPGOnboardingDto"
+                "$ref": "#/components/schemas/CompanyOnboardingDto"
               }
             }
           }
@@ -1759,6 +1892,30 @@
           }
         }
       },
+      "CompanyBillingDataDto": {
+        "title": "CompanyBillingDataDto",
+        "required": ["businessName", "certified", "digitalAddress", "taxCode"],
+        "type": "object",
+        "properties": {
+          "businessName": {
+            "type": "string",
+            "description": "Institution's legal name"
+          },
+          "certified": {
+            "type": "boolean",
+            "description": "Indicates whether the institution values come from INFOCAMERE (true) or MANUAL (false)",
+            "example": false
+          },
+          "digitalAddress": {
+            "type": "string",
+            "description": "Institution's digitalAddress"
+          },
+          "taxCode": {
+            "type": "string",
+            "description": "Institution's taxCode"
+          }
+        }
+      },
       "CompanyInformationsDto": {
         "title": "CompanyInformationsDto",
         "type": "object",
@@ -1792,6 +1949,65 @@
           "shareCapital": {
             "type": "string",
             "description": "Institution's share capital value"
+          }
+        }
+      },
+      "CompanyOnboardingDto": {
+        "title": "CompanyOnboardingDto",
+        "required": ["billingData", "institutionType", "productId", "taxCode", "users"],
+        "type": "object",
+        "properties": {
+          "billingData": {
+            "description": "Institution's billing information",
+            "$ref": "#/components/schemas/CompanyBillingDataDto"
+          },
+          "institutionType": {
+            "type": "string",
+            "description": "Institution's type",
+            "enum": ["GSP", "PA", "PG", "PSP", "PT", "SCP"]
+          },
+          "productId": {
+            "type": "string",
+            "description": "Product's unique identifier"
+          },
+          "taxCode": {
+            "type": "string",
+            "description": "Institution's taxCode"
+          },
+          "users": {
+            "type": "array",
+            "description": "List of onboarding users",
+            "items": {
+              "$ref": "#/components/schemas/CompanyUserDto"
+            }
+          }
+        }
+      },
+      "CompanyUserDto": {
+        "title": "CompanyUserDto",
+        "required": ["name", "role", "surname", "taxCode"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name"
+          },
+          "role": {
+            "type": "string",
+            "description": "User's role",
+            "enum": ["DELEGATE", "MANAGER", "OPERATOR", "SUB_DELEGATE"]
+          },
+          "surname": {
+            "type": "string",
+            "description": "User's surname"
+          },
+          "taxCode": {
+            "type": "string",
+            "description": "User's fiscal code"
           }
         }
       },
@@ -2120,76 +2336,6 @@
           }
         }
       },
-      "PnPGBillingDataDto": {
-        "title": "PnPGBillingDataDto",
-        "required": ["businessName", "certified", "digitalAddress", "taxCode"],
-        "type": "object",
-        "properties": {
-          "businessName": {
-            "type": "string",
-            "description": "Institution's legal name"
-          },
-          "certified": {
-            "type": "boolean",
-            "description": "Indicates whether the institution values come from INFOCAMERE (true) or MANUAL (false)",
-            "example": false
-          },
-          "digitalAddress": {
-            "type": "string",
-            "description": "Institution's digitalAddress"
-          },
-          "taxCode": {
-            "type": "string",
-            "description": "Institution's taxCode"
-          }
-        }
-      },
-      "PnPGOnboardingDto": {
-        "title": "PnPGOnboardingDto",
-        "required": ["billingData", "users"],
-        "type": "object",
-        "properties": {
-          "billingData": {
-            "description": "Institution's billing information",
-            "$ref": "#/components/schemas/PnPGBillingDataDto"
-          },
-          "users": {
-            "type": "array",
-            "description": "List of onboarding users",
-            "items": {
-              "$ref": "#/components/schemas/PnPGUserDto"
-            }
-          }
-        }
-      },
-      "PnPGUserDto": {
-        "title": "PnPGUserDto",
-        "required": ["name", "role", "surname", "taxCode"],
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "User's email"
-          },
-          "name": {
-            "type": "string",
-            "description": "User's name"
-          },
-          "role": {
-            "type": "string",
-            "description": "User's role",
-            "enum": ["DELEGATE", "MANAGER", "OPERATOR", "SUB_DELEGATE"]
-          },
-          "surname": {
-            "type": "string",
-            "description": "User's surname"
-          },
-          "taxCode": {
-            "type": "string",
-            "description": "User's fiscal code"
-          }
-        }
-      },
       "Problem": {
         "title": "Problem",
         "required": ["status", "title"],
@@ -2342,6 +2488,29 @@
           "taxCode": {
             "type": "string",
             "description": "User's fiscal code"
+          }
+        }
+      },
+      "VerificationLegalAddressRequest": {
+        "title": "VerificationLegalAddressRequest",
+        "required": ["taxCode"],
+        "type": "object",
+        "properties": {
+          "taxCode": {
+            "type": "string"
+          }
+        }
+      },
+      "VerificationMatchRequest": {
+        "title": "VerificationMatchRequest",
+        "required": ["taxCode", "userDto"],
+        "type": "object",
+        "properties": {
+          "taxCode": {
+            "type": "string"
+          },
+          "userDto": {
+            "$ref": "#/components/schemas/UserDto"
           }
         }
       }

@@ -1,9 +1,10 @@
-import { Business, LegalEntity, BusinessLegalAddress, User } from '../types';
+import { Business, LegalEntity, User } from '../types';
 import { OnboardingApi } from '../api/OnboardingApiClient';
 import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
 import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
-import { PnPGUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
 import { MatchInfoResultResource } from '../api/generated/b4f-onboarding-pnpg/MatchInfoResultResource';
+import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
+import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
 
 export const getBusinessesByUser = (): Promise<LegalEntity> => {
   /* istanbul ignore if */
@@ -28,7 +29,7 @@ export const matchBusinessAndUser = (
 
 export const getBusinessLegalAddress = (
   businessId: string
-): Promise<BusinessLegalAddress | null> => {
+): Promise<InstitutionLegalAddressResource | null> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getBusinessLegalAddress(businessId);
@@ -40,7 +41,7 @@ export const getBusinessLegalAddress = (
 export const onboardingPGSubmit = (
   businessId: string,
   productId: string,
-  loggedUser: PnPGUserDto,
+  loggedUser: CompanyUserDto,
   selectedInstitution: Business,
   digitalAddress: string
 ): Promise<boolean> => {
