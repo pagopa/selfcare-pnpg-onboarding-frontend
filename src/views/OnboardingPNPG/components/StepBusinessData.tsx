@@ -10,7 +10,7 @@ import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { Business, StepperStepComponentProps } from '../../../types';
 
-const emailRegexp = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
+const emailRegexp = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,5}$');
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
