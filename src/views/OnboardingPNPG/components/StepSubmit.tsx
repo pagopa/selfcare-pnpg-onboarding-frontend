@@ -43,10 +43,7 @@ function StepSubmit({ forward, setLoading }: Props) {
 
   const retrievePartyIdFromTaxCode = (taxCode: string) => {
     getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
-      .then((res) => {
-        console.log('res.institution?.id', res.institution?.id);
-        setRetrievedPartyId(res.institution?.id);
-      })
+      .then((res) => setRetrievedPartyId(res.institution?.id))
       .catch((reason) => {
         addError({
           id: 'RETRIEVING_PARTY_ID_ERROR',
