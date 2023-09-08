@@ -13,9 +13,15 @@ function OnboardingComponent() {
   const [_loading, setLoading] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(0);
   const [retrievedBusinesses, setRetrievedBusinesses] = useState<LegalEntity>();
+  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
 
   const forward = () => {
     setActiveStep(activeStep + 1);
+  };
+
+  const forwardWithPartyId = (retrievedId: string) => {
+    setRetrievedPartyId(retrievedId);
+    forward();
   };
 
   const steps: Array<StepperStep> = [
@@ -54,13 +60,13 @@ function OnboardingComponent() {
       label: 'Submit',
       Component: () =>
         StepSubmit({
-          forward,
           setLoading,
+          forward: forwardWithPartyId,
         }),
     },
     {
       label: 'Success',
-      Component: () => StepSuccess(),
+      Component: () => StepSuccess({ partyId: retrievedPartyId }),
     },
   ];
 

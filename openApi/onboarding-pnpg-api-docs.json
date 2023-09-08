@@ -54,7 +54,7 @@
           {
             "name": "productFilter",
             "in": "query",
-            "description": "A product to filter the institutions based on whether the institution has an ACTIVE onboarding on the specified product. ",
+            "description": "A product to filter the institutions based on whether the institution has an ACTIVE onboarding on the specified product.",
             "required": false,
             "style": "form",
             "schema": {
@@ -287,6 +287,96 @@
         ]
       }
     },
+    "/institutions/geographicTaxonomies": {
+      "get": {
+        "tags": ["institutions"],
+        "summary": "getGeographicTaxonomiesByTaxCodeAndSubunitCode",
+        "description": "The service retrieve the institution's geographic taxonomy",
+        "operationId": "getGeographicTaxonomiesByTaxCodeAndSubunitCodeUsingGET",
+        "parameters": [
+          {
+            "name": "taxCode",
+            "in": "query",
+            "description": "Institution's taxCode",
+            "required": true,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subunitCode",
+            "in": "query",
+            "description": "Institution's subunitCode",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GeographicTaxonomyResource"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": ["global"]
+          }
+        ]
+      }
+    },
     "/institutions/onboarding": {
       "post": {
         "tags": ["institutions"],
@@ -407,6 +497,27 @@
             "style": "form",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "vatNumber",
+            "in": "query",
+            "description": "Institution's VAT number",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "verifyType",
+            "in": "query",
+            "description": "Onboarding verification method type",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": ["EXTERNAL", "INTERNAL"]
             }
           }
         ],
@@ -2258,6 +2369,10 @@
           "companyInformations": {
             "description": "GPS, SCP, PT optional data",
             "$ref": "#/components/schemas/CompanyInformationsResource"
+          },
+          "id": {
+            "type": "string",
+            "description": "Institution's unique internal Id"
           },
           "institutionType": {
             "type": "string",

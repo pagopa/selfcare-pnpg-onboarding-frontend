@@ -9,7 +9,10 @@ import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyO
 import { Business, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
-import { onboardingPGSubmit } from '../../../services/onboardingService';
+import {
+  getInstitutionOnboardingInfo,
+  onboardingPGSubmit,
+} from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
 
 type Props = StepperStepComponentProps & {
@@ -28,9 +31,32 @@ function StepSubmit({ forward, setLoading }: Props) {
 
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
 
+  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
+
   const requestId = uniqueId();
 
   const productId = 'prod-pn-pg';
+
+  const onForwardAction = () => {
+    forward(retrievedPartyId);
+  };
+
+  const retrievePartyIdFromTaxCode = (taxCode: string) => {
+    getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
+      .then((res) => {
+        console.log('res.institution?.id', res.institution?.id);
+        setRetrievedPartyId(res.institution?.id);
+      })
+      .catch((reason) => {
+        addError({
+          id: 'RETRIEVING_PARTY_ID_ERROR',
+          blocking: false,
+          error: reason,
+          techDescription: `An error occurred while retrieving party id of ${selectedBusiness}`,
+          toNotify: true,
+        });
+      });
+  };
 
   useEffect(() => {
     const loggedUser = storageUserOps.read();
@@ -71,14 +97,16 @@ function StepSubmit({ forward, setLoading }: Props) {
     )
       .then(() => {
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', { requestId, productId });
+        retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
-        forward();
+        onForwardAction();
       })
       .catch((reason) => {
         if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
           trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
+          retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
           setSelectedBusiness(selectedBusiness);
           setSelectedBusinessHistory(selectedBusiness);
         } else {
@@ -121,7 +149,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       variantDescription={'body1'}
       buttonLabel={t('alreadyOnboarded.signIn')}
       onButtonClick={() =>
-        window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${selectedBusiness?.businessTaxId}`)
+        window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedPartyId}`)
       }
     />
   ) : (

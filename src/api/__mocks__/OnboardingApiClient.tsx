@@ -1,6 +1,7 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
 import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
+import { InstitutionResource } from '../generated/b4f-onboarding-pnpg/InstitutionResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 export const loggedUser: User = {
@@ -85,7 +86,7 @@ export const mockedOnboardingApi = {
   getBusinessesByUser: async (_loggedUser: User): Promise<LegalEntity> =>
     new Promise((resolve) => resolve(mockedLegalEntity)),
 
-  onboardingPGSubmit: (businessId: string): Promise<boolean> => {
+  onboardingPGSubmit: (businessId: string): Promise<InstitutionResource> => {
     if (businessId === '01501320442') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 409`);
@@ -121,7 +122,7 @@ export const mockedOnboardingApi = {
         throw error;
       });
     }
-    return new Promise((resolve) => resolve(true));
+    return new Promise((resolve) => resolve({ id: 'cgsere12324pbvfg1' }));
   },
 
   matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<MatchInfoResultResource> => {
@@ -159,4 +160,7 @@ export const mockedOnboardingApi = {
       return new Promise((resolve) => resolve(matchedBusinessLegalAddressByExternalId ?? null));
     }
   },
+
+  getInstitutionOnboardingInfo: (_taxCode: string): Promise<string> =>
+    new Promise((resolve) => resolve('dfdfdf121vcbrhyr')),
 };
