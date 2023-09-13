@@ -19,11 +19,6 @@ function OnboardingComponent() {
     setActiveStep(activeStep + 1);
   };
 
-  const forwardWithPartyId = (retrievedId: string) => {
-    setRetrievedPartyId(retrievedId);
-    forward();
-  };
-
   const steps: Array<StepperStep> = [
     {
       label: 'Retrieve businesses',
@@ -61,12 +56,13 @@ function OnboardingComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
-          forward: forwardWithPartyId,
+          forward,
+          setRetrievedPartyId,
         }),
     },
     {
       label: 'Success',
-      Component: () => StepSuccess({ partyId: retrievedPartyId }),
+      Component: () => StepSuccess({ retrievedPartyId }),
     },
   ];
 

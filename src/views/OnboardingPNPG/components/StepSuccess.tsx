@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { ENV } from '../../../utils/env';
 
 type Props = {
-  partyId?: string;
+  retrievedPartyId?: string;
 };
 
-function StepSuccess({ partyId }: Props) {
+function StepSuccess({ retrievedPartyId }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -19,7 +19,9 @@ function StepSuccess({ partyId }: Props) {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('outcome.success.signIn')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${partyId}`)}
+      onButtonClick={() =>
+        window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedPartyId}`)
+      }
     />
   );
 }

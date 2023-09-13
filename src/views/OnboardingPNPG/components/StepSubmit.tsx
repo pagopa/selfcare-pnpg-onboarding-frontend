@@ -17,9 +17,10 @@ import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/CompanyUser
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-function StepSubmit({ forward, setLoading }: Props) {
+function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -30,20 +31,19 @@ function StepSubmit({ forward, setLoading }: Props) {
     useHistoryState<string>('inserted_business_email', undefined);
 
   const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
-
-  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
+  const [partyId, setPartyId] = useState<string>();
 
   const requestId = uniqueId();
 
   const productId = 'prod-pn-pg';
 
-  const onForwardAction = () => {
-    forward(retrievedPartyId);
-  };
-
-  const retrievePartyIdFromTaxCode = (taxCode: string) => {
-    getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
-      .then((res) => setRetrievedPartyId(res.institution?.id))
+  const retrievePartyIdFromTaxCode = async (taxCode: string) => {
+    setLoading(true);
+    await getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
+      .then((res) => {
+        setRetrievedPartyId(res?.institution?.id);
+        setPartyId(res?.institution?.id);
+      })
       .catch((reason) => {
         addError({
           id: 'RETRIEVING_PARTY_ID_ERROR',
@@ -52,7 +52,8 @@ function StepSubmit({ forward, setLoading }: Props) {
           techDescription: `An error occurred while retrieving party id of ${selectedBusiness}`,
           toNotify: true,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -79,7 +80,7 @@ function StepSubmit({ forward, setLoading }: Props) {
     selectedBusiness: Business,
     loggedUser: User
   ) => {
-    onboardingPGSubmit(
+    await onboardingPGSubmit(
       businessId,
       productId,
       {
@@ -92,18 +93,18 @@ function StepSubmit({ forward, setLoading }: Props) {
       selectedBusiness,
       insertedBusinessEmail
     )
-      .then(() => {
+      .then(async () => {
+        await retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', { requestId, productId });
-        retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
-        onForwardAction();
+        forward();
       })
-      .catch((reason) => {
+      .catch(async (reason) => {
         if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
+          await retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
           trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
-          retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
           setSelectedBusiness(selectedBusiness);
           setSelectedBusinessHistory(selectedBusiness);
         } else {
@@ -145,9 +146,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('alreadyOnboarded.signIn')}
-      onButtonClick={() =>
-        window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedPartyId}`)
-      }
+      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${partyId}`)}
     />
   ) : (
     <></>

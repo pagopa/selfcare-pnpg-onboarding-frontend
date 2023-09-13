@@ -1,6 +1,7 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
 import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
+import { InstitutionOnboardingInfoResource } from '../generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
 import { InstitutionResource } from '../generated/b4f-onboarding-pnpg/InstitutionResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
@@ -161,6 +162,13 @@ export const mockedOnboardingApi = {
     }
   },
 
-  getInstitutionOnboardingInfo: (_taxCode: string): Promise<string> =>
-    new Promise((resolve) => resolve('dfdfdf121vcbrhyr')),
+  getInstitutionOnboardingInfo: (_taxCode: string): Promise<InstitutionOnboardingInfoResource> =>
+    new Promise((resolve) =>
+      resolve({
+        geographicTaxonomies: [],
+        institution: {
+          id: 'mockedPartyId01',
+        },
+      })
+    ),
 };
