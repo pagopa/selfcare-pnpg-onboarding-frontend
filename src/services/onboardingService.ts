@@ -5,7 +5,6 @@ import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
 import { MatchInfoResultResource } from '../api/generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
-import { InstitutionResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionResource';
 import { InstitutionOnboardingInfoResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
 
 export const getBusinessesByUser = (): Promise<LegalEntity> => {
@@ -58,7 +57,7 @@ export const onboardingPGSubmit = (
   loggedUser: CompanyUserDto,
   selectedInstitution: Business,
   digitalAddress: string
-): Promise<InstitutionResource> => {
+): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.onboardingPGSubmit(businessId);

@@ -2,7 +2,6 @@ import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
 import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 import { InstitutionOnboardingInfoResource } from '../generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
-import { InstitutionResource } from '../generated/b4f-onboarding-pnpg/InstitutionResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 
 export const loggedUser: User = {
@@ -87,7 +86,7 @@ export const mockedOnboardingApi = {
   getBusinessesByUser: async (_loggedUser: User): Promise<LegalEntity> =>
     new Promise((resolve) => resolve(mockedLegalEntity)),
 
-  onboardingPGSubmit: (businessId: string): Promise<InstitutionResource> => {
+  onboardingPGSubmit: (businessId: string): Promise<boolean> => {
     if (businessId === '01501320442') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 409`);
@@ -123,7 +122,7 @@ export const mockedOnboardingApi = {
         throw error;
       });
     }
-    return new Promise((resolve) => resolve({ id: 'cgsere12324pbvfg1' }));
+    return new Promise((resolve) => resolve(true));
   },
 
   matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<MatchInfoResultResource> => {
