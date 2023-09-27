@@ -10,6 +10,7 @@ import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/CompanyOnbo
 import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding-pnpg/CompanyUserDto';
 import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
+import { InstitutionOnboardingInfoResource } from './generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -101,6 +102,17 @@ export const OnboardingApi = {
           role: 'MANAGER' as RoleEnum,
         },
       },
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getInstitutionOnboardingInfo: async (
+    taxCode: string,
+    productId: string
+  ): Promise<InstitutionOnboardingInfoResource> => {
+    const result = await apiClient.getInstitutionOnboardingInfoUsingGET({
+      taxCode,
+      productId,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

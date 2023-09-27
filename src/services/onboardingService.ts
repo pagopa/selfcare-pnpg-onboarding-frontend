@@ -5,6 +5,7 @@ import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
 import { MatchInfoResultResource } from '../api/generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
+import { InstitutionOnboardingInfoResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
 
 export const getBusinessesByUser = (): Promise<LegalEntity> => {
   /* istanbul ignore if */
@@ -35,6 +36,18 @@ export const getBusinessLegalAddress = (
     return mockedOnboardingApi.getBusinessLegalAddress(businessId);
   } else {
     return OnboardingApi.getBusinessLegalAddress(businessId);
+  }
+};
+
+export const getInstitutionOnboardingInfo = (
+  taxCode: string,
+  productId: string
+): Promise<InstitutionOnboardingInfoResource> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);
+  } else {
+    return OnboardingApi.getInstitutionOnboardingInfo(taxCode, productId);
   }
 };
 
