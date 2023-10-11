@@ -31,9 +31,11 @@ variables:
 
     react_app_url_cdn: '$(UAT_REACT_APP_URL_CDN)'
 
+    react_app_url_privacy_disclaimer: '$(UAT_REACT_APP_URL_PRIVACY_DISCLAIMER)'
+    react_app_url_terms_and_conditions: '$(UAT_REACT_APP_URL_TERMS_AND_CONDITIONS)'
+
     react_app_url_fe_auth: '$(UAT_REACT_APP_URL_FE_LOGIN)'
     react_app_url_fe_dashboard: '$(UAT_REACT_APP_URL_FE_DASHBOARD)'
-    react_app_url_fe_dashboardpg: 'http://uat.selfcare.pagopa.it/dashboardpg' # '$(UAT_REACT_APP_URL_FE_DASHBOARD)'
     react_app_url_fe_landing: '$(UAT_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(UAT_REACT_APP_URL_FE_ASSISTANCE)'
 
@@ -60,9 +62,11 @@ variables:
 
     react_app_url_cdn: '$(PROD_REACT_APP_URL_CDN)'
 
+    react_app_url_privacy_disclaimer: '$(PROD_REACT_APP_URL_PRIVACY_DISCLAIMER)'
+    react_app_url_terms_and_conditions: '$(PROD_REACT_APP_URL_TERMS_AND_CONDITIONS)'
+
     react_app_url_fe_auth: '$(PROD_REACT_APP_URL_FE_LOGIN)'
     react_app_url_fe_dashboard: '$(PROD_REACT_APP_URL_FE_DASHBOARD)'
-    react_app_url_fe_dashboardpg: 'http://selfcare.pagopa.it/dashboardpg' # '$(PROD_REACT_APP_URL_FE_DASHBOARD)'
     react_app_url_fe_landing: '$(PROD_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(PROD_REACT_APP_URL_FE_ASSISTANCE)'
 
@@ -91,9 +95,11 @@ variables:
 
     react_app_url_cdn: '$(DEV_REACT_APP_URL_CDN)'
 
+    react_app_url_privacy_disclaimer: '$(DEV_REACT_APP_URL_PRIVACY_DISCLAIMER)'
+    react_app_url_terms_and_conditions: '$(DEV_REACT_APP_URL_TERMS_AND_CONDITIONS)'
+
     react_app_url_fe_auth: '$(DEV_REACT_APP_URL_FE_LOGIN)'
     react_app_url_fe_dashboard: '$(DEV_REACT_APP_URL_FE_DASHBOARD)'
-    react_app_url_fe_dashboardpg: 'http://dev.selfcare.pagopa.it/dashboardpg' # '$(DEV_REACT_APP_URL_FE_DASHBOARD)'
     react_app_url_fe_landing: '$(DEV_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(DEV_REACT_APP_URL_FE_ASSISTANCE)'
 
@@ -187,10 +193,12 @@ stages:
               INLINE_RUNTIME_CHUNK: 'false'
               REACT_APP_ENV: '$(environment)'
 
+              REACT_APP_URL_PRIVACY_DISCLAIMER: '$(react_app_url_privacy_disclaimer)'
+              REACT_APP_URL_TERMS_AND_CONDITIONS: '$(react_app_url_terms_and_conditions)'
+
               REACT_APP_URL_FE_LOGIN: '$(react_app_url_fe_auth)/login'
               REACT_APP_URL_FE_LOGOUT: '$(react_app_url_fe_auth)/logout'
               REACT_APP_URL_FE_DASHBOARD: '$(react_app_url_fe_dashboard)'
-              REACT_APP_URL_FE_DASHBOARDPG: '$(react_app_url_fe_dashboardpg)'
               REACT_APP_URL_FE_LANDING: '$(react_app_url_fe_landing)'
               REACT_APP_URL_FE_ASSISTANCE: '$(react_app_url_fe_assistance)'
 
