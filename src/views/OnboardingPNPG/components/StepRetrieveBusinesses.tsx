@@ -34,10 +34,7 @@ function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props
         setActiveStep(retrievedBusinesses && retrievedBusinesses.businesses.length !== 0 ? 1 : 2);
       })
       .catch(() => {
-        trackEvent('ONBOARDING_PG_RETRIEVED_GENERIC_ERROR', {
-          requestId,
-          productId: 'prod-pn-pg',
-        });
+        trackEvent('ONBOARDING_PG_RETRIEVED_GENERIC_ERROR', {});
         setError(true);
       })
       .finally(() => setLoading(false));
