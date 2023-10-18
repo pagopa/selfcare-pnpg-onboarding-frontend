@@ -1,6 +1,6 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { uniqueId } from 'lodash';
@@ -34,13 +34,21 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   const productId = 'prod-pn-pg';
 
-  const handleSubmit = async (typedInput: string) => {
+  useEffect(() => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
+  }, []);
+
+  const handleSubmit = async (typedInput: string) => {
+    trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_CONFIRMED', { requestId, productId });
     setLoading(true);
     await getBusinessLegalAddress(typedInput)
       .then(async (resp) => {
         if (resp) {
-          trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', { requestId, productId });
+          trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', {
+            requestId,
+            productId,
+            external_id: typedInput,
+          });
           setError('matchedButNotLR');
         } else {
           trackEvent('ONBOARDING_PG_NOT_MATCHED_LEGAL_ADDRESS', { requestId, productId });
