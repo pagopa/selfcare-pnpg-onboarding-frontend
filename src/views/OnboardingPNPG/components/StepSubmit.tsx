@@ -95,7 +95,11 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
     )
       .then(async () => {
         await retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
-        trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', { requestId, productId });
+        trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
+          requestId,
+          productId,
+          external_id: selectedBusiness?.businessTaxId,
+        });
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
         forward();
@@ -103,13 +107,21 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
       .catch(async (reason) => {
         if (reason.httpStatus === 409) {
           setError('alreadyOnboarded');
+          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+            requestId,
+            productId,
+            external_id: selectedBusiness?.businessTaxId,
+          });
           await retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
-          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
           setSelectedBusiness(selectedBusiness);
           setSelectedBusinessHistory(selectedBusiness);
         } else {
           setError('genericError');
-          trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', { requestId, productId });
+          trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', {
+            requestId,
+            productId,
+            external_id: selectedBusiness?.businessTaxId,
+          });
         }
       })
       .finally(() => {
