@@ -45,7 +45,6 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
     trackEvent('ONBOARDING_PG_SELECTION', {
       requestId,
       productId: 'prod-pn-pg',
-      external_id: selectedBusiness?.businessTaxId,
     });
     setSelectedBusinessHistory({
       certified: true,

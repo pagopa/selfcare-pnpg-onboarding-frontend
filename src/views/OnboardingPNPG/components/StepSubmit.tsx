@@ -98,7 +98,6 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
           requestId,
           productId,
-          external_id: selectedBusiness?.businessTaxId,
         });
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
@@ -110,7 +109,6 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
           trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
             requestId,
             productId,
-            external_id: selectedBusiness?.businessTaxId,
           });
           await retrievePartyIdFromTaxCode(selectedBusiness.businessTaxId);
           setSelectedBusiness(selectedBusiness);
@@ -120,7 +118,6 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
           trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', {
             requestId,
             productId,
-            external_id: selectedBusiness?.businessTaxId,
           });
         }
       })
