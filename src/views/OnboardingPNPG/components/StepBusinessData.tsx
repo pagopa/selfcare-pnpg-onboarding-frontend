@@ -5,12 +5,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { emailRegexp } from '@pagopa/selfcare-common-frontend/utils/constants';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { Business, StepperStepComponentProps } from '../../../types';
-
-const emailRegexp = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,5}$');
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
@@ -32,7 +31,6 @@ function StepBusinessData({ setActiveStep }: Props) {
     trackEvent('ONBOARDING_PG_DATA_INPUT', {
       requestId,
       productId: 'prod-pn-pg',
-      external_id: selectedBusiness?.businessTaxId,
     });
   }, []);
 
@@ -50,7 +48,6 @@ function StepBusinessData({ setActiveStep }: Props) {
     trackEvent('ONBOARDING_PG_DATA_CONFIRMED', {
       requestId,
       productId: 'prod-pn-pg',
-      external_id: selectedBusiness?.businessTaxId,
     });
     setSelectedBusinessHistory(selectedBusiness);
     setInsertedBusinessEmailHistory(insertedBusinessEmail);

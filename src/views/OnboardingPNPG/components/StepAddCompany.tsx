@@ -47,7 +47,6 @@ function StepAddCompany({ setActiveStep }: Props) {
           trackEvent('ONBOARDING_PG_MATCHED_LEGAL_ADDRESS', {
             requestId,
             productId,
-            external_id: typedInput,
           });
           setError('matchedButNotLR');
         } else {
