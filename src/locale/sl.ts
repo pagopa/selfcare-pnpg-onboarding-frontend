@@ -21,16 +21,15 @@ export default {
     forwardAction: 'Nadaljujte',
   },
   insertBusinessEmail: {
-    title: 'Kakšen je potrjeni e-poštni naslov podjetja?',
-    subTitle: 'Vnesite potrjen e-poštni naslov podjetja, ki ga želite registrirati.',
-    pecLabel: 'Potrjen e-poštni naslov',
+    title: 'Kakšen je PEC podjetja?',
+    subTitle: 'Vnesite PEC podjetja, ki ga želite registrirati.',
+    pecLabel: 'PEC',
   },
   insertBusinessData: {
     title: 'Vnesite podatke o vašem podjetju',
-    subTitle:
-      'Vnesite ime podjetja in potrjen e-poštni naslov podjetja, ki ga želite <1 />registrirati.',
+    subTitle: 'Vnesite ime podjetja in PEC podjetja, ki ga želite <1 />registrirati.',
     businessNameLabel: 'Ime podjetja',
-    pecEmailLabel: 'Potrjen e-poštni naslov',
+    pecEmailLabel: 'PEC',
     invalidEmail: 'Vneseni e-poštni naslov ni pravilen',
     invalidBusinessName: 'Vnesite ime podjetja',
     backAction: 'Nazaj',
