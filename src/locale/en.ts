@@ -21,16 +21,15 @@ export default {
     forwardAction: 'Continue',
   },
   insertBusinessEmail: {
-    title: 'What is the certified email address of the company?',
-    subTitle: 'Enter the certified email address of the company you want to register.',
-    pecLabel: 'Certified email address',
+    title: 'What is the PEC address of the company?',
+    subTitle: 'Enter the PEC of the company you want to register.',
+    pecLabel: 'PEC',
   },
   insertBusinessData: {
     title: 'Enter your company details',
-    subTitle:
-      'Enter the company name and certified email address of the company you want to <1 />register.',
+    subTitle: 'Enter the company name and PEC of the company you want to <1 />register.',
     businessNameLabel: 'Company name',
-    pecEmailLabel: 'Certified email address',
+    pecEmailLabel: 'PEC',
     invalidEmail: 'The email address you entered is incorrect',
     invalidBusinessName: 'Please enter a company name',
     backAction: 'Back',
