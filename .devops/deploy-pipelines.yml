@@ -40,6 +40,7 @@ variables:
     react_app_url_fe_assistance: '$(UAT_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_onboarding: '$(UAT_REACT_APP_URL_API_ONBOARDING)'
+    react_app_url_api_onboarding_v2: '$(UAT_REACT_APP_URL_API_ONBOARDING_V2)'
     react_app_url_api_party_process: '$(UAT_REACT_APP_URL_API_PARTY_PROCESS)'
     react_app_url_api_party_registry_proxy: '$(UAT_REACT_APP_URL_API_PARTY_REGISTRY_PROXY)'
 
@@ -71,6 +72,7 @@ variables:
     react_app_url_fe_assistance: '$(PROD_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_onboarding: '$(PROD_REACT_APP_URL_API_ONBOARDING)'
+    react_app_url_api_onboarding_v2: '$(PROD_REACT_APP_URL_API_ONBOARDING_V2)'
     react_app_url_api_party_process: '$(PROD_REACT_APP_URL_API_PARTY_PROCESS)'
     react_app_url_api_party_registry_proxy: '$(PROD_REACT_APP_URL_API_PARTY_REGISTRY_PROXY)'
 
@@ -104,6 +106,7 @@ variables:
     react_app_url_fe_assistance: '$(DEV_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_onboarding: '$(DEV_REACT_APP_URL_API_ONBOARDING)'
+    react_app_url_api_onboarding_v2: '$(DEV_REACT_APP_URL_API_ONBOARDING_V2)'
     react_app_url_api_party_process: '$(DEV_REACT_APP_URL_API_PARTY_PROCESS)'
     react_app_url_api_party_registry_proxy: '$(DEV_REACT_APP_URL_API_PARTY_REGISTRY_PROXY)'
 
@@ -203,6 +206,7 @@ stages:
               REACT_APP_URL_FE_ASSISTANCE: '$(react_app_url_fe_assistance)'
 
               REACT_APP_URL_API_ONBOARDING: '$(react_app_url_api_onboarding)'
+              REACT_APP_URL_API_ONBOARDING_V2: '$(react_app_url_api_onboarding_v2)'
               REACT_APP_URL_API_PARTY_PROCESS: '$(react_app_url_api_party_process)'
               REACT_APP_URL_API_PARTY_REGISTRY_PROXY: '$(react_app_url_api_party_registry_proxy)'
 
