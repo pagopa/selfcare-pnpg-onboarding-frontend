@@ -12,12 +12,12 @@ export default {
     },
     registerBusiness: 'Register company',
     registerBusinessByTaxCodeLink:
-      "Can't find your company? <1>Search for it using the Tax Code </1>",
+      "Can't find your company? <1>Search for it using the Fiscal Code </1>",
   },
   addCompany: {
     title: 'Which company do you want to register?',
-    subTitle: 'Enter the Tax Code of the company you want to <1 />register.',
-    textfieldLabel: 'Tax Code',
+    subTitle: 'Enter the Fiscal Code of the company you want to <1 />register.',
+    textfieldLabel: 'Fiscal Code',
     forwardAction: 'Continue',
   },
   insertBusinessEmail: {
@@ -38,7 +38,7 @@ export default {
   cannotRegisterBusiness: {
     title: 'You cannot register <1/>this company',
     description:
-      'Your SPID does not show that you are the Legal Representative <1 />of the company associated with this Tax Code. You can <3 />only register the companies of which you are the Legal Representative.',
+      'Your SPID does not show that you are the Legal Representative <1 />of the company associated with this Fiscal Code. You can <3 />only register the companies of which you are the Legal Representative.',
     close: 'Close',
   },
   alreadyOnboarded: {
@@ -54,7 +54,7 @@ export default {
     close: 'Close',
   },
   invalidInputFormat: {
-    title: 'The Tax Code/VAT number is incorrect',
+    title: 'The Fiscal Code/VAT number is incorrect',
     message: 'Please go back, make sure it is correct and enter it <1 /> again.',
     goBack: 'Go back',
   },
