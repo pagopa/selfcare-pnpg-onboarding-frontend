@@ -98,9 +98,9 @@ function StepAddCompany({ setActiveStep }: Props) {
         </Grid>
         <Grid item xs={12}>
           <Typography align="center" color={theme.palette.text.primary} m={1} mb={3}>
-            <Trans i18next="addCompany.subTitle">
-              Inserisci il Codice Fiscale dell’impresa che vuoi <br />
-              registrare.
+            <Trans i18nKey="addCompany.subTitle" components={{ 1: <br /> }}>
+              {`Inserisci il Codice Fiscale dell’impresa che vuoi <1 />
+              registrare.`}
             </Trans>
           </Typography>
         </Grid>
