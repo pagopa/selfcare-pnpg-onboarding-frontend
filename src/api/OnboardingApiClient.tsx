@@ -21,8 +21,15 @@ const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
     });
   };
 
-const apiClient = createClient({
+const apiClientV1 = createClient({
   baseUrl: ENV.URL_API.ONBOARDING,
+  basePath: '',
+  fetchApi: buildFetchApi(),
+  withDefaults: withBearerAndInstitutionId,
+});
+
+const apiClientV2 = createClient({
+  baseUrl: ENV.URL_API.ONBOARDING_V2.concat('/v2'),
   basePath: '',
   fetchApi: buildFetchApi(),
   withDefaults: withBearerAndInstitutionId,
@@ -43,7 +50,7 @@ const onRedirectToLogin = () =>
 
 export const OnboardingApi = {
   getBusinessesByUser: async (): Promise<LegalEntity> => {
-    const result = await apiClient.getInstitutionsFromInfocamereUsingGET({});
+    const result = await apiClientV1.getInstitutionsFromInfocamereUsingGET({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
@@ -54,7 +61,7 @@ export const OnboardingApi = {
     selectedBusiness: Business,
     digitalAddress: string
   ): Promise<boolean> => {
-    const result = await apiClient.onboardingUsingPOST({
+    const result = await apiClientV2.onboardingUsingPOST({
       body: {
         productId,
         billingData: {
@@ -80,7 +87,7 @@ export const OnboardingApi = {
   },
 
   getBusinessLegalAddress: async (businessId: string): Promise<InstitutionLegalAddressResource> => {
-    const result = await apiClient.postVerificationLegalAddressUsingPOST({
+    const result = await apiClientV1.postVerificationLegalAddressUsingPOST({
       body: {
         taxCode: businessId,
       },
@@ -92,7 +99,7 @@ export const OnboardingApi = {
     businessId: string,
     loggedUser: User
   ): Promise<MatchInfoResultResource> => {
-    const result = await apiClient.postVerificationMatchUsingPOST({
+    const result = await apiClientV1.postVerificationMatchUsingPOST({
       body: {
         taxCode: businessId,
         userDto: {
@@ -110,7 +117,7 @@ export const OnboardingApi = {
     taxCode: string,
     productId: string
   ): Promise<InstitutionOnboardingInfoResource> => {
-    const result = await apiClient.getInstitutionOnboardingInfoUsingGET({
+    const result = await apiClientV1.getInstitutionOnboardingInfoUsingGET({
       taxCode,
       productId,
     });
