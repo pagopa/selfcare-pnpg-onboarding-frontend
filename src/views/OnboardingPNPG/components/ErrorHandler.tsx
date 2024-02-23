@@ -23,10 +23,10 @@ export default function ErrorHandler({ error, setActiveStep, setError }: Props) 
         </Trans>
       }
       description={
-        <Trans i18nKey="cannotRegisterBusiness.message">
-          Dal tuo SPID non risulti essere Legale Rappresentante <br />
-          dell’impresa associata a questo Codice Fiscale. Puoi <br />
-          registrare solo le imprese di cui sei Legale Rappresentante.
+        <Trans i18nKey="cannotRegisterBusiness.message" components={{ 1: <br />, 3: <br /> }}>
+          {`Dal tuo SPID non risulti essere Legale Rappresentante <1 />
+          dell’impresa associata a questo Codice Fiscale. Puoi <3 />
+          registrare solo le imprese di cui sei Legale Rappresentante.`}
         </Trans>
       }
       variantTitle={'h4'}
