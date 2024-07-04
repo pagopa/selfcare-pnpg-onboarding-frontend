@@ -41,8 +41,8 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
     setLoading(true);
     await getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
       .then((res) => {
-        setRetrievedPartyId(res?.institution?.id);
-        setPartyId(res?.institution?.id);
+        setRetrievedPartyId(res?.id);
+        setPartyId(res?.id);
       })
       .catch((reason) => {
         addError({
