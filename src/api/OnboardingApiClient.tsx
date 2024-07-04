@@ -29,7 +29,7 @@ const apiClientV1 = createClient({
 });
 
 const apiClientV2 = createClient({
-  baseUrl: ENV.URL_API.ONBOARDING_V2.concat('/v2'),
+  baseUrl: ENV.URL_API.ONBOARDING_V2,
   basePath: '',
   fetchApi: buildFetchApi(),
   withDefaults: withBearerAndInstitutionId,
