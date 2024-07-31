@@ -1,11 +1,11 @@
 import { Card, Grid, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { uniqueId } from 'lodash';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { emailRegexp } from '@pagopa/selfcare-common-frontend/utils/constants';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import { emailRegexp } from '@pagopa/selfcare-common-frontend/lib/utils/constants';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';

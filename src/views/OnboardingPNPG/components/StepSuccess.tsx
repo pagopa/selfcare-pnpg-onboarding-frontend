@@ -1,5 +1,5 @@
 import { IllusCompleted } from '@pagopa/mui-italia';
-import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
+import EndingPage from '@pagopa/selfcare-common-frontend/lib/components/EndingPage';
 import { useTranslation } from 'react-i18next';
 import { ENV } from '../../../utils/env';
 

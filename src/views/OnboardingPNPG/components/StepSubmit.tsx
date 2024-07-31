@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
 import { uniqueId } from 'lodash';
 import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
