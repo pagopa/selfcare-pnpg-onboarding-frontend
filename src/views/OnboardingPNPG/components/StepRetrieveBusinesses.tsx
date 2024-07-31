@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { useTranslation, Trans } from 'react-i18next';
 import { IllusError } from '@pagopa/mui-italia';
-import EndingPage from '@pagopa/selfcare-common-frontend/components/EndingPage';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import EndingPage from '@pagopa/selfcare-common-frontend/lib/components/EndingPage';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { uniqueId } from 'lodash';
 import { LegalEntity } from '../../../types';
 import { withLogin } from '../../../components/withLogin';

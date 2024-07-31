@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Box } from '@mui/system';
-import { Footer, Header } from '@pagopa/selfcare-common-frontend';
+import { Footer, Header } from '@pagopa/selfcare-common-frontend/lib';
 import { ENV } from '../utils/env';
 import { HeaderContext, UserContext } from './../lib/context';
 import { Main } from './Main';
