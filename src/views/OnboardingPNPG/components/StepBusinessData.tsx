@@ -79,6 +79,7 @@ function StepBusinessData({ setActiveStep }: Props) {
           }
           variantTitle="h4"
           variantSubTitle="body2"
+          mtTitle={4}
           mbSubTitle={4}
         />
       </Grid>
