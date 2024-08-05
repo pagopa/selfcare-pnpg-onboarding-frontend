@@ -1,8 +1,8 @@
-import '@pagopa/selfcare-common-frontend/common-polyfill';
+import '@pagopa/selfcare-common-frontend/lib/common-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
+import { CONFIG } from '@pagopa/selfcare-common-frontend/lib/config/env';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import { Provider } from 'react-redux';

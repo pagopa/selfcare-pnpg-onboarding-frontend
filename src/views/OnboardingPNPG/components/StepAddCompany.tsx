@@ -2,24 +2,23 @@ import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
-import { LOADING_TASK_VERIFY_INPUT } from '../../../utils/constants';
 import ErrorHandler from './ErrorHandler';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setActiveStep }: Props) {
+function StepAddCompany({ setActiveStep, setLoading }: Props) {
   const { t } = useTranslation();
 
   const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
@@ -28,7 +27,6 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<ErrorType>();
-  const setLoading = useLoading(LOADING_TASK_VERIFY_INPUT);
   const requestId = uniqueId();
   const loggedUser = storageUserOps.read();
 
