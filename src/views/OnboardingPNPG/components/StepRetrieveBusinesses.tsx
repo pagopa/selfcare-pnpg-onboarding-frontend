@@ -7,20 +7,19 @@ import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { uniqueId } from 'lodash';
 import { LegalEntity } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
-import { LoadingOverlay } from '../../../components/LoadingOverlay';
 import { getBusinessesByUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 
 type Props = {
   setRetrievedBusinesses: React.Dispatch<React.SetStateAction<LegalEntity | undefined>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props) {
+function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const requestId = uniqueId();
@@ -52,9 +51,7 @@ function StepRetrieveBusinesses({ setRetrievedBusinesses, setActiveStep }: Props
     });
   }, []);
 
-  return loading ? (
-    <LoadingOverlay loadingText={t('loadingText')} />
-  ) : error ? (
+  return error ? (
     <EndingPage
       minHeight="52vh"
       icon={<IllusError size={60} />}
