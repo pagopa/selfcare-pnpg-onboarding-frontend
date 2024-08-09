@@ -57,7 +57,7 @@ export const OnboardingApi = {
     selectedBusiness: Business,
     digitalAddress: string
   ): Promise<boolean> => {
-    const result = await apiClient.onboardingUsingPOST({
+    const result = await apiClient.onboardingUsingPOST_2({
       body: {
         productId,
         billingData: {
