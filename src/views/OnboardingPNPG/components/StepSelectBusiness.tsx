@@ -2,7 +2,7 @@ import { Button, Grid, Typography, Box, Link } from '@mui/material';
 import { PartyAccountItem, theme } from '@pagopa/mui-italia';
 import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { uniqueId } from 'lodash';
 import { Business, LegalEntity, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';

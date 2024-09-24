@@ -29,7 +29,7 @@ afterAll(() => {
 
 beforeEach(() => Object.assign(mockedLocation, initialLocation));
 
-jest.mock('@pagopa/selfcare-common-frontend/utils/storage', () => ({
+jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
     read: () => ({
       uid: 'mockUid',
