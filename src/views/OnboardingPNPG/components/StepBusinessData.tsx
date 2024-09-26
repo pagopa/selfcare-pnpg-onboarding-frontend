@@ -90,7 +90,8 @@ function StepBusinessData({ setActiveStep }: Props) {
             display: 'grid',
             alignItems: 'center',
             justifyItems: 'center',
-            width: '480px',
+            width: { xs: 'calc(100% - 96px)', sm: '480px' },
+            minWidth: '200px',
             borderRadius: theme.spacing(2),
             boxShadow:
               '0px 8px 10px -5px rgba(0, 43, 85, 0.1), 0px 16px 24px 2px rgba(0, 43, 85, 0.05), 0px 6px 30px 5px rgba(0, 43, 85, 0.1)',
@@ -113,7 +114,10 @@ function StepBusinessData({ setActiveStep }: Props) {
               helperText={
                 notValidBusinessName ? t('insertBusinessData.invalidBusinessName') : undefined
               }
-              sx={{ width: '416px', marginBottom: 4 }}
+              sx={{
+                width: { xs: 'calc(100% - 8px)', sm: '416px' },
+                marginBottom: 4,
+              }}
             />
           )}
           <TextField
@@ -125,7 +129,9 @@ function StepBusinessData({ setActiveStep }: Props) {
             }}
             error={notValidBusinessEmail}
             helperText={notValidBusinessEmail ? t('insertBusinessData.invalidEmail') : undefined}
-            sx={{ width: '416px' }}
+            sx={{
+              width: { xs: 'calc(100% - 8px)', sm: '416px' },
+            }}
           />
         </Card>
       </Grid>

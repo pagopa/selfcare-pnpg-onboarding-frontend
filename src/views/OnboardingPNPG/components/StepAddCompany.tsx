@@ -109,7 +109,8 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
               display: 'grid',
               alignItems: 'center',
               justifyItems: 'center',
-              width: '480px',
+              width: { xs: 'calc(100% - 96px)', sm: '480px' },
+              minWidth: '200px',
               height: '120px',
               borderRadius: theme.spacing(2),
               boxShadow:
@@ -122,7 +123,9 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
               variant="outlined"
               type="tel"
               onChange={(e) => setTypedInput(e.target.value)}
-              sx={{ width: '416px', marginX: 4 }}
+              sx={{
+                width: { xs: 'calc(100% - 48px)', sm: '416px' },
+              }}
             />
           </Card>
         </Grid>
