@@ -95,12 +95,12 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
       >
         {retrievedBusinesses &&
           retrievedBusinesses.businesses.map((b, index) => (
-            <Box key={index}>
+            <Box key={index} width={{ xs: 'calc(100% - 120px)', sm: '480px' }} minWidth="250px">
               <Button
                 aria-label={b.businessName}
                 sx={{
                   marginBottom: 2,
-                  width: '480px',
+                  width: '100%',
                   height: '120px',
                   justifyItems: '-moz-initial',
                   flexDirection: 'row',
@@ -126,7 +126,10 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
                   partyName={b.businessName ?? ''}
                   partyRole={b.businessTaxId}
                   maxCharactersNumberMultiLine={20}
-                  containerSx={{ marginInlineEnd: 'auto', marginLeft: 1 }}
+                  containerSx={{
+                    marginInlineEnd: 'auto',
+                    marginLeft: 1,
+                  }}
                   infoContainerSx={{ textAlign: 'initial' }}
                 />
               </Button>
