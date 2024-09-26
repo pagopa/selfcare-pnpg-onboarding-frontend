@@ -1,9 +1,12 @@
 import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
+import { EndingPage } from '@pagopa/selfcare-common-frontend/lib';
 import { LegalEntity, StepperStep } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import { LoadingOverlay } from '../../components/LoadingOverlay';
+import { ReactComponent as AlreadyOnboardedIcon } from '../../assets/alreadyOnboarded.svg';
+import { ENV } from '../../utils/env';
 import StepAddCompany from './components/StepAddCompany';
 import StepRetrieveBusinesses from './components/StepRetrieveBusinesses';
 import StepSelectBusiness from './components/StepSelectBusiness';
@@ -38,6 +41,8 @@ function OnboardingComponent() {
         StepSelectBusiness({
           retrievedBusinesses,
           setActiveStep,
+          setRetrievedPartyId,
+          setLoading,
           forward,
         }),
     },
@@ -46,6 +51,7 @@ function OnboardingComponent() {
       Component: () =>
         StepAddCompany({
           setActiveStep,
+          setRetrievedPartyId,
           setLoading,
         }),
     },
@@ -62,7 +68,6 @@ function OnboardingComponent() {
         StepSubmit({
           setLoading,
           forward,
-          setRetrievedPartyId,
         }),
     },
     {
@@ -75,8 +80,27 @@ function OnboardingComponent() {
 
   return (
     <Container>
-      <Step />
       {loading && <LoadingOverlay loadingText={t('loadingText')} />}
+      {retrievedPartyId ? (
+        <EndingPage
+          icon={<AlreadyOnboardedIcon />}
+          title={t('alreadyOnboarded.title')}
+          description={
+            <Trans i18nKey="alreadyOnboarded.description">
+              Questa impresa è già stata registrata. Accedi per leggere le <br />
+              notifiche e aggiungere altri utenti.
+            </Trans>
+          }
+          variantTitle={'h4'}
+          variantDescription={'body1'}
+          buttonLabel={t('alreadyOnboarded.signIn')}
+          onButtonClick={() =>
+            window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedPartyId}`)
+          }
+        />
+      ) : (
+        <Step />
+      )}
     </Container>
   );
 }

@@ -54,10 +54,10 @@ export const mockedEdAOccurrences = [
     fiscalCode: '55555555555',
     geographicTaxonomies: [],
     id: '55555555555',
-    institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
+    institutionType: 'PG',
+    mailAddress: 'test@impresa1.it',
     name: 'retrieved in EdA mock 1',
-    origin: 'testorigin3',
+    origin: 'ADE',
     originId: 'testoriginId3',
     recipientCode: 'MDSSFDF',
     status: 'TestStatus3',
@@ -65,15 +65,15 @@ export const mockedEdAOccurrences = [
     zipCode: '32145',
   },
   {
-    externalId: '66666666666',
+    externalId: '51515151511',
     category: 'test3',
-    fiscalCode: '66666666666',
+    fiscalCode: '51515151511',
     geographicTaxonomies: [],
-    id: '66666666666',
-    institutionType: 'GSP',
-    mailAddress: 'test@comuneditest.it',
+    id: '51515151511',
+    institutionType: 'PG',
+    mailAddress: 'test@impresa1.it',
     name: 'retrieved in EdA mock 2',
-    origin: 'testorigin3',
+    origin: 'ADE',
     originId: 'testoriginId3',
     recipientCode: 'MDSSFDF',
     status: 'TestStatus3',
@@ -87,24 +87,7 @@ export const mockedOnboardingApi = {
     new Promise((resolve) => resolve(mockedLegalEntity)),
 
   onboardingPGSubmit: (businessId: string): Promise<boolean> => {
-    if (businessId === '01501320442') {
-      return new Promise(() => {
-        const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 409`);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpStatus = 409;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line functional/immutable-data
-        error.httpBody = {
-          statusCode: 409,
-          description: 'Conflict Error',
-        };
-        console.error(JSON.stringify(error));
-        throw error;
-      });
-    } else if (businessId === '22222222222') {
+    if (businessId === '22222222222') {
       return new Promise(() => {
         const error = new Error(`Unexpected mocked HTTP status! Expected 201 obtained 404`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -161,13 +144,20 @@ export const mockedOnboardingApi = {
     }
   },
 
-  getInstitutionOnboardingInfo: (_taxCode: string): Promise<InstitutionOnboardingInfoResource> =>
-    new Promise((resolve) =>
-      resolve({
-        geographicTaxonomies: [],
-        institution: {
-          id: 'mockedPartyId01',
-        },
-      })
-    ),
+  getInstitutionOnboardingInfo: (taxCode: string): Promise<InstitutionOnboardingInfoResource> => {
+    switch (taxCode) {
+      case '01501320442':
+      case '51515151511':
+        return new Promise((resolve) =>
+          resolve({
+            geographicTaxonomies: [],
+            institution: {
+              id: 'retrievedPartyId01',
+            },
+          })
+        );
+      default:
+        return new Promise((resolve) => resolve({}));
+    }
+  },
 };

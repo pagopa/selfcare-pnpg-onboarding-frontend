@@ -4,18 +4,30 @@ import { useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { uniqueId } from 'lodash';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Business, LegalEntity, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
+import { getInstitutionOnboardingInfo } from '../../../services/onboardingService';
 
 type Props = {
   retrievedBusinesses?: LegalEntity;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 } & StepperStepComponentProps;
 
-function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Props) {
+function StepSelectBusiness({
+  forward,
+  retrievedBusinesses,
+  setRetrievedPartyId,
+  setLoading,
+  setActiveStep,
+}: Props) {
   const { t } = useTranslation();
+  const addError = useErrorDispatcher();
+  const requestId = uniqueId();
 
   const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
     Business | undefined
@@ -40,12 +52,40 @@ function StepSelectBusiness({ forward, retrievedBusinesses, setActiveStep }: Pro
     }
   }, [retrievedBusinesses]);
 
+  const getOnboardingInfo = (taxCode: string) => {
+    setLoading(true);
+    getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
+      .then((res) => {
+        if (res.institution?.id) {
+          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+            requestId,
+            productId: 'prod-pn-pg',
+          });
+          setRetrievedPartyId(res.institution?.id);
+        }
+      })
+      .catch((reason) => {
+        addError({
+          id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+          blocking: false,
+          error: reason,
+          techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
+          toNotify: true,
+        });
+      })
+      .finally(() => setLoading(false));
+  };
+
   const onForwardAction = () => {
     const requestId = uniqueId();
     trackEvent('ONBOARDING_PG_SELECTION', {
       requestId,
       productId: 'prod-pn-pg',
     });
+    if (selectedBusiness?.businessTaxId) {
+      getOnboardingInfo(selectedBusiness?.businessTaxId);
+    }
+
     setSelectedBusinessHistory({
       certified: true,
       businessName: selectedBusiness?.businessName ?? '',
