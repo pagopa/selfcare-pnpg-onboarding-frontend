@@ -5,20 +5,26 @@ import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
+import {
+  getBusinessLegalAddress,
+  getInstitutionOnboardingInfo,
+  matchBusinessAndUser,
+} from '../../../services/onboardingService';
 import ErrorHandler from './ErrorHandler';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setActiveStep, setLoading }: Props) {
+function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Props) {
   const { t } = useTranslation();
 
   const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
@@ -28,6 +34,7 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<ErrorType>();
   const requestId = uniqueId();
+  const addError = useErrorDispatcher();
   const loggedUser = storageUserOps.read();
 
   const productId = 'prod-pn-pg';
@@ -53,6 +60,26 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
             .then((res) => {
               if (res.verificationResult) {
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
+                getInstitutionOnboardingInfo(typedInput, productId)
+                  .then((res) => {
+                    if (res.institution?.id) {
+                      trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+                        requestId,
+                        productId,
+                      });
+                      setRetrievedPartyId(res.institution?.id);
+                    }
+                  })
+                  .catch((reason) => {
+                    addError({
+                      id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+                      blocking: false,
+                      error: reason,
+                      techDescription: `An error occurred while retrieving onboarded party of ${typedInput}`,
+                      toNotify: true,
+                    });
+                  })
+                  .finally(() => setLoading(false));
                 setSelectedBusiness({
                   certified: false,
                   businessName: '',
