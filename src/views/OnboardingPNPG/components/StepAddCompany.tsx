@@ -153,6 +153,7 @@ function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Prop
               sx={{
                 width: { xs: 'calc(100% - 48px)', sm: '416px' },
               }}
+              inputProps={{ maxLength: 11 }}
             />
           </Card>
         </Grid>
