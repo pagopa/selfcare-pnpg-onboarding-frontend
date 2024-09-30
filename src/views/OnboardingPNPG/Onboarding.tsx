@@ -67,6 +67,7 @@ function OnboardingComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
+          setRetrievedPartyId,
           forward,
         }),
     },
