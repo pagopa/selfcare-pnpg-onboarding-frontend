@@ -84,6 +84,12 @@ function StepSelectBusiness({
           techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
           toNotify: true,
         });
+        setSelectedBusinessHistory({
+          certified: true,
+          businessName: selectedBusiness?.businessName ?? '',
+          businessTaxId: selectedBusiness?.businessTaxId ?? '',
+        });
+        setActiveStep(3);
       })
       .finally(() => setLoading(false));
   };
