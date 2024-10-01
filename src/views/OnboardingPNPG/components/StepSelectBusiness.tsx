@@ -1,28 +1,31 @@
 import { Button, Grid, Typography, Box, Link } from '@mui/material';
 import { PartyAccountItem, theme } from '@pagopa/mui-italia';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { uniqueId } from 'lodash';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Business, LegalEntity, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { getInstitutionOnboardingInfo } from '../../../services/onboardingService';
+import { ENV } from '../../../utils/env';
+import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 
 type Props = {
   retrievedBusinesses?: LegalEntity;
-  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 } & StepperStepComponentProps;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepSelectBusiness({
   forward,
   retrievedBusinesses,
-  setRetrievedPartyId,
   setLoading,
+  setRetrievedPartyId,
   setActiveStep,
 }: Props) {
   const { t } = useTranslation();
@@ -32,6 +35,7 @@ function StepSelectBusiness({
   const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
     Business | undefined
   >('selected_business', undefined);
+  const [retrievedId, setRetrievedId] = useState<string>();
 
   useEffect(() => {
     if (retrievedBusinesses?.businesses.length === 1) {
@@ -62,6 +66,14 @@ function StepSelectBusiness({
             productId: 'prod-pn-pg',
           });
           setRetrievedPartyId(res.institution?.id);
+          setRetrievedId(res.institution?.id);
+        } else {
+          setSelectedBusinessHistory({
+            certified: true,
+            businessName: selectedBusiness?.businessName ?? '',
+            businessTaxId: selectedBusiness?.businessTaxId ?? '',
+          });
+          setActiveStep(3);
         }
       })
       .catch((reason) => {
@@ -85,18 +97,26 @@ function StepSelectBusiness({
     if (selectedBusiness?.businessTaxId) {
       getOnboardingInfo(selectedBusiness?.businessTaxId);
     }
-
-    setSelectedBusinessHistory({
-      certified: true,
-      businessName: selectedBusiness?.businessName ?? '',
-      businessTaxId: selectedBusiness?.businessTaxId ?? '',
-    });
-    setActiveStep(3);
   };
 
   const moreThanTwoInstitutions = retrievedBusinesses && retrievedBusinesses.businesses.length >= 2;
 
-  return (
+  return retrievedId ? (
+    <EndingPage
+      icon={<AlreadyOnboardedIcon />}
+      title={t('alreadyOnboarded.title')}
+      description={
+        <Trans i18nKey="alreadyOnboarded.description">
+          Questa impresa è già stata registrata. Accedi per leggere le <br />
+          notifiche e aggiungere altri utenti.
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('alreadyOnboarded.signIn')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedId}`)}
+    />
+  ) : (
     <Grid container direction="column" my={16}>
       <Grid container item justifyContent="center">
         <Grid item xs={12}>
