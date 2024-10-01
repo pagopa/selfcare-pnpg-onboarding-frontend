@@ -8,18 +8,14 @@ import { uniqueId } from 'lodash';
 import { Business, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
-import {
-  getInstitutionOnboardingInfo,
-  onboardingPGSubmit,
-} from '../../../services/onboardingService';
+import { onboardingPGSubmit } from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
-  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
+function StepSubmit({ forward, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -34,30 +30,6 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
   const requestId = uniqueId();
 
   const productId = 'prod-pn-pg';
-
-  const getOnboardingInfo = async (taxCode: string) => {
-    setLoading(true);
-    getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
-      .then((res) => {
-        if (res.institution?.id) {
-          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
-            requestId,
-            productId: 'prod-pn-pg',
-          });
-          setRetrievedPartyId(res.institution?.id);
-        }
-      })
-      .catch((reason) => {
-        addError({
-          id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-          blocking: false,
-          error: reason,
-          techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
-          toNotify: true,
-        });
-      })
-      .finally(() => setLoading(false));
-  };
 
   useEffect(() => {
     const loggedUser = storageUserOps.read();
@@ -97,7 +69,6 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
       insertedBusinessEmail
     )
       .then(async () => {
-        await getOnboardingInfo(selectedBusiness.businessTaxId);
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
           requestId,
           productId,

@@ -38,6 +38,7 @@ function OnboardingComponent() {
         StepSelectBusiness({
           retrievedBusinesses,
           setActiveStep,
+          setRetrievedPartyId,
           setLoading,
           forward,
         }),
@@ -47,6 +48,7 @@ function OnboardingComponent() {
       Component: () =>
         StepAddCompany({
           setActiveStep,
+          setRetrievedPartyId,
           setLoading,
         }),
     },
@@ -62,7 +64,6 @@ function OnboardingComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
-          setRetrievedPartyId,
           forward,
         }),
     },

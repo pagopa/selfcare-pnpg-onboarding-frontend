@@ -1,6 +1,6 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
@@ -22,10 +22,11 @@ import ErrorHandler from './ErrorHandler';
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setActiveStep, setLoading }: Props) {
+function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Props) {
   const { t } = useTranslation();
 
   const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
@@ -34,7 +35,7 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<ErrorType>();
-  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
+  const [retrievedId, setRetrievedId] = useState<string>();
 
   const requestId = uniqueId();
   const addError = useErrorDispatcher();
@@ -71,6 +72,7 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
                         productId,
                       });
                       setRetrievedPartyId(res.institution?.id);
+                      setRetrievedId(res.institution?.id);
                     } else {
                       setSelectedBusiness({
                         certified: false,
@@ -117,7 +119,7 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
 
   return error ? (
     <ErrorHandler error={error} setActiveStep={setActiveStep} setError={setError} />
-  ) : retrievedPartyId ? (
+  ) : retrievedId ? (
     <EndingPage
       icon={<AlreadyOnboardedIcon />}
       title={t('alreadyOnboarded.title')}
@@ -130,9 +132,7 @@ function StepAddCompany({ setActiveStep, setLoading }: Props) {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('alreadyOnboarded.signIn')}
-      onButtonClick={() =>
-        window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedPartyId}`)
-      }
+      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedId}`)}
     />
   ) : (
     <Grid container direction="column" my={16}>
