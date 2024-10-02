@@ -19,7 +19,7 @@ type Props = StepperStepComponentProps & {
   setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
+function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -34,30 +34,6 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
   const requestId = uniqueId();
 
   const productId = 'prod-pn-pg';
-
-  const getOnboardingInfo = async (taxCode: string) => {
-    setLoading(true);
-    getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
-      .then((res) => {
-        if (res.institution?.id) {
-          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
-            requestId,
-            productId: 'prod-pn-pg',
-          });
-          setRetrievedPartyId(res.institution?.id);
-        }
-      })
-      .catch((reason) => {
-        addError({
-          id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-          blocking: false,
-          error: reason,
-          techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
-          toNotify: true,
-        });
-      })
-      .finally(() => setLoading(false));
-  };
 
   useEffect(() => {
     const loggedUser = storageUserOps.read();
@@ -83,6 +59,7 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
     selectedBusiness: Business,
     loggedUser: User
   ) => {
+    setLoading(true);
     await onboardingPGSubmit(
       businessId,
       productId,
@@ -97,11 +74,26 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
       insertedBusinessEmail
     )
       .then(async () => {
-        await getOnboardingInfo(selectedBusiness.businessTaxId);
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
           requestId,
           productId,
         });
+        await getInstitutionOnboardingInfo(selectedBusiness.businessTaxId, 'prod-pn-pg')
+          .then((res) => {
+            if (res.institution?.id) {
+              setRetrievedPartyId(res.institution?.id);
+            }
+          })
+          .catch((reason) => {
+            addError({
+              id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+              blocking: false,
+              error: reason,
+              techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
+              toNotify: true,
+            });
+          })
+          .finally(() => setLoading(false));
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
         forward();
@@ -116,6 +108,7 @@ function StepSubmit({ forward, setLoading, setRetrievedPartyId }: Props) {
       .finally(() => {
         setInsertedBusinessEmailHistory('');
       });
+    setLoading(false);
   };
 
   return error === 'genericError' ? (

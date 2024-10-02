@@ -1,11 +1,11 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
@@ -15,16 +15,18 @@ import {
   getInstitutionOnboardingInfo,
   matchBusinessAndUser,
 } from '../../../services/onboardingService';
+import { ENV } from '../../../utils/env';
+import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 import ErrorHandler from './ErrorHandler';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Props) {
+function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Props) {
   const { t } = useTranslation();
 
   const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
@@ -33,6 +35,8 @@ function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Prop
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<ErrorType>();
+  const [retrievedId, setRetrievedId] = useState<string>();
+
   const requestId = uniqueId();
   const addError = useErrorDispatcher();
   const loggedUser = storageUserOps.read();
@@ -68,6 +72,19 @@ function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Prop
                         productId,
                       });
                       setRetrievedPartyId(res.institution?.id);
+                      setRetrievedId(res.institution?.id);
+                    } else {
+                      setSelectedBusiness({
+                        certified: false,
+                        businessName: '',
+                        businessTaxId: typedInput,
+                      });
+                      setSelectedBusinessHistory({
+                        certified: false,
+                        businessName: '',
+                        businessTaxId: typedInput,
+                      });
+                      setActiveStep(3);
                     }
                   })
                   .catch((reason) => {
@@ -80,17 +97,6 @@ function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Prop
                     });
                   })
                   .finally(() => setLoading(false));
-                setSelectedBusiness({
-                  certified: false,
-                  businessName: '',
-                  businessTaxId: typedInput,
-                });
-                setSelectedBusinessHistory({
-                  certified: false,
-                  businessName: '',
-                  businessTaxId: typedInput,
-                });
-                setActiveStep(3);
               } else {
                 trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
                 setError('typedNotFound');
@@ -113,6 +119,21 @@ function StepAddCompany({ setActiveStep, setRetrievedPartyId, setLoading }: Prop
 
   return error ? (
     <ErrorHandler error={error} setActiveStep={setActiveStep} setError={setError} />
+  ) : retrievedId ? (
+    <EndingPage
+      icon={<AlreadyOnboardedIcon />}
+      title={t('alreadyOnboarded.title')}
+      description={
+        <Trans i18nKey="alreadyOnboarded.description">
+          Questa impresa è già stata registrata. Accedi per leggere le <br />
+          notifiche e aggiungere altri utenti.
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('alreadyOnboarded.signIn')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedId}`)}
+    />
   ) : (
     <Grid container direction="column" my={16}>
       <Grid container item justifyContent="center">
