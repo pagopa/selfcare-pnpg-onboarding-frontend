@@ -1,11 +1,11 @@
 import { Card, Grid, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { uniqueId } from 'lodash';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { emailRegexp } from '@pagopa/selfcare-common-frontend/utils/constants';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import { emailRegexp } from '@pagopa/selfcare-common-frontend/lib/utils/constants';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
@@ -79,6 +79,7 @@ function StepBusinessData({ setActiveStep }: Props) {
           }
           variantTitle="h4"
           variantSubTitle="body2"
+          mtTitle={4}
           mbSubTitle={4}
         />
       </Grid>
@@ -89,7 +90,8 @@ function StepBusinessData({ setActiveStep }: Props) {
             display: 'grid',
             alignItems: 'center',
             justifyItems: 'center',
-            width: '480px',
+            width: { xs: 'calc(100% - 96px)', sm: '480px' },
+            minWidth: '200px',
             borderRadius: theme.spacing(2),
             boxShadow:
               '0px 8px 10px -5px rgba(0, 43, 85, 0.1), 0px 16px 24px 2px rgba(0, 43, 85, 0.05), 0px 6px 30px 5px rgba(0, 43, 85, 0.1)',
@@ -112,7 +114,10 @@ function StepBusinessData({ setActiveStep }: Props) {
               helperText={
                 notValidBusinessName ? t('insertBusinessData.invalidBusinessName') : undefined
               }
-              sx={{ width: '416px', marginBottom: 4 }}
+              sx={{
+                width: { xs: 'calc(100% - 8px)', sm: '416px' },
+                marginBottom: 4,
+              }}
             />
           )}
           <TextField
@@ -124,7 +129,9 @@ function StepBusinessData({ setActiveStep }: Props) {
             }}
             error={notValidBusinessEmail}
             helperText={notValidBusinessEmail ? t('insertBusinessData.invalidEmail') : undefined}
-            sx={{ width: '416px' }}
+            sx={{
+              width: { xs: 'calc(100% - 8px)', sm: '416px' },
+            }}
           />
         </Card>
       </Grid>

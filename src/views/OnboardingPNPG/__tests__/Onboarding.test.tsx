@@ -29,7 +29,7 @@ afterAll(() => {
 
 beforeEach(() => Object.assign(mockedLocation, initialLocation));
 
-jest.mock('@pagopa/selfcare-common-frontend/utils/storage', () => ({
+jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
     read: () => ({
       uid: 'mockUid',
@@ -107,7 +107,6 @@ test('Test: Onboarding flow after retrieve business from Infocamere, with succes
 test('Test: Onboarding flow after retrieve business from Infocamere with alreadyOnboarded outcome on submit', async () => {
   renderComponent();
   await executeStepSelectBusiness('BusinessName alreadyOnboarded');
-  await executeStepBusinessData();
 
   await waitFor(() => screen.getByText('Impresa già registrata'));
 
@@ -153,7 +152,18 @@ test('Test: In the add agency flow via taxCode, when inserting a taxCode that MA
   fireEvent.click(backToAccessButton);
 });
 
-test('Test: In the add agency flow via taxCode, when inserting a taxCode that NOT match with legalAddress API but match with AdE API, the success page will be show', async () => {
+test('Test: In the add agency flow via taxCode, when inserting a taxCode of already onboarded business that NOT match with legalAddress API but match with AdE API, the already onboarded page will be show', async () => {
+  renderComponent();
+  await executeStepSelectBusiness();
+  await executeStepAddCompany('51515151511');
+
+  await waitFor(() => screen.getByText('Impresa già registrata'));
+
+  const signInButton = screen.getByText('Accedi');
+  fireEvent.click(signInButton);
+});
+
+test('Test: In the add agency flow via taxCode, when inserting a taxCode of NOT already onboarded business that NOT match with legalAddress API but match with AdE API, the success page will be show', async () => {
   renderComponent();
   await executeStepSelectBusiness();
   await executeStepAddCompany('55555555555');

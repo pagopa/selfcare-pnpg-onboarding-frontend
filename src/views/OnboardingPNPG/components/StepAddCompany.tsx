@@ -1,25 +1,32 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
-import { LOADING_TASK_VERIFY_INPUT } from '../../../utils/constants';
+import {
+  getBusinessLegalAddress,
+  getInstitutionOnboardingInfo,
+  matchBusinessAndUser,
+} from '../../../services/onboardingService';
+import { ENV } from '../../../utils/env';
+import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 import ErrorHandler from './ErrorHandler';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setActiveStep }: Props) {
+function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Props) {
   const { t } = useTranslation();
 
   const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
@@ -28,8 +35,10 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<ErrorType>();
-  const setLoading = useLoading(LOADING_TASK_VERIFY_INPUT);
+  const [retrievedId, setRetrievedId] = useState<string>();
+
   const requestId = uniqueId();
+  const addError = useErrorDispatcher();
   const loggedUser = storageUserOps.read();
 
   const productId = 'prod-pn-pg';
@@ -55,17 +64,39 @@ function StepAddCompany({ setActiveStep }: Props) {
             .then((res) => {
               if (res.verificationResult) {
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
-                setSelectedBusiness({
-                  certified: false,
-                  businessName: '',
-                  businessTaxId: typedInput,
-                });
-                setSelectedBusinessHistory({
-                  certified: false,
-                  businessName: '',
-                  businessTaxId: typedInput,
-                });
-                setActiveStep(3);
+                getInstitutionOnboardingInfo(typedInput, productId)
+                  .then((res) => {
+                    if (res.institution?.id) {
+                      trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+                        requestId,
+                        productId,
+                      });
+                      setRetrievedPartyId(res.institution?.id);
+                      setRetrievedId(res.institution?.id);
+                    } else {
+                      setSelectedBusiness({
+                        certified: false,
+                        businessName: '',
+                        businessTaxId: typedInput,
+                      });
+                      setSelectedBusinessHistory({
+                        certified: false,
+                        businessName: '',
+                        businessTaxId: typedInput,
+                      });
+                      setActiveStep(3);
+                    }
+                  })
+                  .catch((reason) => {
+                    addError({
+                      id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+                      blocking: false,
+                      error: reason,
+                      techDescription: `An error occurred while retrieving onboarded party of ${typedInput}`,
+                      toNotify: true,
+                    });
+                  })
+                  .finally(() => setLoading(false));
               } else {
                 trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
                 setError('typedNotFound');
@@ -88,6 +119,21 @@ function StepAddCompany({ setActiveStep }: Props) {
 
   return error ? (
     <ErrorHandler error={error} setActiveStep={setActiveStep} setError={setError} />
+  ) : retrievedId ? (
+    <EndingPage
+      icon={<AlreadyOnboardedIcon />}
+      title={t('alreadyOnboarded.title')}
+      description={
+        <Trans i18nKey="alreadyOnboarded.description">
+          Questa impresa è già stata registrata. Accedi per leggere le <br />
+          notifiche e aggiungere altri utenti.
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('alreadyOnboarded.signIn')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedId}`)}
+    />
   ) : (
     <Grid container direction="column" my={16}>
       <Grid container item justifyContent="center">
@@ -111,7 +157,8 @@ function StepAddCompany({ setActiveStep }: Props) {
               display: 'grid',
               alignItems: 'center',
               justifyItems: 'center',
-              width: '480px',
+              width: { xs: 'calc(100% - 96px)', sm: '480px' },
+              minWidth: '200px',
               height: '120px',
               borderRadius: theme.spacing(2),
               boxShadow:
@@ -124,7 +171,10 @@ function StepAddCompany({ setActiveStep }: Props) {
               variant="outlined"
               type="tel"
               onChange={(e) => setTypedInput(e.target.value)}
-              sx={{ width: '416px', marginX: 4 }}
+              sx={{
+                width: { xs: 'calc(100% - 48px)', sm: '416px' },
+              }}
+              inputProps={{ maxLength: 11 }}
             />
           </Card>
         </Grid>

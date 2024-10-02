@@ -1,7 +1,10 @@
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
-import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import {
+  buildFetchApi,
+  extractResponse,
+} from '@pagopa/selfcare-common-frontend/lib/utils/api-utils';
+import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
+import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import { ENV } from '../utils/env';
 import { Business, LegalEntity, User } from '../types';
 import { store } from '../redux/store';
@@ -21,15 +24,8 @@ const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
     });
   };
 
-const apiClientV1 = createClient({
+const apiClient = createClient({
   baseUrl: ENV.URL_API.ONBOARDING,
-  basePath: '',
-  fetchApi: buildFetchApi(),
-  withDefaults: withBearerAndInstitutionId,
-});
-
-const apiClientV2 = createClient({
-  baseUrl: ENV.URL_API.ONBOARDING_V2.concat('/v2'),
   basePath: '',
   fetchApi: buildFetchApi(),
   withDefaults: withBearerAndInstitutionId,
@@ -50,7 +46,7 @@ const onRedirectToLogin = () =>
 
 export const OnboardingApi = {
   getBusinessesByUser: async (): Promise<LegalEntity> => {
-    const result = await apiClientV1.getInstitutionsFromInfocamereUsingGET({});
+    const result = await apiClient.getInstitutionsFromInfocamereUsingGET({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
@@ -61,7 +57,7 @@ export const OnboardingApi = {
     selectedBusiness: Business,
     digitalAddress: string
   ): Promise<boolean> => {
-    const result = await apiClientV2.onboardingUsingPOST({
+    const result = await apiClient.onboardingUsingPOST_2({
       body: {
         productId,
         billingData: {
@@ -87,7 +83,7 @@ export const OnboardingApi = {
   },
 
   getBusinessLegalAddress: async (businessId: string): Promise<InstitutionLegalAddressResource> => {
-    const result = await apiClientV1.postVerificationLegalAddressUsingPOST({
+    const result = await apiClient.postVerificationLegalAddressUsingPOST({
       body: {
         taxCode: businessId,
       },
@@ -99,7 +95,7 @@ export const OnboardingApi = {
     businessId: string,
     loggedUser: User
   ): Promise<MatchInfoResultResource> => {
-    const result = await apiClientV1.postVerificationMatchUsingPOST({
+    const result = await apiClient.postVerificationMatchUsingPOST({
       body: {
         taxCode: businessId,
         userDto: {
@@ -117,8 +113,8 @@ export const OnboardingApi = {
     taxCode: string,
     productId: string
   ): Promise<InstitutionOnboardingInfoResource> => {
-    const result = await apiClientV1.getInstitutionOnboardingInfoUsingGET({
-      taxCode,
+    const result = await apiClient.getInstitutionOnboardingInfoUsingGET_1({
+      externalInstitutionId: taxCode,
       productId,
     });
     return extractResponse(result, 200, onRedirectToLogin);

@@ -1,7 +1,9 @@
 import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LegalEntity, StepperStep } from '../../types';
 import { withLogin } from '../../components/withLogin';
+import { LoadingOverlay } from '../../components/LoadingOverlay';
 import StepAddCompany from './components/StepAddCompany';
 import StepRetrieveBusinesses from './components/StepRetrieveBusinesses';
 import StepSelectBusiness from './components/StepSelectBusiness';
@@ -10,7 +12,8 @@ import StepSuccess from './components/StepSuccess';
 import StepBusinessData from './components/StepBusinessData';
 
 function OnboardingComponent() {
-  const [_loading, setLoading] = useState<boolean>(false);
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState<boolean>(true);
   const [activeStep, setActiveStep] = useState(0);
   const [retrievedBusinesses, setRetrievedBusinesses] = useState<LegalEntity>();
   const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
@@ -26,6 +29,7 @@ function OnboardingComponent() {
         StepRetrieveBusinesses({
           setRetrievedBusinesses,
           setActiveStep,
+          setLoading,
         }),
     },
     {
@@ -34,6 +38,8 @@ function OnboardingComponent() {
         StepSelectBusiness({
           retrievedBusinesses,
           setActiveStep,
+          setRetrievedPartyId,
+          setLoading,
           forward,
         }),
     },
@@ -42,6 +48,8 @@ function OnboardingComponent() {
       Component: () =>
         StepAddCompany({
           setActiveStep,
+          setRetrievedPartyId,
+          setLoading,
         }),
     },
     {
@@ -57,7 +65,6 @@ function OnboardingComponent() {
         StepSubmit({
           setLoading,
           forward,
-          setRetrievedPartyId,
         }),
     },
     {
@@ -70,6 +77,7 @@ function OnboardingComponent() {
 
   return (
     <Container>
+      {loading && <LoadingOverlay loadingText={t('loadingText')} />}
       <Step />
     </Container>
   );
