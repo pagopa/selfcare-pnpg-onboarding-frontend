@@ -8,14 +8,18 @@ import { uniqueId } from 'lodash';
 import { Business, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
-import { onboardingPGSubmit } from '../../../services/onboardingService';
+import {
+  getInstitutionOnboardingInfo,
+  onboardingPGSubmit,
+} from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
+  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-function StepSubmit({ forward, setLoading }: Props) {
+function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -55,6 +59,7 @@ function StepSubmit({ forward, setLoading }: Props) {
     selectedBusiness: Business,
     loggedUser: User
   ) => {
+    setLoading(true);
     await onboardingPGSubmit(
       businessId,
       productId,
@@ -73,6 +78,22 @@ function StepSubmit({ forward, setLoading }: Props) {
           requestId,
           productId,
         });
+        await getInstitutionOnboardingInfo(selectedBusiness.businessTaxId, 'prod-pn-pg')
+          .then((res) => {
+            if (res.institution?.id) {
+              setRetrievedPartyId(res.institution?.id);
+            }
+          })
+          .catch((reason) => {
+            addError({
+              id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+              blocking: false,
+              error: reason,
+              techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
+              toNotify: true,
+            });
+          })
+          .finally(() => setLoading(false));
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
         forward();
@@ -87,6 +108,7 @@ function StepSubmit({ forward, setLoading }: Props) {
       .finally(() => {
         setInsertedBusinessEmailHistory('');
       });
+    setLoading(false);
   };
 
   return error === 'genericError' ? (
