@@ -38,6 +38,8 @@ function OnboardingComponent() {
         StepSelectBusiness({
           retrievedBusinesses,
           setActiveStep,
+          setRetrievedPartyId,
+          setLoading,
           forward,
         }),
     },
@@ -46,6 +48,7 @@ function OnboardingComponent() {
       Component: () =>
         StepAddCompany({
           setActiveStep,
+          setRetrievedPartyId,
           setLoading,
         }),
     },
@@ -61,8 +64,8 @@ function OnboardingComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
-          forward,
           setRetrievedPartyId,
+          forward,
         }),
     },
     {
@@ -75,8 +78,8 @@ function OnboardingComponent() {
 
   return (
     <Container>
-      <Step />
       {loading && <LoadingOverlay loadingText={t('loadingText')} />}
+      <Step />
     </Container>
   );
 }
