@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
 import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
@@ -157,7 +158,12 @@ export const mockedOnboardingApi = {
           })
         );
       default:
-        return new Promise((resolve) => resolve({}));
+        return new Promise<AxiosError>((_, reject) =>
+          reject({
+            isAxiosError: true,
+            response: { data: '', status: 404, statusText: 'Not Found' },
+          } as AxiosError)
+        );
     }
   },
 };
