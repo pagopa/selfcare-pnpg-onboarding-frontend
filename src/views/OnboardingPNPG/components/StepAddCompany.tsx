@@ -73,18 +73,6 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
                       });
                       setRetrievedPartyId(res.institution?.id);
                       setRetrievedId(res.institution?.id);
-                    } else {
-                      setSelectedBusiness({
-                        certified: false,
-                        businessName: '',
-                        businessTaxId: typedInput,
-                      });
-                      setSelectedBusinessHistory({
-                        certified: false,
-                        businessName: '',
-                        businessTaxId: typedInput,
-                      });
-                      setActiveStep(3);
                     }
                   })
                   .catch((reason) => {
@@ -95,6 +83,17 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
                       techDescription: `An error occurred while retrieving onboarded party of ${typedInput}`,
                       toNotify: true,
                     });
+                    setSelectedBusiness({
+                      certified: false,
+                      businessName: '',
+                      businessTaxId: typedInput,
+                    });
+                    setSelectedBusinessHistory({
+                      certified: false,
+                      businessName: '',
+                      businessTaxId: typedInput,
+                    });
+                    setActiveStep(3);
                   })
                   .finally(() => setLoading(false));
               } else {
