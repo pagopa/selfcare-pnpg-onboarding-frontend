@@ -5,7 +5,7 @@ import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
 import { MatchInfoResultResource } from '../api/generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
-import { InstitutionOnboardingInfoResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
+import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionOnboardingResource';
 
 export const getBusinessesByUser = (): Promise<LegalEntity> => {
   /* istanbul ignore if */
@@ -42,7 +42,7 @@ export const getBusinessLegalAddress = (
 export const getInstitutionOnboardingInfo = (
   taxCode: string,
   productId: string
-): Promise<InstitutionOnboardingInfoResource> => {
+): Promise<InstitutionOnboardingResource> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);

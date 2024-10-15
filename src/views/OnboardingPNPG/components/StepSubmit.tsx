@@ -80,8 +80,8 @@ function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
         });
         await getInstitutionOnboardingInfo(selectedBusiness.businessTaxId, 'prod-pn-pg')
           .then((res) => {
-            if (res.institution?.id) {
-              setRetrievedPartyId(res.institution?.id);
+            if (res.institutionId) {
+              setRetrievedPartyId(res.institutionId);
             }
           })
           .catch((reason) => {

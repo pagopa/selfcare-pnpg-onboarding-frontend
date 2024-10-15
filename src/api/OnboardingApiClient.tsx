@@ -13,7 +13,7 @@ import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/CompanyOnbo
 import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding-pnpg/CompanyUserDto';
 import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { InstitutionOnboardingInfoResource } from './generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
+import { InstitutionOnboardingResource } from './generated/b4f-onboarding-pnpg/InstitutionOnboardingResource';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -112,9 +112,9 @@ export const OnboardingApi = {
   getInstitutionOnboardingInfo: async (
     taxCode: string,
     productId: string
-  ): Promise<InstitutionOnboardingInfoResource> => {
-    const result = await apiClient.getInstitutionOnboardingInfoUsingGET_1({
-      externalInstitutionId: taxCode,
+  ): Promise<InstitutionOnboardingResource> => {
+    const result = await apiClient.getActiveOnboardingUsingGET({
+      taxCode,
       productId,
     });
     return extractResponse(result, 200, onRedirectToLogin);

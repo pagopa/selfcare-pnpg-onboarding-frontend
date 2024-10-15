@@ -66,13 +66,13 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
                 getInstitutionOnboardingInfo(typedInput, productId)
                   .then((res) => {
-                    if (res.institution?.id) {
+                    if (res.institutionId) {
                       trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
                         requestId,
                         productId,
                       });
-                      setRetrievedPartyId(res.institution?.id);
-                      setRetrievedId(res.institution?.id);
+                      setRetrievedPartyId(res.institutionId);
+                      setRetrievedId(res.institutionId);
                     }
                   })
                   .catch((reason) => {

@@ -60,13 +60,13 @@ function StepSelectBusiness({
     setLoading(true);
     getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
       .then((res) => {
-        if (res.institution?.id) {
+        if (res.institutionId) {
           trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
             requestId,
             productId: 'prod-pn-pg',
           });
-          setRetrievedPartyId(res.institution?.id);
-          setRetrievedId(res.institution?.id);
+          setRetrievedPartyId(res.institutionId);
+          setRetrievedId(res.institutionId);
         } else {
           setSelectedBusinessHistory({
             certified: true,

@@ -2,8 +2,8 @@ import { AxiosError } from 'axios';
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
 import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
 import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { InstitutionOnboardingInfoResource } from '../generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
+import { InstitutionOnboardingResource } from '../generated/b4f-onboarding-pnpg/InstitutionOnboardingResource';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -145,16 +145,21 @@ export const mockedOnboardingApi = {
     }
   },
 
-  getInstitutionOnboardingInfo: (taxCode: string): Promise<InstitutionOnboardingInfoResource> => {
+  getInstitutionOnboardingInfo: (taxCode: string): Promise<InstitutionOnboardingResource> => {
     switch (taxCode) {
       case '01501320442':
       case '51515151511':
         return new Promise((resolve) =>
           resolve({
-            geographicTaxonomies: [],
-            institution: {
-              id: 'retrievedPartyId01',
-            },
+            institutionId: 'retrievedPartyId01',
+            onboardings: [
+              {
+                billing: 'mockedBilling',
+                createdAt: new Date('2024-10-15T03:24:00'),
+                productId: 'prod-pn-pg',
+                status: 'ACTIVE',
+              },
+            ],
           })
         );
       default:
