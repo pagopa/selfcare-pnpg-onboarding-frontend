@@ -112,7 +112,7 @@ export const OnboardingApi = {
   getInstitutionOnboardingInfo: async (
     taxCode: string,
     productId: string
-  ): Promise<InstitutionOnboardingResource> => {
+  ): Promise<Array<InstitutionOnboardingResource>> => {
     const result = await apiClient.getActiveOnboardingUsingGET({
       taxCode,
       productId,

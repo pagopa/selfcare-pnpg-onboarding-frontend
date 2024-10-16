@@ -42,7 +42,7 @@ export const getBusinessLegalAddress = (
 export const getInstitutionOnboardingInfo = (
   taxCode: string,
   productId: string
-): Promise<InstitutionOnboardingResource> => {
+): Promise<Array<InstitutionOnboardingResource>> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);
