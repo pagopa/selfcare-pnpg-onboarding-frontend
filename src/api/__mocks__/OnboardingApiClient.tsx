@@ -1,8 +1,8 @@
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
-import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
-import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
-import { InstitutionOnboardingResource } from '../generated/b4f-onboarding-pnpg/InstitutionOnboardingResource';
+import { BusinessResourceIC } from '../generated/b4f-onboarding/BusinessResourceIC';
+import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding/InstitutionLegalAddressResource';
+import { MatchInfoResultResource } from '../generated/b4f-onboarding/MatchInfoResultResource';
+import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
 
 export const loggedUser: User = {
   uid: '00123',
