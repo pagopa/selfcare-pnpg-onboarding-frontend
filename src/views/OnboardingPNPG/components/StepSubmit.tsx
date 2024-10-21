@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import {
+  storageTokenOps,
+  storageUserOps,
+} from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
 import { uniqueId } from 'lodash';
 import { Business, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
-import {
-  getInstitutionOnboardingInfo,
-  onboardingPGSubmit,
-} from '../../../services/onboardingService';
-import { RoleEnum } from '../../../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
+import { onboardingPGSubmit } from '../../../services/onboardingService';
+import { RoleEnum } from '../../../api/generated/b4f-onboarding/CompanyUserDto';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -59,6 +59,7 @@ function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
     selectedBusiness: Business,
     loggedUser: User
   ) => {
+    const sessionToken = storageTokenOps.read();
     setLoading(true);
     await onboardingPGSubmit(
       businessId,
@@ -78,22 +79,35 @@ function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
           requestId,
           productId,
         });
-        await getInstitutionOnboardingInfo(selectedBusiness.businessTaxId, 'prod-pn-pg')
-          .then((res) => {
-            if (res.institutionId) {
-              setRetrievedPartyId(res.institutionId);
+        // TODO Temporary used fetch method instead of codegen, this will be replaced with PNPG-253
+        setLoading(true);
+        try {
+          const response = await fetch(
+            `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.businessTaxId}&productId=${productId}`,
+            {
+              headers: {
+                accept: '*/*',
+                'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+                authorization: `Bearer ${sessionToken}`,
+              },
+              method: 'GET',
+              mode: 'cors',
             }
-          })
-          .catch((reason) => {
-            addError({
-              id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-              blocking: false,
-              error: reason,
-              techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
-              toNotify: true,
-            });
-          })
-          .finally(() => setLoading(false));
+          );
+          const businesses = await response.json();
+          if (businesses[0].institutionId) {
+            setRetrievedPartyId(businesses[0].institutionId);
+          }
+        } catch (reason) {
+          addError({
+            id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+            blocking: false,
+            error: reason as Error,
+            techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
+            toNotify: true,
+          });
+        }
+        setLoading(false);
         setSelectedBusiness(selectedBusiness);
         setSelectedBusinessHistory(selectedBusiness);
         forward();

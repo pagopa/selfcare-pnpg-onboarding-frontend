@@ -2,10 +2,10 @@ import { Business, LegalEntity, User } from '../types';
 import { OnboardingApi } from '../api/OnboardingApiClient';
 import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
 import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
-import { MatchInfoResultResource } from '../api/generated/b4f-onboarding-pnpg/MatchInfoResultResource';
-import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding-pnpg/CompanyUserDto';
-import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding-pnpg/InstitutionOnboardingResource';
+import { MatchInfoResultResource } from '../api/generated/b4f-onboarding/MatchInfoResultResource';
+import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding/InstitutionLegalAddressResource';
+import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/CompanyUserDto';
+import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 
 export const getBusinessesByUser = (): Promise<LegalEntity> => {
   /* istanbul ignore if */
@@ -42,7 +42,7 @@ export const getBusinessLegalAddress = (
 export const getInstitutionOnboardingInfo = (
   taxCode: string,
   productId: string
-): Promise<InstitutionOnboardingResource> => {
+): Promise<Array<InstitutionOnboardingResource>> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);
