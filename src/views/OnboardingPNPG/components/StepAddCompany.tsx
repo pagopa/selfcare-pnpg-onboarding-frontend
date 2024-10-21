@@ -61,7 +61,6 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
           },
           method: 'GET',
           mode: 'cors',
-          credentials: 'include',
         }
       );
       const businesses = await response.json();

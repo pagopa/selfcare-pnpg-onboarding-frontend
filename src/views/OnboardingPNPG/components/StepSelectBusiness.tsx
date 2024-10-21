@@ -71,7 +71,6 @@ function StepSelectBusiness({
           },
           method: 'GET',
           mode: 'cors',
-          credentials: 'include',
         }
       );
       const businesses = await response.json();

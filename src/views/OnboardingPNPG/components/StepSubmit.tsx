@@ -92,7 +92,6 @@ function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
               },
               method: 'GET',
               mode: 'cors',
-              credentials: 'include',
             }
           );
           const businesses = await response.json();
