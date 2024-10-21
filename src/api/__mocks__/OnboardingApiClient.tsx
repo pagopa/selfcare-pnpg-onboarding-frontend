@@ -1,9 +1,8 @@
-import { AxiosError } from 'axios';
 import { LegalEntity, BusinessLegalAddress, User } from '../../types';
-import { BusinessResourceIC } from '../generated/b4f-onboarding-pnpg/BusinessResourceIC';
-import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { InstitutionOnboardingInfoResource } from '../generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
-import { MatchInfoResultResource } from '../generated/b4f-onboarding-pnpg/MatchInfoResultResource';
+import { BusinessResourceIC } from '../generated/b4f-onboarding/BusinessResourceIC';
+import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding/InstitutionLegalAddressResource';
+import { MatchInfoResultResource } from '../generated/b4f-onboarding/MatchInfoResultResource';
+import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -145,25 +144,44 @@ export const mockedOnboardingApi = {
     }
   },
 
-  getInstitutionOnboardingInfo: (taxCode: string): Promise<InstitutionOnboardingInfoResource> => {
+  getInstitutionOnboardingInfo: (
+    taxCode: string
+  ): Promise<Array<InstitutionOnboardingResource>> => {
     switch (taxCode) {
       case '01501320442':
       case '51515151511':
         return new Promise((resolve) =>
-          resolve({
-            geographicTaxonomies: [],
-            institution: {
-              id: 'retrievedPartyId01',
+          resolve([
+            {
+              institutionId: 'retrievedPartyId01',
+              onboardings: [
+                {
+                  billing: 'mockedBilling',
+                  createdAt: new Date('2024-10-15T03:24:00'),
+                  productId: 'prod-pn-pg',
+                  status: 'ACTIVE',
+                },
+              ],
             },
-          })
+          ])
         );
       default:
-        return new Promise<AxiosError>((_, reject) =>
-          reject({
-            isAxiosError: true,
-            response: { data: '', status: 404, statusText: 'Not Found' },
-          } as AxiosError)
-        );
+        return new Promise(() => {
+          const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 404`);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          // eslint-disable-next-line functional/immutable-data
+          error.httpStatus = 404;
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          // eslint-disable-next-line functional/immutable-data
+          error.httpBody = {
+            statusCode: 404,
+            description: 'Not Found',
+          };
+          console.error(JSON.stringify(error));
+          throw error;
+        });
     }
   },
 };

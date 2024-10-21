@@ -1,4 +1,4 @@
-import { BusinessResourceIC } from './api/generated/b4f-onboarding-pnpg/BusinessResourceIC';
+import { BusinessResourceIC } from './api/generated/b4f-onboarding/BusinessResourceIC';
 
 export type RoutesObject = { [key: string]: RouteConfig };
 

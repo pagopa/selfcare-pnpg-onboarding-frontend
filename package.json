@@ -10,7 +10,7 @@
     "@mui/x-data-grid": "^5.0.1",
     "@mui/x-data-grid-generator": "^5.0.1",
     "@pagopa/mui-italia": "^1.1.0",
-    "@pagopa/selfcare-common-frontend": "^1.34.36",
+    "@pagopa/selfcare-common-frontend": "^1.34.43",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "axios": "^0.28.0",
@@ -40,8 +40,8 @@
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx ",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "generate": "npm-run-all generate:*",
-    "clean:api-b4f-onboarding-pnpg": "rimraf src/api/generated/b4f-onboarding-pnpg && rimraf openApi/generated-onboarding-pnpg",
-    "generate:api-b4f-onboarding-pnpg": "yarn run clean:api-b4f-onboarding-pnpg && mkdirp openApi/generated-onboarding-pnpg && gen-api-models --api-spec openApi/onboarding-pnpg-api-docs.json --out-dir src/api/generated/b4f-onboarding-pnpg --no-strict --request-types --response-decoders --client && node openApi/scripts/api-b4f-onboarding-pnpg_fixPostGen.js"
+    "clean:api-b4f-onboarding": "rimraf src/api/generated/b4f-onboarding && rimraf openApi/generated-onboarding",
+    "generate:api-b4f-onboarding": "yarn run clean:api-b4f-onboarding && mkdirp openApi/generated-onboarding && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/onboarding-api-docs.json > openApi/generated-onboarding/onboarding-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated-onboarding/onboarding-swagger20.json && gen-api-models --api-spec openApi/onboarding-api-docs.json --out-dir src/api/generated/b4f-onboarding --no-strict --request-types --response-decoders --client && node openApi/scripts/api-b4f-onboarding_fixPostGen.js"
   },
   "eslintConfig": {
     "extends": [
@@ -92,7 +92,8 @@
     "jsonpath": "^1.1.1",
     "svgo": "^2.8.0",
     "json-schema-ref-parser": "^7.1.0",
-    "z-schema": "^4.2.4"
+    "z-schema": "^4.2.4",
+    "body-parser": "^1.20.3"
   },
   "jest": {
     "restoreMocks": true,

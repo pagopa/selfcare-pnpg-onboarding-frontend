@@ -1,4 +1,4 @@
-import { RoleEnum } from '../../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { RoleEnum } from '../../api/generated/b4f-onboarding/PnPGUserDto';
 import { loggedUser } from '../../api/__mocks__/OnboardingApiClient';
 import { mockedBusinesses } from '../../api/__mocks__/OnboardingApiClient';
 import {

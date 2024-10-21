@@ -2,7 +2,10 @@ import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import React, { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import {
+  storageTokenOps,
+  storageUserOps,
+} from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
@@ -10,11 +13,7 @@ import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
-import {
-  getBusinessLegalAddress,
-  getInstitutionOnboardingInfo,
-  matchBusinessAndUser,
-} from '../../../services/onboardingService';
+import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 import ErrorHandler from './ErrorHandler';
@@ -47,6 +46,55 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
   }, []);
 
+  const getActiveOnboarding = async (taxCode: string, productId: string) => {
+    const sessionToken = storageTokenOps.read();
+    // TODO Temporary used fetch method instead of codegen, this will be replaced with PNPG-253
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=${productId}`,
+        {
+          headers: {
+            accept: '*/*',
+            'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+            authorization: `Bearer ${sessionToken}`,
+          },
+          method: 'GET',
+          mode: 'cors',
+        }
+      );
+      const businesses = await response.json();
+      if (businesses[0].institutionId) {
+        trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+          requestId,
+          productId,
+        });
+        setRetrievedPartyId(businesses[0].institutionId);
+        setRetrievedId(businesses[0].institutionId);
+      }
+    } catch (reason) {
+      addError({
+        id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+        blocking: false,
+        error: reason as Error,
+        techDescription: `An error occurred while retrieving onboarded party of ${typedInput}`,
+        toNotify: true,
+      });
+      setSelectedBusiness({
+        certified: false,
+        businessName: '',
+        businessTaxId: typedInput,
+      });
+      setSelectedBusinessHistory({
+        certified: false,
+        businessName: '',
+        businessTaxId: typedInput,
+      });
+      setActiveStep(3);
+    }
+    setLoading(false);
+  };
+
   const handleSubmit = async (typedInput: string) => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_CONFIRMED', { requestId, productId });
     setLoading(true);
@@ -64,38 +112,7 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
             .then((res) => {
               if (res.verificationResult) {
                 trackEvent('ONBOARDING_PG_MATCHED_ADE', { requestId, productId });
-                getInstitutionOnboardingInfo(typedInput, productId)
-                  .then((res) => {
-                    if (res.institution?.id) {
-                      trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
-                        requestId,
-                        productId,
-                      });
-                      setRetrievedPartyId(res.institution?.id);
-                      setRetrievedId(res.institution?.id);
-                    }
-                  })
-                  .catch((reason) => {
-                    addError({
-                      id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-                      blocking: false,
-                      error: reason,
-                      techDescription: `An error occurred while retrieving onboarded party of ${typedInput}`,
-                      toNotify: true,
-                    });
-                    setSelectedBusiness({
-                      certified: false,
-                      businessName: '',
-                      businessTaxId: typedInput,
-                    });
-                    setSelectedBusinessHistory({
-                      certified: false,
-                      businessName: '',
-                      businessTaxId: typedInput,
-                    });
-                    setActiveStep(3);
-                  })
-                  .finally(() => setLoading(false));
+                void getActiveOnboarding(typedInput, productId);
               } else {
                 trackEvent('ONBOARDING_PG_NOT_MATCHED_ADE', { requestId, productId });
                 setError('typedNotFound');
