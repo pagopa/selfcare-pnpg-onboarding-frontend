@@ -8,12 +8,12 @@ import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import { ENV } from '../utils/env';
 import { Business, LegalEntity, User } from '../types';
 import { store } from '../redux/store';
-import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
-import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/CompanyOnboardingDto';
-import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding-pnpg/CompanyUserDto';
-import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
-import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { InstitutionOnboardingInfoResource } from './generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
+import { createClient, WithDefaultsT } from './generated/b4f-onboarding/client';
+import { InstitutionTypeEnum } from './generated/b4f-onboarding/CompanyOnboardingDto';
+import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding/CompanyUserDto';
+import { MatchInfoResultResource } from './generated/b4f-onboarding/MatchInfoResultResource';
+import { InstitutionLegalAddressResource } from './generated/b4f-onboarding/InstitutionLegalAddressResource';
+import { InstitutionOnboardingResource } from './generated/b4f-onboarding/InstitutionOnboardingResource';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -112,9 +112,9 @@ export const OnboardingApi = {
   getInstitutionOnboardingInfo: async (
     taxCode: string,
     productId: string
-  ): Promise<InstitutionOnboardingInfoResource> => {
-    const result = await apiClient.getInstitutionOnboardingInfoUsingGET_1({
-      externalInstitutionId: taxCode,
+  ): Promise<Array<InstitutionOnboardingResource>> => {
+    const result = await apiClient.getActiveOnboardingUsingGET({
+      taxCode,
       productId,
     });
     return extractResponse(result, 200, onRedirectToLogin);

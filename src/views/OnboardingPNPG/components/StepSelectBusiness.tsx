@@ -5,11 +5,11 @@ import { useTranslation, Trans } from 'react-i18next';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { uniqueId } from 'lodash';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { Business, LegalEntity, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
-import { getInstitutionOnboardingInfo } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
 import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
 
@@ -56,42 +56,55 @@ function StepSelectBusiness({
     }
   }, [retrievedBusinesses]);
 
-  const getOnboardingInfo = (taxCode: string) => {
+  const getActiveOnboarding = async (taxCode: string) => {
+    const sessionToken = storageTokenOps.read();
+    // TODO Temporary used fetch method instead of codegen, this will be replaced with PNPG-253
     setLoading(true);
-    getInstitutionOnboardingInfo(taxCode, 'prod-pn-pg')
-      .then((res) => {
-        if (res.institution?.id) {
-          trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
-            requestId,
-            productId: 'prod-pn-pg',
-          });
-          setRetrievedPartyId(res.institution?.id);
-          setRetrievedId(res.institution?.id);
-        } else {
-          setSelectedBusinessHistory({
-            certified: true,
-            businessName: selectedBusiness?.businessName ?? '',
-            businessTaxId: selectedBusiness?.businessTaxId ?? '',
-          });
-          setActiveStep(3);
+    try {
+      const response = await fetch(
+        `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=prod-pn-pg`,
+        {
+          headers: {
+            accept: '*/*',
+            'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+            authorization: `Bearer ${sessionToken}`,
+          },
+          method: 'GET',
+          mode: 'cors',
         }
-      })
-      .catch((reason) => {
-        addError({
-          id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-          blocking: false,
-          error: reason,
-          techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
-          toNotify: true,
+      );
+      const businesses = await response.json();
+      if (businesses[0].institutionId) {
+        trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
+          requestId,
+          productId: 'prod-pn-pg',
         });
+        setRetrievedPartyId(businesses[0].institutionId);
+        setRetrievedId(businesses[0].institutionId);
+      } else {
         setSelectedBusinessHistory({
           certified: true,
           businessName: selectedBusiness?.businessName ?? '',
           businessTaxId: selectedBusiness?.businessTaxId ?? '',
         });
         setActiveStep(3);
-      })
-      .finally(() => setLoading(false));
+      }
+    } catch (reason) {
+      addError({
+        id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+        blocking: false,
+        error: reason as Error,
+        techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
+        toNotify: true,
+      });
+      setSelectedBusinessHistory({
+        certified: true,
+        businessName: selectedBusiness?.businessName ?? '',
+        businessTaxId: selectedBusiness?.businessTaxId ?? '',
+      });
+      setActiveStep(3);
+    }
+    setLoading(false);
   };
 
   const onForwardAction = () => {
@@ -101,7 +114,7 @@ function StepSelectBusiness({
       productId: 'prod-pn-pg',
     });
     if (selectedBusiness?.businessTaxId) {
-      getOnboardingInfo(selectedBusiness?.businessTaxId);
+      void getActiveOnboarding(selectedBusiness.businessTaxId);
     }
   };
 
