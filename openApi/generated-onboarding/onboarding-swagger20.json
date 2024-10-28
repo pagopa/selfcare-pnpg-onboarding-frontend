@@ -1672,6 +1672,73 @@
         "summary": "checkRecipientCode"
       }
     },
+    "/v2/institutions/onboarding/users/pg": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/CompanyOnboardingUserDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "institutions"
+        ],
+        "description": "The service allows the onboarding of Users to a PG Institution",
+        "operationId": "onboardingUsersUsingPOST",
+        "summary": "onboardingUsers"
+      }
+    },
     "/v2/tokens/{onboardingId}": {
       "get": {
         "produces": [
@@ -2476,6 +2543,9 @@
         "originId": {
           "type": "string"
         },
+        "parentDescription": {
+          "type": "string"
+        },
         "recipientCode": {
           "type": "string"
         },
@@ -2805,6 +2875,56 @@
         "users"
       ],
       "title": "CompanyOnboardingDto",
+      "type": "object"
+    },
+    "CompanyOnboardingUserDto": {
+      "properties": {
+        "certified": {
+          "description": "Indicates whether the institution values come from INFOCAMERE (true) or MANUAL (false)",
+          "example": false,
+          "type": "boolean"
+        },
+        "institutionType": {
+          "description": "Institution's type",
+          "enum": [
+            "AS",
+            "CON",
+            "GSP",
+            "PA",
+            "PG",
+            "PRV",
+            "PSP",
+            "PT",
+            "REC",
+            "SA",
+            "SCP"
+          ],
+          "type": "string"
+        },
+        "productId": {
+          "description": "Product's unique identifier",
+          "type": "string"
+        },
+        "taxCode": {
+          "description": "Institution's taxCode",
+          "type": "string"
+        },
+        "users": {
+          "description": "List of onboarding users",
+          "items": {
+            "$ref": "#/definitions/CompanyUserDto"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "certified",
+        "institutionType",
+        "productId",
+        "taxCode",
+        "users"
+      ],
+      "title": "CompanyOnboardingUserDto",
       "type": "object"
     },
     "CompanyUserDto": {
