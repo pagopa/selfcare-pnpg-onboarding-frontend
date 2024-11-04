@@ -8,33 +8,37 @@ import {
 } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
-import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Business, ErrorType } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { withLogin } from '../../../components/withLogin';
 import { getBusinessLegalAddress, matchBusinessAndUser } from '../../../services/onboardingService';
 import { ENV } from '../../../utils/env';
-import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
+import AlreadyOnboarded from '../pages/AlreadyOnboarded';
+import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import ErrorHandler from './ErrorHandler';
 
 type Props = {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setOnboardingData: React.Dispatch<
+    React.SetStateAction<InstitutionOnboardingResource | undefined>
+  >;
+  back: () => void;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Props) {
+function StepAddCompany({ setActiveStep, setLoading, setOnboardingData, back }: Props) {
   const { t } = useTranslation();
 
-  const [_selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
+  const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
     Business | undefined
   >('selected_business', undefined);
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [error, setError] = useState<ErrorType>();
-  const [retrievedId, setRetrievedId] = useState<string>();
+  const [onboarding, setOnboarding] = useState<InstitutionOnboardingResource | undefined>();
 
   const requestId = uniqueId();
   const addError = useErrorDispatcher();
@@ -63,14 +67,14 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
           mode: 'cors',
         }
       );
-      const businesses = await response.json();
-      if (businesses[0].institutionId) {
+      const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+      if (businesses[0]) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
           requestId,
           productId,
         });
-        setRetrievedPartyId(businesses[0].institutionId);
-        setRetrievedId(businesses[0].institutionId);
+        setOnboardingData(businesses[0]);
+        setOnboarding(businesses[0]);
       }
     } catch (reason) {
       addError({
@@ -135,20 +139,12 @@ function StepAddCompany({ setActiveStep, setLoading, setRetrievedPartyId }: Prop
 
   return error ? (
     <ErrorHandler error={error} setActiveStep={setActiveStep} setError={setError} />
-  ) : retrievedId ? (
-    <EndingPage
-      icon={<AlreadyOnboardedIcon />}
-      title={t('alreadyOnboarded.title')}
-      description={
-        <Trans i18nKey="alreadyOnboarded.description">
-          Questa impresa è già stata registrata. Accedi per leggere le <br />
-          notifiche e aggiungere altri utenti.
-        </Trans>
-      }
-      variantTitle={'h4'}
-      variantDescription={'body1'}
-      buttonLabel={t('alreadyOnboarded.signIn')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedId}`)}
+  ) : onboarding ? (
+    <AlreadyOnboarded
+      onboardingData={onboarding}
+      business={selectedBusiness}
+      setLoading={setLoading}
+      back={back}
     />
   ) : (
     <Grid container direction="column" my={16}>

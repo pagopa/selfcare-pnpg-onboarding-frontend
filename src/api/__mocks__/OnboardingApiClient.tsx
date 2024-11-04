@@ -108,6 +108,8 @@ export const mockedOnboardingApi = {
     return new Promise((resolve) => resolve(true));
   },
 
+  onboardingUsersSubmit: (): Promise<boolean> => new Promise((resolve) => resolve(true)),
+
   matchBusinessAndUser: (taxCode: string, _loggedUser: User): Promise<MatchInfoResultResource> => {
     const matchedBusinessInEdAByExternalId = mockedEdAOccurrences.find(
       (p) => p.externalId === taxCode
@@ -182,6 +184,17 @@ export const mockedOnboardingApi = {
           console.error(JSON.stringify(error));
           throw error;
         });
+    }
+  },
+
+  checkManager: async (taxCode?: string): Promise<boolean> => {
+    switch (taxCode) {
+      case '12323231321':
+        return true;
+      case '55555555555':
+        return false;
+      default:
+        return false;
     }
   },
 };
