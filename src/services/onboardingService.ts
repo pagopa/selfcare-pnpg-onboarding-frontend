@@ -51,6 +51,15 @@ export const getInstitutionOnboardingInfo = (
   }
 };
 
+export const checkManager = (loggedUser: User, taxCode?: string): Promise<boolean> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingApi.checkManager(taxCode);
+  } else {
+    return OnboardingApi.checkManager(loggedUser, taxCode);
+  }
+};
+
 export const onboardingPGSubmit = (
   businessId: string,
   productId: string,
@@ -75,5 +84,18 @@ export const onboardingPGSubmit = (
       selectedInstitution,
       digitalAddress
     );
+  }
+};
+
+export const onboardingUsersSubmit = (
+  taxCode: string,
+  certified: boolean,
+  user: User
+): Promise<boolean> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingApi.onboardingUsersSubmit();
+  } else {
+    return OnboardingApi.onboardingUsers(taxCode, certified, user);
   }
 };

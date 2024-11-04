@@ -119,4 +119,36 @@ export const OnboardingApi = {
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
+
+  checkManager: async (loggedUser: User, taxCode?: string): Promise<boolean> => {
+    const result = await apiClient.checkManager({
+      body: {
+        institutionType: 'PG' as InstitutionTypeEnum,
+        productId: 'prod-pn-pg',
+        taxCode,
+        users: [
+          {
+            name: loggedUser.name,
+            surname: loggedUser.surname,
+            taxCode: loggedUser.taxCode,
+            role: 'MANAGER' as RoleEnum,
+          },
+        ],
+      },
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  onboardingUsers: async (taxCode: string, certified: boolean, user: User): Promise<boolean> => {
+    const result = await apiClient.onboardingUsersUsingPOST({
+      body: {
+        certified,
+        institutionType: 'PG' as InstitutionTypeEnum,
+        productId: 'prod-pn-pg',
+        taxCode,
+        users: [{ ...user, role: 'MANAGER' as RoleEnum }],
+      },
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
 };
