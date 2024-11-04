@@ -13,13 +13,16 @@ import { ENV } from '../../../utils/env';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding/CompanyUserDto';
+import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
-  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setOnboardingData: React.Dispatch<
+    React.SetStateAction<InstitutionOnboardingResource | undefined>
+  >;
 };
 
-function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
+function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -94,9 +97,9 @@ function StepSubmit({ forward, setRetrievedPartyId, setLoading }: Props) {
               mode: 'cors',
             }
           );
-          const businesses = await response.json();
-          if (businesses[0].institutionId) {
-            setRetrievedPartyId(businesses[0].institutionId);
+          const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+          if (businesses[0]) {
+            setOnboardingData(businesses[0]);
           }
         } catch (reason) {
           addError({

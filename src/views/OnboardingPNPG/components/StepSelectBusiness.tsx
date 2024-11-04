@@ -4,20 +4,24 @@ import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { uniqueId } from 'lodash';
-import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { Business, LegalEntity, StepperStepComponentProps } from '../../../types';
 import { withLogin } from '../../../components/withLogin';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { useHistoryState } from '../../../components/useHistoryState';
 import { ENV } from '../../../utils/env';
-import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
+import AlreadyOnboarded from '../pages/AlreadyOnboarded';
+import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 
 type Props = {
   retrievedBusinesses?: LegalEntity;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
-  setRetrievedPartyId: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setOnboardingData: React.Dispatch<
+    React.SetStateAction<InstitutionOnboardingResource | undefined>
+  >;
+  back: () => void;
 } & StepperStepComponentProps;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -25,8 +29,9 @@ function StepSelectBusiness({
   forward,
   retrievedBusinesses,
   setLoading,
-  setRetrievedPartyId,
+  setOnboardingData,
   setActiveStep,
+  back,
 }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
@@ -35,7 +40,7 @@ function StepSelectBusiness({
   const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
     Business | undefined
   >('selected_business', undefined);
-  const [retrievedId, setRetrievedId] = useState<string>();
+  const [onboarding, setOnboarding] = useState<InstitutionOnboardingResource>();
 
   useEffect(() => {
     if (retrievedBusinesses?.businesses.length === 1) {
@@ -73,14 +78,14 @@ function StepSelectBusiness({
           mode: 'cors',
         }
       );
-      const businesses = await response.json();
-      if (businesses[0].institutionId) {
+      const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+      if (businesses[0]) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', {
           requestId,
           productId: 'prod-pn-pg',
         });
-        setRetrievedPartyId(businesses[0].institutionId);
-        setRetrievedId(businesses[0].institutionId);
+        setOnboardingData(businesses[0]);
+        setOnboarding(businesses[0]);
       } else {
         setSelectedBusinessHistory({
           certified: true,
@@ -120,20 +125,12 @@ function StepSelectBusiness({
 
   const moreThanTwoInstitutions = retrievedBusinesses && retrievedBusinesses.businesses.length >= 2;
 
-  return retrievedId ? (
-    <EndingPage
-      icon={<AlreadyOnboardedIcon />}
-      title={t('alreadyOnboarded.title')}
-      description={
-        <Trans i18nKey="alreadyOnboarded.description">
-          Questa impresa è già stata registrata. Accedi per leggere le <br />
-          notifiche e aggiungere altri utenti.
-        </Trans>
-      }
-      variantTitle={'h4'}
-      variantDescription={'body1'}
-      buttonLabel={t('alreadyOnboarded.signIn')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${retrievedId}`)}
+  return onboarding ? (
+    <AlreadyOnboarded
+      onboardingData={onboarding}
+      business={selectedBusiness}
+      setLoading={setLoading}
+      back={back}
     />
   ) : (
     <Grid container direction="column" my={16}>

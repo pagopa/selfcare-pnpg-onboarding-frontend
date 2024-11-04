@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { LegalEntity, StepperStep } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import { LoadingOverlay } from '../../components/LoadingOverlay';
+import { InstitutionOnboardingResource } from '../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import StepAddCompany from './components/StepAddCompany';
 import StepRetrieveBusinesses from './components/StepRetrieveBusinesses';
 import StepSelectBusiness from './components/StepSelectBusiness';
@@ -16,10 +17,14 @@ function OnboardingComponent() {
   const [loading, setLoading] = useState<boolean>(true);
   const [activeStep, setActiveStep] = useState(0);
   const [retrievedBusinesses, setRetrievedBusinesses] = useState<LegalEntity>();
-  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
+  const [onboardingData, setOnboardingData] = useState<InstitutionOnboardingResource>();
 
   const forward = () => {
     setActiveStep(activeStep + 1);
+  };
+
+  const back = () => {
+    setActiveStep(activeStep - 1);
   };
 
   const steps: Array<StepperStep> = [
@@ -38,9 +43,10 @@ function OnboardingComponent() {
         StepSelectBusiness({
           retrievedBusinesses,
           setActiveStep,
-          setRetrievedPartyId,
+          setOnboardingData,
           setLoading,
           forward,
+          back,
         }),
     },
     {
@@ -48,8 +54,9 @@ function OnboardingComponent() {
       Component: () =>
         StepAddCompany({
           setActiveStep,
-          setRetrievedPartyId,
+          setOnboardingData,
           setLoading,
+          back,
         }),
     },
     {
@@ -64,13 +71,13 @@ function OnboardingComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
-          setRetrievedPartyId,
+          setOnboardingData,
           forward,
         }),
     },
     {
       label: 'Success',
-      Component: () => StepSuccess({ retrievedPartyId }),
+      Component: () => StepSuccess({ retrievedPartyId: onboardingData?.institutionId }),
     },
   ];
 

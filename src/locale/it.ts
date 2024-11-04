@@ -45,8 +45,9 @@ export default {
   alreadyOnboarded: {
     title: 'Impresa già registrata',
     description:
-      'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
+      'Questa impresa è già stata registrata in data <1>{{ date }}</1> alle ore <1>{{ time }}</1>. <2 /> Vuoi accedere?',
     signIn: 'Accedi',
+    back: 'Indietro',
   },
   genericError: {
     title: 'Si è verificato un errore',
