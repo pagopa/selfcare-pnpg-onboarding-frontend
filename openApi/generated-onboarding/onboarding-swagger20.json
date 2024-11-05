@@ -1079,10 +1079,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "additionalProperties": {
-                "type": "boolean"
-              },
-              "type": "object"
+              "$ref": "#/definitions/ManagerResultResource"
             }
           },
           "400": {
@@ -1208,6 +1205,79 @@
         "description": "The service allows the onboarding of Users",
         "operationId": "onboardingUsingPOST_4",
         "summary": "onboarding"
+      }
+    },
+    "/v1/users/onboarding/aggregator": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/OnboardingUserDto"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "description": "The service allows the onboarding of Users for aggregators",
+        "operationId": "onboardingAggregatorUsingPOST",
+        "summary": "onboardingAggregator"
       }
     },
     "/v1/users/validate": {
@@ -2476,6 +2546,9 @@
         "originId": {
           "type": "string"
         },
+        "parentDescription": {
+          "type": "string"
+        },
         "recipientCode": {
           "type": "string"
         },
@@ -2541,6 +2614,9 @@
           "type": "string"
         },
         "originId": {
+          "type": "string"
+        },
+        "parentDescription": {
           "type": "string"
         },
         "recipientCode": {
@@ -3391,6 +3467,17 @@
         "reason"
       ],
       "title": "InvalidParam",
+      "type": "object"
+    },
+    "ManagerResultResource": {
+      "properties": {
+        "result": {
+          "description": "Indicate if the manager match with the current",
+          "example": false,
+          "type": "boolean"
+        }
+      },
+      "title": "ManagerResultResource",
       "type": "object"
     },
     "MatchInfoResultResource": {

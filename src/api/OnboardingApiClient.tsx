@@ -14,6 +14,7 @@ import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding/CompanyUser
 import { MatchInfoResultResource } from './generated/b4f-onboarding/MatchInfoResultResource';
 import { InstitutionLegalAddressResource } from './generated/b4f-onboarding/InstitutionLegalAddressResource';
 import { InstitutionOnboardingResource } from './generated/b4f-onboarding/InstitutionOnboardingResource';
+import { ManagerResultResource } from './generated/b4f-onboarding/ManagerResultResource';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -120,7 +121,7 @@ export const OnboardingApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  checkManager: async (loggedUser: User, taxCode?: string): Promise<boolean> => {
+  checkManager: async (loggedUser: User, taxCode?: string): Promise<ManagerResultResource> => {
     const result = await apiClient.checkManager({
       body: {
         institutionType: 'PG' as InstitutionTypeEnum,

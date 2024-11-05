@@ -3,6 +3,7 @@ import { BusinessResourceIC } from '../generated/b4f-onboarding/BusinessResource
 import { InstitutionLegalAddressResource } from '../generated/b4f-onboarding/InstitutionLegalAddressResource';
 import { MatchInfoResultResource } from '../generated/b4f-onboarding/MatchInfoResultResource';
 import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
+import { ManagerResultResource } from '../generated/b4f-onboarding/ManagerResultResource';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -187,14 +188,14 @@ export const mockedOnboardingApi = {
     }
   },
 
-  checkManager: async (taxCode?: string): Promise<boolean> => {
+  checkManager: async (taxCode?: string): Promise<ManagerResultResource> => {
     switch (taxCode) {
       case '12323231321':
-        return true;
+        return new Promise((resolve) => resolve({ result: true }));
       case '55555555555':
-        return false;
+        return new Promise((resolve) => resolve({ result: false }));
       default:
-        return false;
+        return new Promise((resolve) => resolve({ result: false }));
     }
   },
 };
