@@ -2565,10 +2565,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object",
-                  "additionalProperties" : {
-                    "type" : "boolean"
-                  }
+                  "$ref" : "#/components/schemas/ManagerResultResource"
                 }
               }
             }
@@ -2645,6 +2642,91 @@
         "summary" : "onboarding",
         "description" : "The service allows the onboarding of Users",
         "operationId" : "onboardingUsingPOST_4",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OnboardingUserDto"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created"
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ "global" ]
+        } ]
+      }
+    },
+    "/v1/users/onboarding/aggregator" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "onboardingAggregator",
+        "description" : "The service allows the onboarding of Users for aggregators",
+        "operationId" : "onboardingAggregatorUsingPOST",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -2930,6 +3012,9 @@
           "originId" : {
             "type" : "string"
           },
+          "parentDescription" : {
+            "type" : "string"
+          },
           "recipientCode" : {
             "type" : "string"
           },
@@ -2991,6 +3076,9 @@
             "type" : "string"
           },
           "originId" : {
+            "type" : "string"
+          },
+          "parentDescription" : {
             "type" : "string"
           },
           "recipientCode" : {
@@ -3754,6 +3842,17 @@
           "verificationResult" : {
             "type" : "boolean",
             "description" : "Legal Representative and Institution match result on Agenzia delle Entrate",
+            "example" : false
+          }
+        }
+      },
+      "ManagerResultResource" : {
+        "title" : "ManagerResultResource",
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "type" : "boolean",
+            "description" : "Indicate if the manager match with the current",
             "example" : false
           }
         }
