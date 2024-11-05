@@ -6,6 +6,7 @@ import { MatchInfoResultResource } from '../api/generated/b4f-onboarding/MatchIn
 import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding/InstitutionLegalAddressResource';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/InstitutionOnboardingResource';
+import { ManagerResultResource } from '../api/generated/b4f-onboarding/ManagerResultResource';
 
 export const getBusinessesByUser = (): Promise<LegalEntity> => {
   /* istanbul ignore if */
@@ -51,7 +52,10 @@ export const getInstitutionOnboardingInfo = (
   }
 };
 
-export const checkManager = (loggedUser: User, taxCode?: string): Promise<boolean> => {
+export const checkManager = async (
+  loggedUser: User,
+  taxCode?: string
+): Promise<ManagerResultResource> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.checkManager(taxCode);
