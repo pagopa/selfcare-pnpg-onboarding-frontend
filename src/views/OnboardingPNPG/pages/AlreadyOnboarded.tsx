@@ -34,7 +34,7 @@ export default function AlreadyOnboarded({ onboardingData, business, setLoading,
   const verifyManager = async () => {
     await checkManager(loggedUser, business?.businessTaxId)
       .then((res) => {
-        if (res) {
+        if (res.result) {
           window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${onboardingData.institutionId}`);
         } else {
           setAddManagerModal(true);
