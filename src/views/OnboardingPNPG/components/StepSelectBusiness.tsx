@@ -87,6 +87,11 @@ function StepSelectBusiness({
         setOnboardingData(businesses[0]);
         setOnboarding(businesses[0]);
       } else {
+        setSelectedBusiness({
+          certified: true,
+          businessName: selectedBusiness?.businessName ?? '',
+          businessTaxId: selectedBusiness?.businessTaxId ?? '',
+        });
         setSelectedBusinessHistory({
           certified: true,
           businessName: selectedBusiness?.businessName ?? '',
@@ -107,6 +112,7 @@ function StepSelectBusiness({
         businessName: selectedBusiness?.businessName ?? '',
         businessTaxId: selectedBusiness?.businessTaxId ?? '',
       });
+      // TODO server errors temporary managed with forward
       setActiveStep(3);
     }
     setLoading(false);

@@ -75,6 +75,18 @@ function StepAddCompany({ setActiveStep, setLoading, setOnboardingData, back }: 
         });
         setOnboardingData(businesses[0]);
         setOnboarding(businesses[0]);
+      } else {
+        setSelectedBusiness({
+          certified: true,
+          businessName: selectedBusiness?.businessName ?? '',
+          businessTaxId: selectedBusiness?.businessTaxId ?? '',
+        });
+        setSelectedBusinessHistory({
+          certified: true,
+          businessName: selectedBusiness?.businessName ?? '',
+          businessTaxId: selectedBusiness?.businessTaxId ?? '',
+        });
+        setActiveStep(3);
       }
     } catch (reason) {
       addError({
@@ -84,6 +96,7 @@ function StepAddCompany({ setActiveStep, setLoading, setOnboardingData, back }: 
         techDescription: `An error occurred while retrieving onboarded party of ${typedInput}`,
         toNotify: true,
       });
+      // TODO server errors temporary managed with forward
       setActiveStep(3);
     }
     setSelectedBusiness({
