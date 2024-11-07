@@ -56,7 +56,7 @@ function OnboardingComponent() {
           setActiveStep,
           setOnboardingData,
           setLoading,
-          back,
+          back: () => location.reload(),
         }),
     },
     {
