@@ -1,73 +1,74 @@
 export default {
-  loadingText: 'Pregledujemo vaše podatke',
+  loadingText: 'Preverjamo vaše podatke',
   chooseBusiness: {
     selectFromBusinessList: {
       title: 'Katero podjetje želite registrirati?',
       subTitle:
-        'To so podjetja, za katera ste zakoniti zastopnik. <1 /> Izberite tistega, ki ga želite registrirati.',
+        'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
     },
     selectReleatedBusiness: {
       title: 'Registrirajte svoje podjetje',
-      subTitle: 'To je podjetje, za katerega ste zakoniti zastopnik. ',
+      subTitle: 'To je podjetje, za katerega je navedeno, da ste njegov pravni zastopnik. ',
     },
     registerBusiness: 'Registrirajte podjetje',
     registerBusinessByTaxCodeLink:
-      'Ne najdete svojega podjetja? <1>Poiščite ga z davčno številko</1>',
+      'Non trovi la tua impresa? <1>Cercala tramite Codice Fiscale</1>',
   },
   addCompany: {
     title: 'Katero podjetje želite registrirati?',
     subTitle: 'Vnesite davčno številko podjetja, ki ga želite <1 />registrirati.',
     textfieldLabel: 'Davčna številka',
-    forwardAction: 'Nadaljujte',
+    forwardAction: 'Nadaljuj',
   },
   insertBusinessEmail: {
-    title: 'Kakšen je PEC podjetja?',
-    subTitle: 'Vnesite PEC podjetja, ki ga želite registrirati.',
-    pecLabel: 'PEC',
+    title: 'Kakšen je naslov PEC podjetja?',
+    subTitle: 'Vnesite naslov PEC podjetja, ki ga želite registrirati.',
+    pecLabel: 'Naslov PEC',
   },
   insertBusinessData: {
-    title: 'Vnesite podatke o vašem podjetju',
-    subTitle: 'Vnesite ime podjetja in PEC podjetja, ki ga želite <1 />registrirati.',
-    businessNameLabel: 'Ime podjetja',
-    pecEmailLabel: 'PEC',
-    invalidEmail: 'Vneseni e-poštni naslov ni pravilen',
-    invalidBusinessName: 'Vnesite ime podjetja',
+    title: 'Vnesite podatke o podjetju',
+    subTitle:
+      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
+    businessNameLabel: 'Naziv podjetja',
+    pecEmailLabel: 'Naslov PEC',
+    invalidEmail: "Vneseni e-poštni naslov ni pravilen",
+    invalidBusinessName: 'Vnesite naziv svojega podjetja',
     backAction: 'Nazaj',
-    forwardAction: 'Nadaljujte',
+    forwardAction: 'Nadaljuj',
   },
   cannotRegisterBusiness: {
-    title: 'Tega podjetja ne morete registrirati <1/>',
+    title: '<1/>Tega podjetja ne morete registrirati',
     description:
-      'Vaš SPID ne kaže, da ste zakoniti zastopnik <1 />podjetja, povezanega s to davčno številko. <3 />Registrirate lahko samo podjetja, katerih zakoniti zastopnik ste.',
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
     close: 'Zapri',
   },
   alreadyOnboarded: {
     title: 'Podjetje je že registrirano',
     description:
-      'To podjetje je že registrirano. Prijavite se, da preberete <1 />obvestila in dodate več uporabnikov.',
+      'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Prijava',
   },
   genericError: {
     title: 'Prišlo je do napake',
     message:
-      'Zaradi tehnične težave ne moremo registrirati <1 /> podjetja. Poskusite znova pozneje.',
+      'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
     close: 'Zapri',
   },
   invalidInputFormat: {
     title: 'Davčna številka/številka za DDV ni pravilna',
-    message: 'Vrnite se nazaj, preverite, ali je pravilna in jo vnesite <1 /> znova.',
-    goBack: 'Vrni se nazaj',
+    message: 'Vrnite se nazaj in se prepričajte, da je pravilna, in jo znova <1 /> vnesite.',
+    goBack: 'Pojdi nazaj',
   },
   outcome: {
     success: {
-      title: 'Podjetje je že registrirano!',
-      description: 'Prijavite se, če želite prebrati obvestila in dodati več uporabnikov.',
+      title: 'Podjetje je registrirano!',
+      description: 'Prijavite se za branje obvestil in dodajanje drugih uporabnikov.',
       signIn: 'Prijava',
     },
     error: {
       title: 'Podjetje ni registrirano',
       description:
-        'Zaradi tehnične težave ne moremo registrirati <1 /> podjetja. Poskusite znova pozneje.',
+        "Zaradi tehnične težave <1 />podjetja ne moremo registrirati. Poskusite znova pozneje.",
       close: 'Zapri',
     },
   },

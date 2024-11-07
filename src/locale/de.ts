@@ -1,24 +1,24 @@
 export default {
-  loadingText: 'Wir überprüfen deine Daten',
+  loadingText: 'Wir prüfen gerade deine Daten',
   chooseBusiness: {
     selectFromBusinessList: {
       title: 'Welches Unternehmen möchtest du registrieren?',
       subTitle:
-        'Dies sind die Unternehmen, deren gesetzlicher Vertreter du bist. <1 /> Wähle diejenige aus, die du registrieren möchtest.',
+        'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
     },
     selectReleatedBusiness: {
       title: 'Registriere dein Unternehmen',
-      subTitle: 'Dies ist das Unternehmen, dessen gesetzlicher Vertreter du bist. ',
+      subTitle: 'Dies ist das Unternehmen, dessen Rechtsvertreter du bist. ',
     },
     registerBusiness: 'Unternehmen registrieren',
     registerBusinessByTaxCodeLink:
-      'Du findest dein Unternehmen nicht? <1>Suche es über die Steuernummer</1>',
+      'Non trovi la tua impresa? <1>Cercala tramite Codice Fiscale</1>',
   },
   addCompany: {
     title: 'Welches Unternehmen möchtest du registrieren?',
     subTitle: 'Gib die Steuernummer des Unternehmens ein, das du <1 />registrieren möchtest.',
     textfieldLabel: 'Steuernummer',
-    forwardAction: 'Fortfahren',
+    forwardAction: 'Weiter',
   },
   insertBusinessEmail: {
     title: 'Wie lautet die PEC-Adresse des Unternehmens?',
@@ -26,56 +26,56 @@ export default {
     pecLabel: 'PEC-Adresse',
   },
   insertBusinessData: {
-    title: 'Bitte gib deine Firmendaten ein',
+    title: 'Gib die Daten deines Unternehmens ein.',
     subTitle:
-      'Gib den Firmennamen und die PEC-Adresse des Unternehmens ein, das du <1 />registrieren möchtest.',
-    businessNameLabel: 'Firmenname',
+      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
+    businessNameLabel: 'Firmenbezeichnung',
     pecEmailLabel: 'PEC-Adresse',
-    invalidEmail: 'Die eingegebene E-Mail-Adresse ist falsch',
-    invalidBusinessName: 'Bitte gib einen Firmennamen ein',
+    invalidEmail: "Die eingegebene E-Mail-Adresse ist falsch",
+    invalidBusinessName: 'Eine Firmenbezeichnung eingeben',
     backAction: 'Zurück',
-    forwardAction: 'Fortfahren',
+    forwardAction: 'Weiter',
   },
   cannotRegisterBusiness: {
-    title: 'Du kannst dieses Unternehmen nicht registrieren <1/>',
+    title: 'Du kannst dieses <1/>Unternehmen nicht registrieren',
     description:
-      'Aus deiner SPID geht hervor, dass du nicht der gesetzliche Vertreter <1 />des mit dieser Steuernummer verbundenen Unternehmens bist. Du kannst <3 />nur Unternehmen registrieren, deren gesetzlicher Vertreter du bist.',
-    close: 'Schließen',
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
+    close: 'Beenden',
   },
   alreadyOnboarded: {
     title: 'Unternehmen bereits registriert',
     description:
-      'Dieses Unternehmen wurde bereits registriert. Melde dich an, um die <1 />Bescheide aufzurufen und weitere Benutzer hinzuzufügen.',
+      'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Anmelden',
   },
   genericError: {
     title: 'Es ist ein Fehler aufgetreten',
     message:
-      'Aufgrund eines technischen Problems können wir das Unternehmen nicht <1 /> registrieren. Versuche es später noch einmal.',
-    close: 'Schließen',
+      'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
+    close: 'Beenden',
   },
   invalidInputFormat: {
-    title: 'Die Steuernummer/USt-IdNr. ist nicht korrekt',
-    message: 'Gehe zurück, stelle sicher, dass es korrekt ist, und gib sie erneut <1 /> ein.',
+    title: 'Die Steuernummer/USt-IdNr. ist falsch',
+    message: 'Gehe zurück, vergewissere dich, dass sie richtig ist und gib sie <1 /> erneut ein.',
     goBack: 'Zurück',
   },
   outcome: {
     success: {
-      title: 'Unternehmen bereits registriert!',
-      description: 'Melde dich an, um die Bescheide aufzurufen und andere Benutzer hinzuzufügen.',
+      title: 'Unternehmen registriert!',
+      description: 'Melde dich an, um die Zustellungen zu lesen und andere Benutzer hinzuzufügen.',
       signIn: 'Anmelden',
     },
     error: {
       title: 'Unternehmen nicht registriert',
       description:
-        'Aufgrund eines technischen Problems können wir das Unternehmen nicht <1 /> registrieren. Versuche es später noch einmal.',
-      close: 'Schließen',
+        "Aufgrund eines technischen Problems können wir das Unternehmen <1 /> nicht registrieren. Bitte später erneut versuchen.",
+      close: 'Beenden',
     },
   },
   app: {
     sessionModal: {
       title: 'Sitzung abgelaufen',
-      message: 'Du wirst zur Login-Seite weitergeleitet...',
+      message: 'Du wirst zur Anmeldeseite weitergeleitet...',
     },
   },
 };

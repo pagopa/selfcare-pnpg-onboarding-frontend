@@ -4,72 +4,72 @@ export default {
     selectFromBusinessList: {
       title: 'Quelle entreprise souhaitez-vous enregistrer ?',
       subTitle:
-        'Ce sont les entreprises dont vous êtes le représentant légal. <1 /> Sélectionnez celle que vous souhaitez enregistrer.',
+        'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
     },
     selectReleatedBusiness: {
       title: 'Enregistrez votre entreprise',
-      subTitle: 'Il s’agit de l’entreprise pour laquelle il s’agit d’un représentant légal. ',
+      subTitle: 'Il s’agit de l’entreprise dont vous êtes le Représentant Légal. ',
     },
-    registerBusiness: 'Enregistrer l’entreprise',
+    registerBusiness: 'Enregistrer entreprise',
     registerBusinessByTaxCodeLink:
-      'Vous ne trouvez pas votre entreprise ? <1>Recherchez-la via le code fiscal</1>',
+      'Non trovi la tua impresa? <1>Cercala tramite Codice Fiscale</1>',
   },
   addCompany: {
     title: 'Quelle entreprise souhaitez-vous enregistrer ?',
-    subTitle: 'Entrez le code fiscal de la société que vous souhaitez <1 />enregistrer.',
-    textfieldLabel: 'Numéro fiscal',
+    subTitle: 'Saisissez le Code Fiscal de l’entreprise que vous souhaitez <1 />enregistrer.',
+    textfieldLabel: 'Code Fiscal',
     forwardAction: 'Continuer',
   },
   insertBusinessEmail: {
     title: 'Quelle est l’adresse PEC de l’entreprise ?',
-    subTitle: 'Entrez l’adresse PEC de l’entreprise que vous souhaitez enregistrer.',
-    pecLabel: 'Adresse courriel certifié',
+    subTitle: 'Saisissez l’adresse PEC de l’entreprise que vous souhaitez enregistrer.',
+    pecLabel: 'Adresse PEC',
   },
   insertBusinessData: {
     title: 'Saisissez les données de votre entreprise',
     subTitle:
-      'Entrez la raison sociale et l’adresse PEC de l’entreprise que vous souhaitez <1 />enregistrer.',
+      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
     businessNameLabel: 'Raison sociale',
-    pecEmailLabel: 'Adresse courriel certifié',
-    invalidEmail: 'Cette adresse mail est incorrecte.',
-    invalidBusinessName: 'Entrer le nom de l’entreprise',
+    pecEmailLabel: 'Adresse PEC',
+    invalidEmail: "L’adresse mail saisie est incorrecte",
+    invalidBusinessName: 'Saisissez une raison sociale',
     backAction: 'Retour',
     forwardAction: 'Continuer',
   },
   cannotRegisterBusiness: {
     title: 'Vous ne pouvez pas enregistrer <1/>cette entreprise',
     description:
-      'Votre SPID n’est pas un représentant légal <1 />de la société associée à ce code fiscal. Vous pouvez <3 />enregistrer uniquement les sociétés dont vous êtes le représentant légal.',
-    close: 'Fermez',
+      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
+    close: 'Fermer',
   },
   alreadyOnboarded: {
     title: 'Entreprise déjà enregistrée',
     description:
-      'Cette société a déjà été enregistrée. Connectez-vous pour lire les <1 />notifications et ajouter d’autres utilisateurs.',
+      'Questa impresa è già stata registrata. Accedi per leggere le <1 />notifiche e aggiungere altri utenti.',
     signIn: 'Se connecter',
   },
   genericError: {
-    title: 'Une erreur est survenue',
+    title: 'Une erreur s’est produite',
     message:
-      'En raison d’un problème technique, nous ne parvenons pas à enregistrer <1 /> l’entreprise. Veuillez réessayer plus tard.',
-    close: 'Fermez',
+      'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
+    close: 'Fermer',
   },
   invalidInputFormat: {
-    title: 'Le code fiscal/numéro de TVA n’est pas correct',
-    message: 'Revenez en arrière, assurez-vous qu’il est correct et saisissez-le de <1 /> nouveau.',
-    goBack: 'Revenir en arrière',
+    title: 'Le Code Fiscal/N° de TVA saisi est incorrect',
+    message: 'Revenez en arrière, assurez-vous qu’il est bien correct et saisissez-le à <1 /> nouveau.',
+    goBack: 'Revenez en arrière',
   },
   outcome: {
     success: {
-      title: 'Entreprise déjà enregistrée',
+      title: 'Entreprise enregistrée !',
       description: 'Connectez-vous pour lire les notifications et ajouter d’autres utilisateurs.',
       signIn: 'Se connecter',
     },
     error: {
-      title: 'Entreprise non enregistrée',
+      title: 'Entreprise pas enregistrée',
       description:
-        'En raison d’un problème technique, nous ne parvenons pas à enregistrer <1 /> l’entreprise. Veuillez réessayer plus tard.',
-      close: 'Fermez',
+        "En raison d’un problème technique, nous ne sommes pas en mesure d’enregistrer <1 />l’entreprise. Veuillez réessayer plus tard.",
+      close: 'Fermer',
     },
   },
   app: {
