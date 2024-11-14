@@ -8,31 +8,31 @@ export default {
     },
     selectReleatedBusiness: {
       title: 'Enregistrez votre entreprise',
-      subTitle: 'Il s’agit de l’entreprise pour laquelle il s’agit d’un représentant légal. ',
+      subTitle: 'Il s’agit de l’entreprise dont vous êtes le Représentant Légal. ',
     },
-    registerBusiness: 'Enregistrer l’entreprise',
+    registerBusiness: 'Enregistrer entreprise',
     registerBusinessByTaxCodeLink:
       'Vous ne trouvez pas votre entreprise ? <1>Recherchez-la via le code fiscal</1>',
   },
   addCompany: {
     title: 'Quelle entreprise souhaitez-vous enregistrer ?',
-    subTitle: 'Entrez le code fiscal de la société que vous souhaitez <1 />enregistrer.',
-    textfieldLabel: 'Numéro fiscal',
+    subTitle: 'Saisissez le Code Fiscal de l’entreprise que vous souhaitez <1 />enregistrer.',
+    textfieldLabel: 'Code Fiscal',
     forwardAction: 'Continuer',
   },
   insertBusinessEmail: {
     title: 'Quelle est l’adresse PEC de l’entreprise ?',
-    subTitle: 'Entrez l’adresse PEC de l’entreprise que vous souhaitez enregistrer.',
-    pecLabel: 'Adresse courriel certifié',
+    subTitle: 'Saisissez l’adresse PEC de l’entreprise que vous souhaitez enregistrer.',
+    pecLabel: 'Adresse PEC',
   },
   insertBusinessData: {
     title: 'Saisissez les données de votre entreprise',
     subTitle:
       'Entrez la raison sociale et l’adresse PEC de l’entreprise que vous souhaitez <1 />enregistrer.',
     businessNameLabel: 'Raison sociale',
-    pecEmailLabel: 'Adresse courriel certifié',
-    invalidEmail: 'Cette adresse mail est incorrecte.',
-    invalidBusinessName: 'Entrer le nom de l’entreprise',
+    pecEmailLabel: 'Adresse PEC',
+    invalidEmail: 'L’adresse mail saisie est incorrecte',
+    invalidBusinessName: 'Saisissez une raison sociale',
     backAction: 'Retour',
     forwardAction: 'Continuer',
   },
@@ -40,7 +40,7 @@ export default {
     title: 'Vous ne pouvez pas enregistrer <1/>cette entreprise',
     description:
       'Votre SPID n’est pas un représentant légal <1 />de la société associée à ce code fiscal. Vous pouvez <3 />enregistrer uniquement les sociétés dont vous êtes le représentant légal.',
-    close: 'Fermez',
+    close: 'Fermer',
   },
   alreadyOnboarded: {
     title: 'Entreprise déjà enregistrée',
@@ -55,21 +55,22 @@ export default {
     close: 'Fermez',
   },
   invalidInputFormat: {
-    title: 'Le code fiscal/numéro de TVA n’est pas correct',
-    message: 'Revenez en arrière, assurez-vous qu’il est correct et saisissez-le de <1 /> nouveau.',
-    goBack: 'Revenir en arrière',
+    title: 'Le Code Fiscal/N° de TVA saisi est incorrect',
+    message:
+      'Revenez en arrière, assurez-vous qu’il est bien correct et saisissez-le à <1 /> nouveau.',
+    goBack: 'Revenez en arrière',
   },
   outcome: {
     success: {
-      title: 'Entreprise déjà enregistrée',
+      title: 'Entreprise enregistrée !',
       description: 'Connectez-vous pour lire les notifications et ajouter d’autres utilisateurs.',
       signIn: 'Se connecter',
     },
     error: {
-      title: 'Entreprise non enregistrée',
+      title: 'Entreprise pas enregistrée',
       description:
-        'En raison d’un problème technique, nous ne parvenons pas à enregistrer <1 /> l’entreprise. Veuillez réessayer plus tard.',
-      close: 'Fermez',
+        'En raison d’un problème technique, nous ne sommes pas en mesure d’enregistrer <1 />l’entreprise. Veuillez réessayer plus tard.',
+      close: 'Fermer',
     },
   },
   app: {
