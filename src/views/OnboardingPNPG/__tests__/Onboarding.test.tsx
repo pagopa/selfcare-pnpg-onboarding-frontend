@@ -8,26 +8,7 @@ import { createStore } from '../../../redux/store';
 import { Provider } from 'react-redux';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Router } from 'react-router';
-
-const oldWindowLocation = global.window.location;
-const initialLocation = {
-  assign: jest.fn(),
-  pathname: '/onboarding',
-  origin: '',
-  search: '',
-  hash: '',
-  state: undefined,
-};
-const mockedLocation = Object.assign({}, initialLocation);
-
-beforeAll(() => {
-  Object.defineProperty(window, 'location', { value: mockedLocation });
-});
-afterAll(() => {
-  Object.defineProperty(window, 'location', { value: oldWindowLocation });
-});
-
-beforeEach(() => Object.assign(mockedLocation, initialLocation));
+import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 
 jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
@@ -52,6 +33,28 @@ jest.mock('react-router-dom', () => ({
     replace: (nextLocation) => Object.assign(mockedLocation, nextLocation),
   }),
 }));
+
+const oldWindowLocation = global.window.location;
+const initialLocation = {
+  assign: jest.fn(),
+  pathname: '/onboarding',
+  origin: '',
+  search: '',
+  hash: '',
+  state: undefined,
+};
+const mockedLocation = Object.assign({}, initialLocation);
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+  i18n.changeLanguage('it');
+});
+
+beforeEach(() => Object.assign(mockedLocation, initialLocation));
+
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
+});
 
 const renderComponent = () => {
   const Component = () => {
