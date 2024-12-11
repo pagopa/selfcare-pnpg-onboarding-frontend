@@ -1,5 +1,4 @@
 import { loggedUser } from '../../api/__mocks__/OnboardingApiClient';
-import { mockedBusinesses } from '../../api/__mocks__/OnboardingApiClient';
 import { RoleEnum } from '../../api/generated/b4f-onboarding/CompanyUserDto';
 import {
   checkManager,
@@ -19,7 +18,7 @@ beforeEach(() => {
 
 test('Test: onboardingPGSubmit', async () => {
   const fetchOnboardingPGSubmit = await onboardingPGSubmit(
-    mockedBusinesses[0].businessTaxId,
+    '35467654543',
     'prod-pn-pg',
     {
       taxCode: loggedUser.taxCode,
@@ -29,9 +28,9 @@ test('Test: onboardingPGSubmit', async () => {
       email: loggedUser.email,
     },
     {
-      businessName: mockedBusinesses[0].businessName,
-      businessTaxId: mockedBusinesses[0].businessTaxId,
-      certified: false,
+      companyName: 'mockedBusiness1',
+      companyTaxCode: '35467654543',
+      origin: 'INFOCAMERE',
     },
     'mockedemail@mock.it'
   );
