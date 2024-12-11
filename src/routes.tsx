@@ -1,6 +1,6 @@
 import { RoutesObject } from './types';
 import { ENV } from './utils/env';
-import Onboarding from './views/OnboardingPNPG/Onboarding';
+import Onboarding from './views/Onboarding/Onboarding';
 
 export const BASE_ROUTE = ENV.PUBLIC_URL;
 

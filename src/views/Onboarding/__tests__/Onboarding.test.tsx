@@ -97,119 +97,52 @@ test('Test: Render test', async () => {
   renderComponent();
 });
 
-test('Test: Onboarding flow after retrieve business from Infocamere, with successful registration on submit', async () => {
+test('Test: Success onboarding with data retrieved from IC', async () => {
   renderComponent();
-  await executeStepSelectBusiness('BusinessName success');
-  await executeStepBusinessData();
+  await executeStepAddCompany('12323231321');
+  await executeStepBusinessData(false);
 
   await waitFor(() => screen.getByText('Impresa registrata!'));
 
-  const signInButton = screen.getByText('Accedi');
+  const signInButton = screen.getByText('Continua su SEND');
   fireEvent.click(signInButton);
 });
 
-test.skip('Test: Onboarding flow after retrieve business from Infocamere with alreadyOnboarded outcome on submit', async () => {
+test('Test: Success onboarding with data retrieved from AdE', async () => {
   renderComponent();
-  await executeStepSelectBusiness('BusinessName alreadyOnboarded');
-
-  await waitFor(() => screen.getByText('Impresa già registrata'));
-
-  const signInButton = screen.getByText('Accedi');
-  fireEvent.click(signInButton);
-});
-
-test('Test: Onboarding flow after retrieve business from Infocamere with genericError outcome on submit', async () => {
-  renderComponent();
-  await executeStepSelectBusiness('BusinessName genericError');
-  await executeStepBusinessData();
-
-  await waitFor(() => screen.getByText('Impresa non registrata'));
-
-  const backToAccessButton = screen.getByText('Chiudi');
-  fireEvent.click(backToAccessButton);
-});
-
-test('Test: In the add agency flow via taxCode, when inserting a taxCode that NOT match with legalAddress and AdE APIs, the "no business found" UI will be show', async () => {
-  renderComponent();
-  await executeStepSelectBusiness();
-  await executeStepAddCompany('33333333333');
-
-  await waitFor(() =>
-    screen.getByText(
-      'Dal tuo SPID non risulti essere Legale Rappresentante dell’impresa associata a questo Codice Fiscale',
-      { exact: false }
-    )
-  );
-
-  const backToAccessButton = screen.getByText('Chiudi');
-  fireEvent.click(backToAccessButton);
-});
-
-test('Test: In the add agency flow via taxCode, when inserting a taxCode that MATCH with legalAddress API, the "matched but not LR" UI will be show', async () => {
-  renderComponent();
-  await executeStepSelectBusiness();
-  await executeStepAddCompany('77777777777');
-
-  await waitFor(() => screen.getByText(`Non puoi registrare\ questa impresa`));
-
-  const backToAccessButton = screen.getByText('Chiudi');
-  fireEvent.click(backToAccessButton);
-});
-
-test.skip('Test: In the add agency flow via taxCode, when inserting a taxCode of already onboarded business that NOT match with legalAddress API but match with AdE API, the already onboarded page will be show', async () => {
-  renderComponent();
-  await executeStepSelectBusiness();
-  await executeStepAddCompany('51515151511');
-
-  await waitFor(() => screen.getByText('Impresa già registrata'));
-
-  const signInButton = screen.getByText('Accedi');
-  fireEvent.click(signInButton);
-});
-
-test.skip('Test: In the add agency flow via taxCode, when inserting a taxCode of NOT already onboarded business that NOT match with legalAddress API but match with AdE API, the success page will be show', async () => {
-  renderComponent();
-  await executeStepSelectBusiness();
-  await executeStepAddCompany('55555555555');
+  await executeStepAddCompany('22334455667');
   await executeStepBusinessData(true);
 
   await waitFor(() => screen.getByText('Impresa registrata!'));
 
-  const signInButton = screen.getByText('Accedi');
+  const signInButton = screen.getByText('Continua su SEND');
   fireEvent.click(signInButton);
 });
 
-test('Test: In the add agency flow via taxCode, when inserting a taxCode written in an incorrect data format, the invalidInputFormat page will be show', async () => {
+test('Test: NOT success onboarding with data retrieved from IC', async () => {
   renderComponent();
-  await executeStepSelectBusiness();
-  await executeStepAddCompany('11111111111');
+  await executeStepAddCompany('24242424243');
+  await executeStepBusinessData(false);
 
-  await waitFor(() => screen.getByText('Il Codice Fiscale/Partita IVA non è corretto'));
+  await waitFor(() => screen.getByText('Si è verificato un errore'));
 
-  const goBackButton = screen.getByText('Torna indietro');
-  fireEvent.click(goBackButton);
+  const closeButton = screen.getByText('Chiudi');
+  fireEvent.click(closeButton);
 });
 
-const executeStepSelectBusiness = async (businessName?: string) => {
-  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
-  const registerAgencyButton = screen.getByText('Registra impresa');
-  expect(registerAgencyButton).toBeDisabled();
+test('Test: NOT success onboarding with data retrieved from AdE', async () => {
+  renderComponent();
+  await executeStepAddCompany('22222222222');
+  await executeStepBusinessData(true);
 
-  if (businessName) {
-    const agencySuccess = screen.getByRole('button', { name: businessName });
-    fireEvent.click(agencySuccess);
+  await waitFor(() => screen.getByText('Si è verificato un errore'));
 
-    expect(registerAgencyButton).toBeEnabled();
-
-    fireEvent.click(registerAgencyButton);
-  } else {
-    const onboardingViaTaxCodeFlowButton = screen.getByText('Cercala tramite Codice Fiscale');
-    fireEvent.click(onboardingViaTaxCodeFlowButton);
-  }
-};
+  const closeButton = screen.getByText('Chiudi');
+  fireEvent.click(closeButton);
+});
 
 const executeStepAddCompany = async (typedFiscalCode: string) => {
-  await waitFor(() => screen.getByText('Che impresa vuoi registrare?'));
+  await waitFor(() => screen.getByText('Inserisci il Codice Fiscale'));
 
   const continueButton = screen.getByText('Continua');
   expect(continueButton).toBeDisabled();
@@ -219,6 +152,10 @@ const executeStepAddCompany = async (typedFiscalCode: string) => {
   fireEvent.change(fiscalCodeInputField as Element, { target: { value: '1234563' } });
   expect(continueButton).toBeDisabled();
 
+  fireEvent.change(fiscalCodeInputField as Element, { target: { value: '123456323A' } });
+  screen.getByText('Formato non corretto, controlla il dato e riprova');
+  expect(continueButton).toBeDisabled();
+
   fireEvent.change(fiscalCodeInputField as Element, { target: { value: typedFiscalCode } });
   expect(continueButton).toBeEnabled();
 
@@ -226,27 +163,33 @@ const executeStepAddCompany = async (typedFiscalCode: string) => {
 };
 
 const executeStepBusinessData = async (notCertified?: boolean) => {
-  if (notCertified) {
-    await waitFor(() => screen.getByText('Inserisci i dati della tua impresa'));
-  } else {
-    await waitFor(() => screen.getByText('Qual è l’indirizzo PEC dell’impresa?'));
-  }
+  await waitFor(() => screen.getByText(/L’impresa non ha ancora un profilo su SEND/));
+  fireEvent.click(screen.getByText('Inizia'));
 
-  const continueButton = screen.getByRole('button', { name: 'Continua' });
+  await waitFor(() => screen.getByText('Completa i dati dell’impresa'));
+
+  const continueButton = screen.getByRole('button', { name: 'Registra impresa' });
   expect(continueButton).toBeDisabled();
 
   const businessEmailInputField = document.getElementById('email-textfield');
-  fireEvent.change(businessEmailInputField as HTMLElement, {
-    target: { value: 'test@' },
-  });
+  await waitFor(() =>
+    fireEvent.change(businessEmailInputField as HTMLElement, {
+      target: { value: 'test@' },
+    })
+  );
   expect(continueButton).toBeDisabled();
-  screen.getByText("L'indirizzo e-mail inserito non è corretto");
+  await waitFor(() => screen.getByText("L'indirizzo e-mail inserito non è corretto"));
 
   fireEvent.change(businessEmailInputField as HTMLElement, {
     target: { value: 'mockemail@email.com' },
   });
 
   if (notCertified) {
+    await waitFor(() =>
+      screen.getByText(
+        'La verifica dei dati precompilati è stata effettuata tramite il Registro Imprese di Agenzia delle Entrate'
+      )
+    );
     expect(continueButton).toBeDisabled();
     const businessNameInputField = document.getElementById('businessname-textfield');
     await waitFor(() =>
@@ -264,6 +207,9 @@ const executeStepBusinessData = async (notCertified?: boolean) => {
     );
     expect(continueButton).toBeEnabled();
   } else {
+    screen.getByText(
+      'La verifica dei dati precompilati è stata effettuata tramite il Registro Imprese di InfoCamere'
+    );
     expect(continueButton).toBeEnabled();
   }
   fireEvent.click(continueButton);

@@ -1279,6 +1279,88 @@
         } ]
       }
     },
+    "/v2/institutions/company/verify-manager" : {
+      "post" : {
+        "tags" : [ "institutions" ],
+        "summary" : "verifyManager",
+        "description" : "The service allows to verify the legal representative on external registries and retrieve the company name",
+        "operationId" : "verifyManagerUsingPOST",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/VerifyManagerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/VerifyManagerResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ "global" ]
+        } ]
+      }
+    },
     "/v2/institutions/onboarding" : {
       "post" : {
         "tags" : [ "institutions" ],
@@ -1639,7 +1721,7 @@
           "style" : "form",
           "schema" : {
             "type" : "string",
-            "enum" : [ "AS", "CON", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
+            "enum" : [ "AS", "CON", "GPU", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
           }
         } ],
         "responses" : {
@@ -1956,6 +2038,89 @@
           },
           "409" : {
             "description" : "Conflict",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ "global" ]
+        } ]
+      }
+    },
+    "/v2/tokens/{onboardingId}/attachment" : {
+      "get" : {
+        "tags" : [ "tokens" ],
+        "summary" : "getAttachment",
+        "description" : "Service to download a specific onboarding attachment",
+        "operationId" : "getAttachmentUsingGET",
+        "parameters" : [ {
+          "name" : "onboardingId",
+          "in" : "path",
+          "description" : "Onboarding's unique identifier",
+          "required" : true,
+          "style" : "simple",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Onboarding's attachment name",
+          "required" : true,
+          "style" : "form",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
             "content" : {
               "application/problem+json" : {
                 "schema" : {
@@ -2565,7 +2730,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ManagerResultResource"
+                  "$ref" : "#/components/schemas/CheckManagerResponse"
                 }
               }
             }
@@ -3292,6 +3457,18 @@
           }
         }
       },
+      "CheckManagerResponse" : {
+        "title" : "CheckManagerResponse",
+        "required" : [ "result" ],
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "type" : "boolean",
+            "description" : "Is the given user manager of the institution",
+            "example" : false
+          }
+        }
+      },
       "CompanyBillingDataDto" : {
         "title" : "CompanyBillingDataDto",
         "required" : [ "businessName", "certified", "digitalAddress", "taxCode" ],
@@ -3364,7 +3541,7 @@
           "institutionType" : {
             "type" : "string",
             "description" : "Institution's type",
-            "enum" : [ "AS", "CON", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
+            "enum" : [ "AS", "CON", "GPU", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
           },
           "productId" : {
             "type" : "string",
@@ -3396,7 +3573,7 @@
           "institutionType" : {
             "type" : "string",
             "description" : "Institution's type",
-            "enum" : [ "AS", "CON", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
+            "enum" : [ "AS", "CON", "GPU", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
           },
           "productId" : {
             "type" : "string",
@@ -3489,6 +3666,36 @@
           }
         }
       },
+      "GPUData" : {
+        "title" : "GPUData",
+        "type" : "object",
+        "properties" : {
+          "businessRegisterNumber" : {
+            "type" : "string"
+          },
+          "institutionCourtMeasures" : {
+            "type" : "boolean"
+          },
+          "legalRegisterName" : {
+            "type" : "string"
+          },
+          "legalRegisterNumber" : {
+            "type" : "string"
+          },
+          "manager" : {
+            "type" : "boolean"
+          },
+          "managerAuthorized" : {
+            "type" : "boolean"
+          },
+          "managerEligible" : {
+            "type" : "boolean"
+          },
+          "managerProsecution" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "GeographicTaxonomyDto" : {
         "title" : "GeographicTaxonomyDto",
         "required" : [ "code", "desc" ],
@@ -3553,7 +3760,7 @@
           "institutionType" : {
             "type" : "string",
             "description" : "Institution's type",
-            "enum" : [ "AS", "CON", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
+            "enum" : [ "AS", "CON", "GPU", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
           },
           "origin" : {
             "type" : "string"
@@ -3846,17 +4053,6 @@
           }
         }
       },
-      "ManagerResultResource" : {
-        "title" : "ManagerResultResource",
-        "type" : "object",
-        "properties" : {
-          "result" : {
-            "type" : "boolean",
-            "description" : "Indicate if the manager match with the current",
-            "example" : false
-          }
-        }
-      },
       "OnboardingProductDto" : {
         "title" : "OnboardingProductDto",
         "required" : [ "institutionType", "productId", "users" ],
@@ -3892,6 +4088,10 @@
               "$ref" : "#/components/schemas/GeographicTaxonomyDto"
             }
           },
+          "gpuData" : {
+            "description" : "Institution's GPU data",
+            "$ref" : "#/components/schemas/GPUData"
+          },
           "institutionLocationData" : {
             "description" : "Institution's location data, city, county, country information",
             "$ref" : "#/components/schemas/InstitutionLocationDataDto"
@@ -3899,7 +4099,7 @@
           "institutionType" : {
             "type" : "string",
             "description" : "Institution's type",
-            "enum" : [ "AS", "CON", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
+            "enum" : [ "AS", "CON", "GPU", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
           },
           "isAggregator" : {
             "type" : "boolean",
@@ -3999,7 +4199,7 @@
           "institutionType" : {
             "type" : "string",
             "description" : "Institution's type",
-            "enum" : [ "AS", "CON", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
+            "enum" : [ "AS", "CON", "GPU", "GSP", "PA", "PG", "PRV", "PSP", "PT", "REC", "SA", "SCP" ]
           },
           "origin" : {
             "type" : "string",
@@ -4317,6 +4517,34 @@
             "items" : {
               "$ref" : "#/components/schemas/RowErrorResponse"
             }
+          }
+        }
+      },
+      "VerifyManagerRequest" : {
+        "title" : "VerifyManagerRequest",
+        "type" : "object",
+        "properties" : {
+          "companyTaxCode" : {
+            "type" : "string",
+            "description" : "Institution's taxCode"
+          },
+          "userTaxCode" : {
+            "type" : "string",
+            "description" : "User's fiscal code"
+          }
+        }
+      },
+      "VerifyManagerResponse" : {
+        "title" : "VerifyManagerResponse",
+        "type" : "object",
+        "properties" : {
+          "companyName" : {
+            "type" : "string",
+            "description" : "Institution's legal name"
+          },
+          "origin" : {
+            "type" : "string",
+            "description" : "Institution data origin"
           }
         }
       }

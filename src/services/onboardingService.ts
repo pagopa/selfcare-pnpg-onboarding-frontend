@@ -1,44 +1,10 @@
-import { Business, LegalEntity, User } from '../types';
+import { Company, User } from '../types';
 import { OnboardingApi } from '../api/OnboardingApiClient';
 import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
-import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
-import { MatchInfoResultResource } from '../api/generated/b4f-onboarding/MatchInfoResultResource';
-import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding/InstitutionLegalAddressResource';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/InstitutionOnboardingResource';
-import { ManagerResultResource } from '../api/generated/b4f-onboarding/ManagerResultResource';
-
-export const getBusinessesByUser = (): Promise<LegalEntity> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return new Promise((resolve) => resolve(mockedLegalEntity));
-  } else {
-    return OnboardingApi.getBusinessesByUser();
-  }
-};
-
-export const matchBusinessAndUser = (
-  businessId: string,
-  loggedUser: User
-): Promise<MatchInfoResultResource> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingApi.matchBusinessAndUser(businessId, loggedUser);
-  } else {
-    return OnboardingApi.matchBusinessAndUser(businessId, loggedUser);
-  }
-};
-
-export const getBusinessLegalAddress = (
-  businessId: string
-): Promise<InstitutionLegalAddressResource | null> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingApi.getBusinessLegalAddress(businessId);
-  } else {
-    return OnboardingApi.getBusinessLegalAddress(businessId);
-  }
-};
+import { CheckManagerResponse } from '../api/generated/b4f-onboarding/CheckManagerResponse';
+import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyManagerResponse';
 
 export const getInstitutionOnboardingInfo = (
   taxCode: string,
@@ -52,10 +18,22 @@ export const getInstitutionOnboardingInfo = (
   }
 };
 
+export const verifyManager = async (
+  companyTaxCode: string,
+  userTaxCode: string
+): Promise<VerifyManagerResponse> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingApi.verifyManager(companyTaxCode, userTaxCode);
+  } else {
+    return OnboardingApi.verifyManager(companyTaxCode, userTaxCode);
+  }
+};
+
 export const checkManager = async (
   loggedUser: User,
   taxCode?: string
-): Promise<ManagerResultResource> => {
+): Promise<CheckManagerResponse> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.checkManager(taxCode);
@@ -68,7 +46,7 @@ export const onboardingPGSubmit = (
   businessId: string,
   productId: string,
   loggedUser: CompanyUserDto,
-  selectedInstitution: Business,
+  selectedInstitution: Company,
   digitalAddress: string
 ): Promise<boolean> => {
   /* istanbul ignore if */

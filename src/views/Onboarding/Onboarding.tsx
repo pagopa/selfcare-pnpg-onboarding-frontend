@@ -1,23 +1,35 @@
 import { Container } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LegalEntity, StepperStep } from '../../types';
+import { Company, StepperStep } from '../../types';
 import { withLogin } from '../../components/withLogin';
 import { LoadingOverlay } from '../../components/LoadingOverlay';
-import { InstitutionOnboardingResource } from '../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import StepAddCompany from './components/StepAddCompany';
-import StepRetrieveBusinesses from './components/StepRetrieveBusinesses';
-import StepSelectBusiness from './components/StepSelectBusiness';
 import StepSubmit from './components/StepSubmit';
 import StepSuccess from './components/StepSuccess';
 import StepBusinessData from './components/StepBusinessData';
 
 function OnboardingComponent() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(0);
-  const [retrievedBusinesses, setRetrievedBusinesses] = useState<LegalEntity>();
-  const [onboardingData, setOnboardingData] = useState<InstitutionOnboardingResource>();
+  const [companyData, setCompanyData] = useState<Company>();
+
+  const forwardWithData = (companyInfo: Company) => {
+    setCompanyData(companyInfo);
+  };
+
+  const forwardWithCompleteData = (completeCompanyInfo: Company) => {
+    setCompanyData(completeCompanyInfo);
+    forward();
+  };
+
+  const forwardWithInstitutionId = (institutionId: string) => {
+    if (companyData) {
+      setCompanyData({ ...companyData, institutionId });
+    }
+    forward();
+  };
 
   const forward = () => {
     setActiveStep(activeStep + 1);
@@ -29,41 +41,29 @@ function OnboardingComponent() {
 
   const steps: Array<StepperStep> = [
     {
-      label: 'Retrieve businesses',
-      Component: () =>
-        StepRetrieveBusinesses({
-          setRetrievedBusinesses,
-          setActiveStep,
-          setLoading,
-        }),
-    },
-    {
-      label: 'Select business',
-      Component: () =>
-        StepSelectBusiness({
-          retrievedBusinesses,
-          setActiveStep,
-          setOnboardingData,
-          setLoading,
-          forward,
-          back,
-        }),
-    },
-    {
       label: 'Add company',
       Component: () =>
         StepAddCompany({
-          setActiveStep,
-          setOnboardingData,
           setLoading,
-          back: () => location.reload(),
+          setActiveStep,
+          forward: (companyInfo: Company) => {
+            forwardWithData(companyInfo);
+          },
+          back,
         }),
     },
     {
       label: 'Insert business data',
       Component: () =>
         StepBusinessData({
-          setActiveStep,
+          companyData,
+          forward: (completeCompanyInfo: Company) => {
+            forwardWithCompleteData(completeCompanyInfo);
+          },
+          back: () => {
+            setCompanyData(undefined);
+            setActiveStep(activeStep - 1);
+          },
         }),
     },
     {
@@ -71,13 +71,15 @@ function OnboardingComponent() {
       Component: () =>
         StepSubmit({
           setLoading,
-          setOnboardingData,
-          forward,
+          companyData,
+          forward: (institutionId: string) => {
+            forwardWithInstitutionId(institutionId);
+          },
         }),
     },
     {
       label: 'Success',
-      Component: () => StepSuccess({ retrievedPartyId: onboardingData?.institutionId }),
+      Component: () => StepSuccess({ retrievedPartyId: companyData?.institutionId }),
     },
   ];
 
