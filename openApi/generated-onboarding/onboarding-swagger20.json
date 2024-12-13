@@ -890,6 +890,7 @@
             "enum": [
               "AS",
               "CON",
+              "GPU",
               "GSP",
               "PA",
               "PG",
@@ -1079,7 +1080,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/ManagerResultResource"
+              "$ref": "#/definitions/CheckManagerResponse"
             }
           },
           "400": {
@@ -1520,6 +1521,77 @@
         "summary": "onboarding"
       }
     },
+    "/v2/institutions/company/verify-manager": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/VerifyManagerRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/VerifyManagerResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "institutions"
+        ],
+        "description": "The service allows to verify the legal representative on external registries and retrieve the company name",
+        "operationId": "verifyManagerUsingPOST",
+        "summary": "verifyManager"
+      }
+    },
     "/v2/institutions/onboarding": {
       "post": {
         "consumes": [
@@ -1933,6 +2005,76 @@
         "description": "Service to approve a specific onboarding request",
         "operationId": "approveOnboardingUsingPOST",
         "summary": "Service to approve a specific onboarding request"
+      }
+    },
+    "/v2/tokens/{onboardingId}/attachment": {
+      "get": {
+        "produces": [
+          "application/octet-stream",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "description": "Onboarding's unique identifier",
+            "in": "path",
+            "name": "onboardingId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Onboarding's attachment name",
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "tokens"
+        ],
+        "description": "Service to download a specific onboarding attachment",
+        "operationId": "getAttachmentUsingGET",
+        "summary": "getAttachment"
       }
     },
     "/v2/tokens/{onboardingId}/complete": {
@@ -2836,6 +2978,20 @@
       "title": "BusinessResourceIC",
       "type": "object"
     },
+    "CheckManagerResponse": {
+      "properties": {
+        "result": {
+          "description": "Is the given user manager of the institution",
+          "example": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "CheckManagerResponse",
+      "type": "object"
+    },
     "CompanyBillingDataDto": {
       "properties": {
         "businessName": {
@@ -2912,6 +3068,7 @@
           "enum": [
             "AS",
             "CON",
+            "GPU",
             "GSP",
             "PA",
             "PG",
@@ -2962,6 +3119,7 @@
           "enum": [
             "AS",
             "CON",
+            "GPU",
             "GSP",
             "PA",
             "PG",
@@ -3093,6 +3251,36 @@
       "title": "DpoDataDto",
       "type": "object"
     },
+    "GPUData": {
+      "properties": {
+        "businessRegisterNumber": {
+          "type": "string"
+        },
+        "institutionCourtMeasures": {
+          "type": "boolean"
+        },
+        "legalRegisterName": {
+          "type": "string"
+        },
+        "legalRegisterNumber": {
+          "type": "string"
+        },
+        "manager": {
+          "type": "boolean"
+        },
+        "managerAuthorized": {
+          "type": "boolean"
+        },
+        "managerEligible": {
+          "type": "boolean"
+        },
+        "managerProsecution": {
+          "type": "boolean"
+        }
+      },
+      "title": "GPUData",
+      "type": "object"
+    },
     "GeographicTaxonomyDto": {
       "properties": {
         "code": {
@@ -3160,6 +3348,7 @@
           "enum": [
             "AS",
             "CON",
+            "GPU",
             "GSP",
             "PA",
             "PG",
@@ -3469,17 +3658,6 @@
       "title": "InvalidParam",
       "type": "object"
     },
-    "ManagerResultResource": {
-      "properties": {
-        "result": {
-          "description": "Indicate if the manager match with the current",
-          "example": false,
-          "type": "boolean"
-        }
-      },
-      "title": "ManagerResultResource",
-      "type": "object"
-    },
     "MatchInfoResultResource": {
       "properties": {
         "verificationResult": {
@@ -3523,6 +3701,10 @@
           },
           "type": "array"
         },
+        "gpuData": {
+          "$ref": "#/definitions/GPUData",
+          "description": "Institution's GPU data"
+        },
         "institutionLocationData": {
           "$ref": "#/definitions/InstitutionLocationDataDto",
           "description": "Institution's location data, city, county, country information"
@@ -3532,6 +3714,7 @@
           "enum": [
             "AS",
             "CON",
+            "GPU",
             "GSP",
             "PA",
             "PG",
@@ -3651,6 +3834,7 @@
           "enum": [
             "AS",
             "CON",
+            "GPU",
             "GSP",
             "PA",
             "PG",
@@ -4033,6 +4217,34 @@
         }
       },
       "title": "VerifyAggregatesResponse",
+      "type": "object"
+    },
+    "VerifyManagerRequest": {
+      "properties": {
+        "companyTaxCode": {
+          "description": "Institution's taxCode",
+          "type": "string"
+        },
+        "userTaxCode": {
+          "description": "User's fiscal code",
+          "type": "string"
+        }
+      },
+      "title": "VerifyManagerRequest",
+      "type": "object"
+    },
+    "VerifyManagerResponse": {
+      "properties": {
+        "companyName": {
+          "description": "Institution's legal name",
+          "type": "string"
+        },
+        "origin": {
+          "description": "Institution data origin",
+          "type": "string"
+        }
+      },
+      "title": "VerifyManagerResponse",
       "type": "object"
     }
   },

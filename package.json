@@ -68,6 +68,7 @@
     "@testing-library/user-event": "^14.0.4",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.17.13",
+    "@types/node": "^22.10.2",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "@types/react-router": "^5.1.20",
