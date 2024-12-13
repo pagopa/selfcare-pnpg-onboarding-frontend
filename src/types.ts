@@ -1,4 +1,4 @@
-import { BusinessResourceIC } from './api/generated/b4f-onboarding/BusinessResourceIC';
+import { InstitutionOnboarding } from './api/generated/b4f-onboarding/InstitutionOnboarding';
 
 export type RoutesObject = { [key: string]: RouteConfig };
 
@@ -45,18 +45,13 @@ export type Product = {
   title: string;
 };
 
-export type Business = { certified: boolean; businessName: string; businessTaxId: string };
-
-export type LegalEntity = {
-  businesses: Array<BusinessResourceIC>;
-  legalTaxId: string;
-  requestDateTime: string;
+export type Company = {
+  companyTaxCode: string;
+  institutionId?: string;
+  onboardings?: Array<InstitutionOnboarding>;
+  companyName?: string;
+  companyEmail?: string;
+  origin?: string;
 };
 
-export type BusinessLegalAddress = {
-  taxCode: string;
-  address: string;
-  zipCode: string;
-};
-
-export type ErrorType = 'matchedButNotLR' | 'typedNotFound' | 'genericError' | 'invalidInputFormat';
+export type Outcome = 'firstRegistration' | 'matchedButNotLR' | 'alreadyOnboarded' | 'genericError';

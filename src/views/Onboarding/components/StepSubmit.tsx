@@ -8,31 +8,24 @@ import {
 } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
 import { uniqueId } from 'lodash';
-import { Business, StepperStepComponentProps, User } from '../../../types';
+import { Company, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
-import { useHistoryState } from '../../../components/useHistoryState';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
-  setOnboardingData: React.Dispatch<
-    React.SetStateAction<InstitutionOnboardingResource | undefined>
-  >;
+  forward: any;
+  companyData?: Company;
 };
 
-function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
+function StepSubmit({ setLoading, forward, companyData }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
-  const [selectedBusiness, setSelectedBusiness, setSelectedBusinessHistory] = useHistoryState<
-    Business | undefined
-  >('selected_business', undefined);
-  const [insertedBusinessEmail, _setInsertedBusinessEmail, setInsertedBusinessEmailHistory] =
-    useHistoryState<string>('inserted_business_email', undefined);
-
-  const [error, setError] = useState<'alreadyOnboarded' | 'genericError'>();
+  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
+  const [error, setError] = useState<boolean>();
 
   const requestId = uniqueId();
 
@@ -40,15 +33,15 @@ function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
 
   useEffect(() => {
     const loggedUser = storageUserOps.read();
-    if (!error && selectedBusiness && loggedUser) {
+    if (!error && companyData && loggedUser) {
       setLoading(true);
-      submit(selectedBusiness.businessTaxId, productId, selectedBusiness, loggedUser)
+      submit(companyData.companyTaxCode, productId, companyData, loggedUser)
         .catch((reason) => {
           addError({
             id: 'ONBOARDING_PNPG_SUBMIT_ERROR',
             blocking: false,
             error: reason,
-            techDescription: `An error occurred while submit onboarding of ${selectedBusiness}`,
+            techDescription: `An error occurred while submit onboarding of ${companyData}`,
             toNotify: true,
           });
         })
@@ -57,15 +50,15 @@ function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
   }, []);
 
   const submit = async (
-    businessId: string,
+    businessTaxCode: string,
     productId: string,
-    selectedBusiness: Business,
+    selectedBusiness: Company,
     loggedUser: User
   ) => {
     const sessionToken = storageTokenOps.read();
     setLoading(true);
     await onboardingPGSubmit(
-      businessId,
+      businessTaxCode,
       productId,
       {
         taxCode: loggedUser.taxCode,
@@ -75,7 +68,7 @@ function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
         role: 'MANAGER' as RoleEnum,
       },
       selectedBusiness,
-      insertedBusinessEmail
+      selectedBusiness.companyEmail as string
     )
       .then(async () => {
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
@@ -86,7 +79,7 @@ function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
         setLoading(true);
         try {
           const response = await fetch(
-            `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.businessTaxId}&productId=${productId}`,
+            `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.companyTaxCode}&productId=${productId}`,
             {
               headers: {
                 accept: '*/*',
@@ -99,7 +92,7 @@ function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
           );
           const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
           if (businesses[0]) {
-            setOnboardingData(businesses[0]);
+            setRetrievedPartyId(businesses[0].institutionId);
           }
         } catch (reason) {
           addError({
@@ -111,24 +104,19 @@ function StepSubmit({ forward, setOnboardingData, setLoading }: Props) {
           });
         }
         setLoading(false);
-        setSelectedBusiness(selectedBusiness);
-        setSelectedBusinessHistory(selectedBusiness);
-        forward();
+        forward(retrievedPartyId);
       })
       .catch(() => {
-        setError('genericError');
+        setError(true);
         trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', {
           requestId,
           productId,
         });
-      })
-      .finally(() => {
-        setInsertedBusinessEmailHistory('');
       });
     setLoading(false);
   };
 
-  return error === 'genericError' ? (
+  return error ? (
     <EndingPage
       minHeight="52vh"
       icon={<IllusError size={60} />}
