@@ -24,7 +24,6 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
-  const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
   const [error, setError] = useState<boolean>();
 
   const requestId = uniqueId();
@@ -92,7 +91,7 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
           );
           const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
           if (businesses[0]) {
-            setRetrievedPartyId(businesses[0].institutionId);
+            forward(businesses[0].institutionId);
           }
         } catch (reason) {
           addError({
@@ -104,7 +103,6 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
           });
         }
         setLoading(false);
-        forward(retrievedPartyId);
       })
       .catch(() => {
         setError(true);
