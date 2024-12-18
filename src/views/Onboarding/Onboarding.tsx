@@ -24,7 +24,7 @@ function OnboardingComponent() {
     forward();
   };
 
-  const forwardWithInstitutionId = (institutionId: string) => {
+  const forwardWithInstitutionId = (institutionId?: string) => {
     if (companyData) {
       setCompanyData({ ...companyData, institutionId });
     }
@@ -72,7 +72,7 @@ function OnboardingComponent() {
         StepSubmit({
           setLoading,
           companyData,
-          forward: (institutionId: string) => {
+          forward: (institutionId?: string) => {
             forwardWithInstitutionId(institutionId);
           },
         }),
