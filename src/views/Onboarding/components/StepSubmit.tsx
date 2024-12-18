@@ -74,35 +74,38 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
           requestId,
           productId,
         });
-        // TODO Temporary used fetch method instead of codegen, this will be replaced with PNPG-253
         setLoading(true);
-        try {
-          const response = await fetch(
-            `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.companyTaxCode}&productId=${productId}`,
-            {
-              headers: {
-                accept: '*/*',
-                'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
-                authorization: `Bearer ${sessionToken}`,
-              },
-              method: 'GET',
-              mode: 'cors',
+        if (process.env.REACT_APP_MOCK_API === 'true') {
+          forward();
+        } else {
+          try {
+            const response = await fetch(
+              `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.companyTaxCode}&productId=${productId}`,
+              {
+                headers: {
+                  accept: '*/*',
+                  'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+                  authorization: `Bearer ${sessionToken}`,
+                },
+                method: 'GET',
+                mode: 'cors',
+              }
+            );
+            const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+            if (businesses[0]) {
+              forward(businesses[0].institutionId);
             }
-          );
-          const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
-          if (businesses[0]) {
-            forward(businesses[0].institutionId);
+          } catch (reason) {
+            addError({
+              id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
+              blocking: false,
+              error: reason as Error,
+              techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
+              toNotify: true,
+            });
           }
-        } catch (reason) {
-          addError({
-            id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-            blocking: false,
-            error: reason as Error,
-            techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
-            toNotify: true,
-          });
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch(() => {
         setError(true);
@@ -114,24 +117,24 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
     setLoading(false);
   };
 
-  return error ? (
-    <EndingPage
-      minHeight="52vh"
-      icon={<IllusError size={60} />}
-      title={t('outcome.error.title')}
-      description={
-        <Trans i18nKey="outcome.error.description">
-          A causa di un problema tecnico, non riusciamo a registrare <br />
-          l&apos;impresa. Riprova più tardi.
-        </Trans>
-      }
-      variantTitle={'h4'}
-      variantDescription={'body1'}
-      buttonLabel={t('outcome.error.close')}
-      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)}
-    />
-  ) : (
-    <></>
+  return (
+    error && (
+      <EndingPage
+        minHeight="52vh"
+        icon={<IllusError size={60} />}
+        title={t('outcome.error.title')}
+        description={
+          <Trans i18nKey="outcome.error.description">
+            A causa di un problema tecnico, non riusciamo a registrare <br />
+            l&apos;impresa. Riprova più tardi.
+          </Trans>
+        }
+        variantTitle={'h4'}
+        variantDescription={'body1'}
+        buttonLabel={t('outcome.error.close')}
+        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)}
+      />
+    )
   );
 }
 export default StepSubmit;

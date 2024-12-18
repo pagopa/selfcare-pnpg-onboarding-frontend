@@ -7,7 +7,7 @@ import { LoadingOverlay } from '../../components/LoadingOverlay';
 import StepAddCompany from './components/StepAddCompany';
 import StepSubmit from './components/StepSubmit';
 import StepSuccess from './components/StepSuccess';
-import StepBusinessData from './components/StepBusinessData';
+import StepCompanyData from './components/StepCompanyData';
 
 function OnboardingComponent() {
   const { t } = useTranslation();
@@ -53,9 +53,9 @@ function OnboardingComponent() {
         }),
     },
     {
-      label: 'Insert business data',
+      label: 'Insert company data',
       Component: () =>
-        StepBusinessData({
+        StepCompanyData({
           companyData,
           forward: (completeCompanyInfo: Company) => {
             forwardWithCompleteData(completeCompanyInfo);
