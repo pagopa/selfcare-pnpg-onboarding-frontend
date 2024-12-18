@@ -20,6 +20,7 @@ type Props = StepperStepComponentProps & {
   companyData?: Company;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepSubmit({ setLoading, forward, companyData }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
@@ -117,24 +118,24 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
     setLoading(false);
   };
 
-  return (
-    error && (
-      <EndingPage
-        minHeight="52vh"
-        icon={<IllusError size={60} />}
-        title={t('outcome.error.title')}
-        description={
-          <Trans i18nKey="outcome.error.description">
-            A causa di un problema tecnico, non riusciamo a registrare <br />
-            l&apos;impresa. Riprova più tardi.
-          </Trans>
-        }
-        variantTitle={'h4'}
-        variantDescription={'body1'}
-        buttonLabel={t('outcome.error.close')}
-        onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)}
-      />
-    )
+  return error ? (
+    <EndingPage
+      minHeight="52vh"
+      icon={<IllusError size={60} />}
+      title={t('outcome.error.title')}
+      description={
+        <Trans i18nKey="outcome.error.description">
+          A causa di un problema tecnico, non riusciamo a registrare <br />
+          l&apos;impresa. Riprova più tardi.
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('outcome.error.close')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)}
+    />
+  ) : (
+    <></>
   );
 }
 export default StepSubmit;
