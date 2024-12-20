@@ -101,10 +101,11 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
           setOutcome('firstRegistration');
         } else {
           setOutcome('matchedButNotLR');
+          setTypedInput('');
         }
       })
       .catch((reason) => {
-        console.log(reason);
+        setTypedInput('');
         if (reason.httpStatus >= 400 && reason.httpStatus <= 499) {
           setOutcome('matchedButNotLR');
         } else {

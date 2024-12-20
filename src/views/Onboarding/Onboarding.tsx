@@ -7,7 +7,7 @@ import { LoadingOverlay } from '../../components/LoadingOverlay';
 import StepAddCompany from './components/StepAddCompany';
 import StepSubmit from './components/StepSubmit';
 import StepSuccess from './components/StepSuccess';
-import StepBusinessData from './components/StepBusinessData';
+import StepCompanyData from './components/StepCompanyData';
 
 function OnboardingComponent() {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ function OnboardingComponent() {
     forward();
   };
 
-  const forwardWithInstitutionId = (institutionId: string) => {
+  const forwardWithInstitutionId = (institutionId?: string) => {
     if (companyData) {
       setCompanyData({ ...companyData, institutionId });
     }
@@ -53,9 +53,9 @@ function OnboardingComponent() {
         }),
     },
     {
-      label: 'Insert business data',
+      label: 'Insert company data',
       Component: () =>
-        StepBusinessData({
+        StepCompanyData({
           companyData,
           forward: (completeCompanyInfo: Company) => {
             forwardWithCompleteData(completeCompanyInfo);
@@ -72,7 +72,7 @@ function OnboardingComponent() {
         StepSubmit({
           setLoading,
           companyData,
-          forward: (institutionId: string) => {
+          forward: (institutionId?: string) => {
             forwardWithInstitutionId(institutionId);
           },
         }),

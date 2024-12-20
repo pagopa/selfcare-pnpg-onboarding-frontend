@@ -42,11 +42,16 @@ export default function OutcomeHandler({
       }
       description={
         <Trans
-          i18nKey="cannotRegisterBusiness.message"
+          i18nKey="cannotRegisterBusiness.description"
           components={{
             1: <br />,
             3: <br />,
-            5: <a href="https://www.registroimprese.it/" color={theme.palette.primary.main} />,
+            5: (
+              <a
+                href="https://www.registroimprese.it/"
+                style={{ color: theme.palette.primary.main }}
+              />
+            ),
           }}
         >
           {
