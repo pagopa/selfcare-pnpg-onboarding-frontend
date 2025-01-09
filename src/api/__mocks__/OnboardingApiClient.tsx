@@ -42,6 +42,7 @@ export const mockedOnboardingApi = {
     switch (taxCode) {
       case '01501320442':
       case '51515151511':
+      case '11223344556':
         return new Promise((resolve) =>
           resolve([
             {
@@ -84,6 +85,7 @@ export const mockedOnboardingApi = {
       case '55555555555':
         return new Promise((resolve) => resolve({ result: false }));
       default:
+        console.log('checkManager passo da qua');
         return new Promise((resolve) => resolve({ result: false }));
     }
   },
@@ -115,7 +117,12 @@ export const mockedOnboardingApi = {
           })
         );
       // not LR (404)
-      default:
+      case '11223344556':
+        console.log("checkManager passo da qua");
+        return new Promise((_, reject) =>
+          reject({  httpStatus: 404, message: 'Not Found' })
+        );
+      default: 
         return new Promise((_, reject) => reject({ status: '404', message: 'Not Found' }));
     }
   },
