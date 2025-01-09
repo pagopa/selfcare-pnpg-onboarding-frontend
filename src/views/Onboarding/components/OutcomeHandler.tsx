@@ -88,6 +88,24 @@ export default function OutcomeHandler({
     />
   ) : outcome === 'firstRegistration' ? (
     <CompanyFirstRegistration forward={forwardCompanyDatIntoNextStep} />
+  ) : outcome === 'requestAdminAccess' ? (
+    <EndingPage
+      icon={<NotFound />}
+      title={
+        <Trans i18nKey="requestAdminAccess.title" components={{ 1: <br /> }}>
+          {'Richiedi l’accesso a un amministratore'}
+        </Trans>
+      }
+      description={
+        <Trans i18nKey="requestAdminAccess.message">
+          {
+            'L’impresa ha già un profilo su SEND, ma non disponi dei permessi necessari per accedervi. Per richiedere l’accesso, contatta uno degli Amministratori.'
+          }
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+    />
   ) : (
     <></>
   );
