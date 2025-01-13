@@ -25,7 +25,7 @@ const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   };
 
 const apiClient = createClient({
-  baseUrl: ENV.URL_API.ONBOARDING,
+  baseUrl: ENV.URL_API.ONBOARDING_V2,
   basePath: '',
   fetchApi: buildFetchApi(),
   withDefaults: withBearerAndInstitutionId,
