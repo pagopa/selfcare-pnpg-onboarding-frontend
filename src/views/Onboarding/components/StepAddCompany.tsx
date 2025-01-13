@@ -49,7 +49,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     setLoading(true);
     try {
       const response = await fetch(
-        `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=${productId}`,
+        `${ENV.URL_API.ONBOARDING_V2}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=${productId}`,
         {
           headers: {
             accept: '*/*',
