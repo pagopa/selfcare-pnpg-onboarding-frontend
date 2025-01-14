@@ -2,21 +2,22 @@ import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import {
+  storageTokenOps,
+  storageUserOps,
+} from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { Company, Outcome, User } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { withLogin } from '../../../components/withLogin';
-import {
-  checkManager,
-  verifyManager,
-} from '../../../services/onboardingService';
+import { checkManager } from '../../../services/onboardingService';
 import { UserContext } from '../../../lib/context';
 import { MOCK_USER } from '../../../utils/constants';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
 import { ENV } from '../../../utils/env';
+import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import OutcomeHandler from './OutcomeHandler';
 
 type Props = {
@@ -33,6 +34,8 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   const [typedInput, setTypedInput] = useState<string>('');
   const [outcome, setOutcome] = useState<Outcome>();
   const [retrievedCompanyData, setRetrievedCompanyData] = useState<Company>();
+  // eslint-disable-next-line functional/no-let
+  let retrivedInstitutionId;
   const { user } = useContext(UserContext);
   const requestId = uniqueId();
   const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
@@ -60,16 +63,12 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
           mode: 'cors',
         }
       );
-  
       // Controlla se la risposta è OK
       if (!response.ok) {
         console.error('API call failed:', response.status, response.statusText);
         throw new Error('API call failed');
       }
-  
-      // Parsing della risposta
       const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
-  
       if (Array.isArray(businesses) && businesses.length > 0) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
         if (retrievedCompanyData) {
@@ -79,13 +78,14 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
             onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
           });
         }
-        await checkManager(loggedUser, typedInput).then(async (res) => {
-          if (res.result) {
-            setOutcome('alreadyOnboarded');
-          } else {
-            await verifyCompanyManager(typedInput, loggedUser.taxCode);
-          }
-        });
+        retrivedInstitutionId = businesses[0].institutionId;
+
+        const checkRes = await checkManager(loggedUser, typedInput);
+        if (checkRes.result) {
+          setOutcome('alreadyOnboarded');
+        } else {
+          await verifyCompanyManager(typedInput, loggedUser.taxCode);
+        }
       } else {
         console.warn('No businesses found in response');
         await verifyCompanyManager(typedInput, loggedUser.taxCode);
@@ -98,35 +98,60 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     }
   };
 
-  const verifyCompanyManager = async (
-    typedInput: string,
-    managerTaxCode: string,
-  ) => {
-    await verifyManager(typedInput, managerTaxCode)
-      .then((res) => {
-        if (res) {
-          setRetrievedCompanyData({
-            companyTaxCode: typedInput,
-            companyName: res?.companyName,
-            origin: res?.origin,
-          });
-          setOutcome('firstRegistration');
+  const verifyCompanyManager = async (typedInput: string, managerTaxCode: string) => {
+    const sessionToken = storageTokenOps.read();
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${ENV.URL_API.ONBOARDING_V2}/v2/institutions/company/verify-manager`,
+        {
+          headers: {
+            accept: '*/*',
+            'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+            Authorization: `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify({ taxCode: managerTaxCode, companyTaxCode: typedInput }),
+        }
+      );
+
+      if (!response.ok) {
+        console.error('API call failed:', response.status, response.statusText);
+        // eslint-disable-next-line no-throw-literal
+        throw {
+          message: 'API call failed',
+          status: response.status,
+          statusText: response.statusText,
+        };
+      }
+
+      const verifyManagerResponse = (await response.json()) as VerifyManagerResponse;
+
+      if (response) {
+        setRetrievedCompanyData((prevData) => ({
+          ...prevData,
+          companyTaxCode: typedInput,
+          companyName: verifyManagerResponse?.companyName,
+          origin: verifyManagerResponse?.origin,
+        }));
+        setOutcome('firstRegistration');
+      } else {
+        setOutcome('matchedButNotLR');
+        setTypedInput('');
+      }
+    } catch (error: any) {
+      if (error.status >= 400 && error.status <= 499) {
+        if (retrivedInstitutionId.length > 0) {
+          setOutcome('requestAdminAccess');
         } else {
           setOutcome('matchedButNotLR');
-          setTypedInput('');
         }
-      })
-      .catch((reason) => {
-        if (reason.httpStatus >= 400 && reason.httpStatus <= 499) {
-          if (retrievedCompanyData?.institutionId) {
-            setOutcome('requestAdminAccess');
-          } else {
-            setOutcome('matchedButNotLR');
-          }
-        } else {
-          setOutcome('genericError');
-        }
-      });
+      } else {
+        setOutcome('genericError');
+      }
+    }
   };
 
   const getManagerBusinessData = async (taxCode: string, productId: string) => {

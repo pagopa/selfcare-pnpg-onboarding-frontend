@@ -8,6 +8,7 @@ import StepAddCompany from './components/StepAddCompany';
 import StepSubmit from './components/StepSubmit';
 import StepSuccess from './components/StepSuccess';
 import StepCompanyData from './components/StepCompanyData';
+import StepAddLR from './components/StepAddLR';
 
 function OnboardingComponent() {
   const { t } = useTranslation();
@@ -64,6 +65,16 @@ function OnboardingComponent() {
             setCompanyData(undefined);
             setActiveStep(activeStep - 1);
           },
+        }),
+    },
+    {
+      label: 'Insert New LR info',
+      Component: () =>
+        StepAddLR({
+          setActiveStep,
+          setLoading,
+          forward,
+          back: () => setActiveStep(activeStep - 2),
         }),
     },
     {

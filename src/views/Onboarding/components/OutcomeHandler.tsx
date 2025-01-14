@@ -1,4 +1,4 @@
-import { IllusError, theme } from '@pagopa/mui-italia';
+import { IllusEmailValidation, IllusError, theme } from '@pagopa/mui-italia';
 import { EndingPage } from '@pagopa/selfcare-common-frontend/lib';
 import { Trans, useTranslation } from 'react-i18next';
 import React from 'react';
@@ -17,6 +17,7 @@ type Props = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function OutcomeHandler({
   outcome,
   setOutcome,
@@ -97,14 +98,39 @@ export default function OutcomeHandler({
         </Trans>
       }
       description={
-        <Trans i18nKey="requestAdminAccess.message">
+        <Trans
+          components={{
+            1: <br />,
+          }}
+          i18nKey="requestAdminAccess.description"
+        >
           {
-            'L’impresa ha già un profilo su SEND, ma non disponi dei permessi necessari per accedervi. Per richiedere l’accesso, contatta uno degli Amministratori.'
+            'L’impresa ha già un profilo su SEND, ma non disponi dei permessi <1 /> necessari per accedervi. Per richiedere l’accesso, contatta uno degli <1 />Amministratori.'
           }
         </Trans>
       }
       variantTitle={'h4'}
       variantDescription={'body1'}
+      // buttonLabel={t('requestAdminAccess.buttonLabel')}
+      // onButtonClick={() => setActiveStep(2)}
+    />
+  ) : outcome === 'successfulRuequestRegistration' ? (
+    <EndingPage
+      icon={<IllusEmailValidation />}
+      title={
+        <Trans i18nKey="successfulRuequestRegistration.title" components={{ 1: <br /> }}>
+          {'Grazie, abbiamo inviato la tua richiesta'}
+        </Trans>
+      }
+      description={
+        <Trans i18nKey="successfulRuequestRegistration.description">
+          {'Riceverai una email quando l’amministratore ti avrà abilitato.'}
+        </Trans>
+      }
+      variantTitle={'h4'}
+      variantDescription={'body1'}
+      buttonLabel={t('successfulRuequestRegistration.buttonLabel')}
+      onButtonClick={() => window.location.assign(ENV.URL_FE.LOGOUT)}
     />
   ) : (
     <></>

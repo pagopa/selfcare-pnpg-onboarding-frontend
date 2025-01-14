@@ -117,7 +117,7 @@ export const OnboardingApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  onboardingUsers: async (taxCode: string, certified: boolean, user: User): Promise<boolean> => {
+  onboardingUsers: async (taxCode: string, certified: boolean, user: CompanyUserDto | User): Promise<boolean> => {
     const result = await apiClient.onboardingUsersUsingPOST({
       body: {
         certified,

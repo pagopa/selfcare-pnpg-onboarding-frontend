@@ -34,11 +34,37 @@ export default {
       backAction: 'Indietro',
       forwardAction: 'Registra impresa',
     },
+    insertLegalRepresentativeData: {
+      title: 'Completa i tuoi dati per inviare la richiesta',
+      subTitle:
+        'Invieremo una email all’amministratore per abilitarti ad accedere <1 /> all’area riservata SEND dell’impresa.',
+      name: 'Nome',
+      surname: 'Cognome',
+      fiscalCode: 'Codice Fiscale',
+      emailAddress: 'Indirizzo e-mail',
+      action: {
+        backAction: 'Indietro',
+        forwardAction: 'Invia richiesta',
+      },
+      errors: {
+        requiredField: 'Campo obbligatorio',
+        invalidFiscalCode: 'Codice fiscale non valido',
+        invalidEmail: 'Indirizzo e-mail non valido',
+      },
+    },
   },
   requestAdminAccess: {
-    title: 'Ci dispiace, non puoi registrare <1 />l’impresa su SEND',
+    title: 'Richiedi l’accesso a un <1 />Amministratore',
     description:
-      'L’impresa ha già un profilo su SEND, ma non disponi dei permessi necessari per accedervi. Per richiedere l’accesso, contatta uno degli Amministratori.',
+      'L’impresa ha già un profilo su SEND, ma non disponi dei permessi <1 />necessari per accedervi. Per richiedere l’accesso, contatta uno degli <1 />Amministratori.',
+    description2:
+      'Non disponi dei permessi necessari per accedere all’area riservata SEND dell’impresa. Per procedere, contatta uno degli Amministratori per richiedere l’assegnazione di un ruolo.',
+    buttonLabel: 'Richiedi accesso',
+  },
+  successfulRuequestRegistration: {
+    title: 'Grazie, abbiamo inviato la tua richiesta',
+    description: 'Riceverai una email quando l’amministratore ti avrà abilitato.',
+    buttonLabel: 'Chiudi',
   },
   cannotRegisterBusiness: {
     title: 'Ci dispiace, non puoi registrare <1 />l’impresa su SEND',

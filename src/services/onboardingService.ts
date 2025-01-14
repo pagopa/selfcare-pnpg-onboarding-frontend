@@ -72,7 +72,7 @@ export const onboardingPGSubmit = (
 export const onboardingUsersSubmit = (
   taxCode: string,
   certified: boolean,
-  user: User
+  user: CompanyUserDto | User
 ): Promise<boolean> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
