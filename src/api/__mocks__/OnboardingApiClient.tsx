@@ -43,7 +43,6 @@ export const mockedOnboardingApi = {
       case '01501320442':
       case '51515151511':
       case '11223344556':
-        // Creiamo una risposta "Response" simulata con i dati mockati
         const mockResponse = {
           ok: true,
           status: 200,
@@ -60,13 +59,12 @@ export const mockedOnboardingApi = {
                 },
               ],
             },
-          ], // Metodo json() che restituisce i dati mockati
+          ],
         } as Response;
 
         return new Promise((resolve) => resolve(mockResponse));
 
       default:
-        // Simuliamo un errore con status 404 per il caso di codice fiscale sconosciuto
         const errorResponse = {
           ok: false,
           status: 404,
@@ -97,7 +95,6 @@ export const mockedOnboardingApi = {
   ): Promise<VerifyManagerResponse> => {
     switch (companyTaxCode) {
       case '12323231321':
-        // Mock con risposta corretta
         const validResponse = {
           ok: true,
           status: 200,
@@ -110,7 +107,6 @@ export const mockedOnboardingApi = {
         return new Promise((resolve) => resolve(validResponse));
 
       case '24242424243':
-        // Mock con risposta corretta ma con dati diversi
         const genericErrorResponse = {
           ok: true,
           status: 200,
@@ -124,7 +120,6 @@ export const mockedOnboardingApi = {
 
       case '22334455667':
       case '22222222222':
-        // Mock senza companyName
         const noCompanyNameResponse = {
           ok: true,
           status: 200,
@@ -135,7 +130,6 @@ export const mockedOnboardingApi = {
         } as Response;
         return new Promise((resolve) => resolve(noCompanyNameResponse));
 
-      // Simula un errore 404 per un codice fiscale non trovato
       case '11223344556':
         const notFoundErrorResponse = {
           ok: false,
@@ -148,7 +142,6 @@ export const mockedOnboardingApi = {
         return new Promise((resolve) => resolve(notFoundErrorResponse));
 
       default:
-        // Mock con errore 404 per codice fiscale sconosciuto
         const defaultErrorResponse = {
           ok: false,
           status: 404,

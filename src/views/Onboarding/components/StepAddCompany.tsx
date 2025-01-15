@@ -8,6 +8,7 @@ import {
 } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { Company, Outcome, User } from '../../../types';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { withLogin } from '../../../components/withLogin';
@@ -20,7 +21,6 @@ import { UserContext } from '../../../lib/context';
 import { MOCK_USER } from '../../../utils/constants';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
-// import { ENV } from '../../../utils/env';
 import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import OutcomeHandler from './OutcomeHandler';
 
@@ -46,6 +46,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   const productId = 'prod-pn-pg';
   const fieldError = !!typedInput.match(/[A-Za-z]/);
   const sessionToken = storageTokenOps.read();
+  const addError = useErrorDispatcher();
 
   useEffect(() => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
@@ -54,14 +55,12 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   const getActiveOnboarding = async (taxCode: string, productId: string) => {
     setLoading(true);
     try {
-      const response = (await getInstitutionOnboardingInfo(taxCode, productId)) as Response;
+      const response = (await getInstitutionOnboardingInfo(taxCode, productId,sessionToken)) as Response;
 
-      // Controlla se la risposta è OK
       if (!response.ok) {
         console.error('API call failed:', response.status, response.statusText);
         throw new Error('API call failed');
       }
-      // Parsing della risposta
       const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
 
       if (Array.isArray(businesses) && businesses.length > 0) {
@@ -85,8 +84,14 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
         console.warn('No businesses found in response');
         await verifyCompanyManager(typedInput, loggedUser.taxCode);
       }
-    } catch (error) {
-      console.error('Error during getActiveOnboarding:', error);
+    } catch (error: any) {
+      addError({
+        id: 'ONBOARDING_PNPG_GET_ACTIVE_ONBOARDING_ERROR',
+        blocking: false,
+        error,
+        techDescription: `An error occurred while getting active onboarding: ${error.message}`,
+        toNotify: true,
+      });
       await verifyCompanyManager(typedInput, loggedUser.taxCode);
     } finally {
       setLoading(false);
@@ -98,7 +103,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
       const response = (await verifyManager(typedInput, managerTaxCode, sessionToken)) as Response;
 
       if (!response.ok) {
-        console.error('API call failed:', response.status, response.statusText);
         // eslint-disable-next-line no-throw-literal
         throw {
           message: 'API call failed',
@@ -130,6 +134,14 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
           setTypedInput('');
         }
       }
+
+      addError({
+        id: 'ONBOARDING_PNPG_VERIFING_MANAGER_ERROR',
+        blocking: false,
+        error: reason,
+        techDescription: `An error occurred while verifying manager: ${reason.message}`,
+        toNotify: true,
+      });
     }
   };
 
