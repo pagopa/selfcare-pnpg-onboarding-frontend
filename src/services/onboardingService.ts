@@ -5,28 +5,52 @@ import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/Compan
 import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { CheckManagerResponse } from '../api/generated/b4f-onboarding/CheckManagerResponse';
 import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyManagerResponse';
+import { ENV } from '../utils/env';
 
-export const getInstitutionOnboardingInfo = (
+export const getInstitutionOnboardingInfo = async (
   taxCode: string,
-  productId: string
-): Promise<Array<InstitutionOnboardingResource>> => {
+  productId: string,
+  sessionToken?: string
+): Promise<Array<InstitutionOnboardingResource> | Response> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);
   } else {
-    return OnboardingApi.getInstitutionOnboardingInfo(taxCode, productId);
+    return fetch(
+      `${ENV.URL_API.ONBOARDING_V2}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=${productId}`,
+      {
+        headers: {
+          accept: '*/*',
+          'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+          authorization: `Bearer ${sessionToken}`,
+        },
+        method: 'GET',
+        mode: 'cors',
+      }
+    );
   }
 };
 
 export const verifyManager = async (
   companyTaxCode: string,
-  userTaxCode: string
+  userTaxCode: string,
+  sessionToken: string
 ): Promise<VerifyManagerResponse> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.verifyManager(companyTaxCode, userTaxCode);
   } else {
-    return OnboardingApi.verifyManager(companyTaxCode, userTaxCode);
+    return fetch(`${ENV.URL_API.ONBOARDING_V2}/v2/institutions/company/verify-manager`, {
+      headers: {
+        accept: '*/*',
+        'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+        Authorization: `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({ taxCode: userTaxCode, companyTaxCode }),
+    });
   }
 };
 

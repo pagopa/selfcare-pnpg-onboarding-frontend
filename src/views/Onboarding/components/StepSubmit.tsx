@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation, Trans } from 'react-i18next';
@@ -13,6 +13,8 @@ import { ENV } from '../../../utils/env';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
+import { UserContext } from '../../../lib/context';
+import { MOCK_USER } from '../../../utils/constants';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -24,7 +26,7 @@ type Props = StepperStepComponentProps & {
 function StepSubmit({ setLoading, forward, companyData }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
-
+  const { user } = useContext(UserContext);
   const [error, setError] = useState<boolean>();
 
   const requestId = uniqueId();
@@ -32,7 +34,7 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
   const productId = 'prod-pn-pg';
 
   useEffect(() => {
-    const loggedUser = storageUserOps.read();
+    const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
     if (!error && companyData && loggedUser) {
       setLoading(true);
       submit(companyData.companyTaxCode, productId, companyData, loggedUser)
