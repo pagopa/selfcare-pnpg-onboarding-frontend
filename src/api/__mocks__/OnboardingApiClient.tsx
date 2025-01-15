@@ -53,7 +53,7 @@ export const mockedOnboardingApi = {
               onboardings: [
                 {
                   billing: 'mockedBilling',
-                  createdAt: new Date('2024-10-15T03:24:00'),
+                  createdAt: new Date('2024-10-15T03:24:00').toISOString(),
                   productId: 'prod-pn-pg',
                   status: 'ACTIVE',
                 },
@@ -95,6 +95,7 @@ export const mockedOnboardingApi = {
   ): Promise<VerifyManagerResponse> => {
     switch (companyTaxCode) {
       case '12323231321':
+      case '51515151511':
         const validResponse = {
           ok: true,
           status: 200,

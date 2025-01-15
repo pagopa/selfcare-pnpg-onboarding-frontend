@@ -1,6 +1,6 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import {
   storageTokenOps,
@@ -15,6 +15,7 @@ import { withLogin } from '../../../components/withLogin';
 import {
   checkManager,
   getInstitutionOnboardingInfo,
+  onboardingUsersSubmit,
   verifyManager,
 } from '../../../services/onboardingService';
 import { UserContext } from '../../../lib/context';
@@ -37,16 +38,29 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [outcome, setOutcome] = useState<Outcome>();
-  const [retrievedCompanyData, setRetrievedCompanyData] = useState<Company>();
+  const [_retrievedCompanyData, setRetrievedCompanyData] = useState<Company>({
+    companyTaxCode: '',
+    institutionId: undefined,
+    onboardings: [],
+    companyName: '',
+    companyEmail: '',
+    origin: '',
+  });
   const { user } = useContext(UserContext);
   const requestId = uniqueId();
   const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
-  // eslint-disable-next-line functional/no-let
-  let retrivedInstitutionId;
   const productId = 'prod-pn-pg';
   const fieldError = !!typedInput.match(/[A-Za-z]/);
   const sessionToken = storageTokenOps.read();
   const addError = useErrorDispatcher();
+  const retrievedCompanyDataRef = useRef<Company>({
+    companyTaxCode: '',
+    institutionId: undefined,
+    onboardings: [],
+    companyName: '',
+    companyEmail: '',
+    origin: '',
+  });
 
   useEffect(() => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
@@ -55,7 +69,11 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   const getActiveOnboarding = async (taxCode: string, productId: string) => {
     setLoading(true);
     try {
-      const response = (await getInstitutionOnboardingInfo(taxCode, productId,sessionToken)) as Response;
+      const response = (await getInstitutionOnboardingInfo(
+        taxCode,
+        productId,
+        sessionToken
+      )) as Response;
 
       if (!response.ok) {
         console.error('API call failed:', response.status, response.statusText);
@@ -65,14 +83,16 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
 
       if (Array.isArray(businesses) && businesses.length > 0) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
-        if (retrievedCompanyData) {
-          setRetrievedCompanyData({
-            ...retrievedCompanyData,
-            institutionId: businesses[0].institutionId,
-            onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
-          });
-        }
-        retrivedInstitutionId = businesses[0].institutionId;
+
+        const companyData = {
+          institutionId: businesses[0].institutionId,
+          onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
+        };
+
+        // eslint-disable-next-line functional/immutable-data
+        retrievedCompanyDataRef.current = { ...retrievedCompanyDataRef.current, ...companyData };
+        setRetrievedCompanyData((prevData) => ({ ...prevData, ...companyData }));
+        
         await checkManager(loggedUser, typedInput).then(async (res) => {
           if (res.result) {
             setOutcome('alreadyOnboarded');
@@ -114,20 +134,31 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
       const verifyManagerResponse = (await response.json()) as VerifyManagerResponse;
 
       if (response) {
-        setRetrievedCompanyData((prevData) => ({
-          ...prevData,
+        
+        const companyData = {
           companyTaxCode: typedInput,
           companyName: verifyManagerResponse?.companyName,
           origin: verifyManagerResponse?.origin,
-        }));
-        setOutcome('firstRegistration');
+        };
+
+        // eslint-disable-next-line functional/immutable-data
+        retrievedCompanyDataRef.current = { ...retrievedCompanyDataRef.current, ...companyData };
+        setRetrievedCompanyData((prevData) => ({ ...prevData, ...companyData }));
+
+        if (retrievedCompanyDataRef.current.institutionId) {
+          // business already registered but the loggedUser isn't manager
+          setOutcome('notManagerButLR');
+        } else {
+          // business not registered
+          setOutcome('firstRegistration');
+        }
       } else {
         setOutcome('matchedButNotLR');
         setTypedInput('');
       }
     } catch (reason: any) {
       if (reason.status >= 400 && reason.status <= 499) {
-        if (retrivedInstitutionId?.length > 0) {
+        if (retrievedCompanyDataRef.current.institutionId) {
           setOutcome('requestAdminAccess');
         } else {
           setOutcome('matchedButNotLR');
@@ -149,6 +180,63 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     void getActiveOnboarding(taxCode, productId);
   };
 
+  const handleOnboardingUsersSubmit = async () => {
+    if (!retrievedCompanyDataRef.current) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      switch (outcome) {
+        case 'alreadyOnboarded':
+          forward();
+          break;
+
+        case 'notManagerButLR':
+          const onboardingResult = await onboardingUsersSubmit(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            retrievedCompanyDataRef.current.companyTaxCode,
+            true,
+            loggedUser
+          );
+
+          if (onboardingResult) {
+            forward();
+          } else {
+            addError({
+              id: 'ONBOARDING_PNPG_ONBOARDING_USERS_ERROR',
+              blocking: false,
+              error: new Error('Onboarding API call failed'),
+              techDescription: 'Error during onboarding user submission',
+              toNotify: true,
+            });
+          }
+          break;
+
+        default:
+          addError({
+            id: 'ONBOARDING_PNPG_UNKNOWN_OUTCOME',
+            blocking: false,
+            error: new Error(`Unexpected outcome: ${outcome}`),
+            techDescription: 'Unexpected outcome encountered during onboarding process',
+            toNotify: true,
+          });
+          break;
+      }
+    } catch (error: any) {
+      addError({
+        id: 'ONBOARDING_PNPG_ACCESS_ERROR',
+        blocking: false,
+        error,
+        techDescription: `Error during access process: ${error.message}`,
+        toNotify: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (typedInput: string) => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_CONFIRMED', { requestId, productId });
     void getManagerBusinessData(typedInput, 'prod-pn-pg');
@@ -158,9 +246,10 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     <OutcomeHandler
       outcome={outcome}
       setOutcome={setOutcome}
-      companyData={retrievedCompanyData}
+      companyData={retrievedCompanyDataRef.current}
       setActiveStep={setActiveStep}
       setLoading={setLoading}
+      handleOnboardingUsersSubmit={handleOnboardingUsersSubmit}
       forward={forward}
     />
   ) : (

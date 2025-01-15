@@ -35,6 +35,14 @@ export default {
       forwardAction: 'Registra impresa',
     },
   },
+  notManagerButLR: {
+    title: 'L’impresa ha già un profilo su SEND',
+    description1:
+      '{{ name }} {{ surname }}, in qualità di Legale Rappresentante, ha registrato questa impresa su SEND in data {{ date }}.',
+    description2:
+      'Se necessario, puoi revocare l’accesso di {{ name }} {{ surname }} dalla sezione Utenti all’interno dell’area riservata.',
+    signIn: 'Accedi',
+  },
   requestAdminAccess: {
     title: 'Richiedi l’accesso a un <1 /> amministratore',
     description:

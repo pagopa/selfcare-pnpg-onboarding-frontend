@@ -7,20 +7,24 @@ import { ENV } from '../../../utils/env';
 import { ReactComponent as NotFound } from '../assets/notfound.svg';
 import AlreadyOnboarded from '../pages/AlreadyOnboarded';
 import CompanyFirstRegistration from '../pages/CompanyFirstRegistration';
+import NotManagerButLR from '../pages/NotManagerButLR';
 
 type Props = {
   outcome: Outcome;
   setOutcome: React.Dispatch<React.SetStateAction<Outcome | undefined>>;
   companyData?: Company;
+  handleOnboardingUsersSubmit: () => Promise<void>;
   forward: any;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function OutcomeHandler({
   outcome,
   setOutcome,
   companyData,
+  handleOnboardingUsersSubmit,
   forward,
   setActiveStep,
   setLoading,
@@ -63,6 +67,11 @@ export default function OutcomeHandler({
       variantDescription={'body1'}
       buttonLabel={t('cannotRegisterBusiness.close')}
       onButtonClick={() => setOutcome(undefined)}
+    />
+  ) : outcome === 'notManagerButLR' ? (
+    <NotManagerButLR
+      handleOnboardingUsersSubmit={handleOnboardingUsersSubmit}
+      companyData={companyData}
     />
   ) : outcome === 'genericError' ? (
     <EndingPage
