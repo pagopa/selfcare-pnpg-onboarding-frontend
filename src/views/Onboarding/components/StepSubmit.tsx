@@ -79,10 +79,8 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
         });
         setLoading(true);
         if (process.env.REACT_APP_MOCK_API === 'true') {
-          console.log('submit locale');
           forward();
         } else {
-          console.log('submit reale');
           try {
             const response = await fetch(
               `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.companyTaxCode}&productId=${productId}`,
