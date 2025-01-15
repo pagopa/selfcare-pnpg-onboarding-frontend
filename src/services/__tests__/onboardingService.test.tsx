@@ -1,3 +1,4 @@
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { loggedUser } from '../../api/__mocks__/OnboardingApiClient';
 import { RoleEnum } from '../../api/generated/b4f-onboarding/CompanyUserDto';
 import {
@@ -41,9 +42,9 @@ test('Test: onboardingPGSubmit', async () => {
 });
 
 test('Test: verifyManager', async () => {
-  const fetchVerifyManager = await verifyManager('12323231321', loggedUser.taxCode);
-
-  expect(fetchVerifyManager).toMatchObject(
+  const fetchVerifyManager = await verifyManager('12323231321', loggedUser.taxCode, storageTokenOps.read()) as Response;
+  const result = await fetchVerifyManager.json();
+  expect(result).toMatchObject(
     expect.objectContaining({ companyName: 'Business retrieved from IC', origin: 'INFOCAMERE' })
   );
 

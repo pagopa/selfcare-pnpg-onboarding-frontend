@@ -97,9 +97,9 @@ export default function OutcomeHandler({
         </Trans>
       }
       description={
-        <Trans i18nKey="requestAdminAccess.message">
+        <Trans i18nKey="requestAdminAccess.message" components={{ 1: <br /> }}>
           {
-            'L’impresa ha già un profilo su SEND, ma non disponi dei permessi necessari per accedervi. Per richiedere l’accesso, contatta uno degli Amministratori.'
+            'L’impresa ha già un profilo su SEND, ma non disponi dei permessi <1 />necessari per accedervi. Per richiedere l’accesso, contatta <1 />uno degli Amministratori.'
           }
         </Trans>
       }

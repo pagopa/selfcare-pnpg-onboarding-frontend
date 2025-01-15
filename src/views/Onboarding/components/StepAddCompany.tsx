@@ -2,7 +2,10 @@ import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import {
+  storageTokenOps,
+  storageUserOps,
+} from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { Company, Outcome, User } from '../../../types';
@@ -10,13 +13,15 @@ import { OnboardingStepActions } from '../../../components/OnboardingStepActions
 import { withLogin } from '../../../components/withLogin';
 import {
   checkManager,
+  getInstitutionOnboardingInfo,
   verifyManager,
 } from '../../../services/onboardingService';
 import { UserContext } from '../../../lib/context';
 import { MOCK_USER } from '../../../utils/constants';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
-import { ENV } from '../../../utils/env';
+// import { ENV } from '../../../utils/env';
+import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import OutcomeHandler from './OutcomeHandler';
 
 type Props = {
@@ -36,40 +41,29 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   const { user } = useContext(UserContext);
   const requestId = uniqueId();
   const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
-
+  // eslint-disable-next-line functional/no-let
+  let retrivedInstitutionId;
   const productId = 'prod-pn-pg';
   const fieldError = !!typedInput.match(/[A-Za-z]/);
+  const sessionToken = storageTokenOps.read();
 
   useEffect(() => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
   }, []);
 
   const getActiveOnboarding = async (taxCode: string, productId: string) => {
-    const sessionToken = storageTokenOps.read();
     setLoading(true);
     try {
-      const response = await fetch(
-        `${ENV.URL_API.ONBOARDING_V2}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=${productId}`,
-        {
-          headers: {
-            accept: '*/*',
-            'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
-            authorization: `Bearer ${sessionToken}`,
-          },
-          method: 'GET',
-          mode: 'cors',
-        }
-      );
-  
+      const response = (await getInstitutionOnboardingInfo(taxCode, productId)) as Response;
+
       // Controlla se la risposta è OK
       if (!response.ok) {
         console.error('API call failed:', response.status, response.statusText);
         throw new Error('API call failed');
       }
-  
       // Parsing della risposta
       const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
-  
+
       if (Array.isArray(businesses) && businesses.length > 0) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
         if (retrievedCompanyData) {
@@ -79,6 +73,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
             onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
           });
         }
+        retrivedInstitutionId = businesses[0].institutionId;
         await checkManager(loggedUser, typedInput).then(async (res) => {
           if (res.result) {
             setOutcome('alreadyOnboarded');
@@ -98,35 +93,44 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     }
   };
 
-  const verifyCompanyManager = async (
-    typedInput: string,
-    managerTaxCode: string,
-  ) => {
-    await verifyManager(typedInput, managerTaxCode)
-      .then((res) => {
-        if (res) {
-          setRetrievedCompanyData({
-            companyTaxCode: typedInput,
-            companyName: res?.companyName,
-            origin: res?.origin,
-          });
-          setOutcome('firstRegistration');
+  const verifyCompanyManager = async (typedInput: string, managerTaxCode: string) => {
+    try {
+      const response = (await verifyManager(typedInput, managerTaxCode, sessionToken)) as Response;
+
+      if (!response.ok) {
+        console.error('API call failed:', response.status, response.statusText);
+        // eslint-disable-next-line no-throw-literal
+        throw {
+          message: 'API call failed',
+          status: response.status,
+          statusText: response.statusText,
+        };
+      }
+
+      const verifyManagerResponse = (await response.json()) as VerifyManagerResponse;
+
+      if (response) {
+        setRetrievedCompanyData((prevData) => ({
+          ...prevData,
+          companyTaxCode: typedInput,
+          companyName: verifyManagerResponse?.companyName,
+          origin: verifyManagerResponse?.origin,
+        }));
+        setOutcome('firstRegistration');
+      } else {
+        setOutcome('matchedButNotLR');
+        setTypedInput('');
+      }
+    } catch (reason: any) {
+      if (reason.status >= 400 && reason.status <= 499) {
+        if (retrivedInstitutionId?.length > 0) {
+          setOutcome('requestAdminAccess');
         } else {
           setOutcome('matchedButNotLR');
           setTypedInput('');
         }
-      })
-      .catch((reason) => {
-        if (reason.httpStatus >= 400 && reason.httpStatus <= 499) {
-          if (retrievedCompanyData?.institutionId) {
-            setOutcome('requestAdminAccess');
-          } else {
-            setOutcome('matchedButNotLR');
-          }
-        } else {
-          setOutcome('genericError');
-        }
-      });
+      }
+    }
   };
 
   const getManagerBusinessData = async (taxCode: string, productId: string) => {

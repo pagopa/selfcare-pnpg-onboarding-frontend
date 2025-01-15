@@ -36,9 +36,9 @@ export default {
     },
   },
   requestAdminAccess: {
-    title: 'Ci dispiace, non puoi registrare <1 />l’impresa su SEND',
+    title: 'Richiedi l’accesso a un <1 /> amministratore',
     description:
-      'L’impresa ha già un profilo su SEND, ma non disponi dei permessi necessari per accedervi. Per richiedere l’accesso, contatta uno degli Amministratori.',
+      'L’impresa ha già un profilo su SEND, ma non disponi dei permessi <1 />necessari per accedervi. Per richiedere l’accesso, contatta <1 />uno degli Amministratori.',
   },
   cannotRegisterBusiness: {
     title: 'Ci dispiace, non puoi registrare <1 />l’impresa su SEND',

@@ -38,13 +38,17 @@ export const mockedOnboardingApi = {
 
   getInstitutionOnboardingInfo: (
     taxCode: string
-  ): Promise<Array<InstitutionOnboardingResource>> => {
+  ): Promise<Array<InstitutionOnboardingResource> | Response> => {
     switch (taxCode) {
       case '01501320442':
       case '51515151511':
       case '11223344556':
-        return new Promise((resolve) =>
-          resolve([
+        // Creiamo una risposta "Response" simulata con i dati mockati
+        const mockResponse = {
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          json: async () => [
             {
               institutionId: 'retrievedPartyId01',
               onboardings: [
@@ -56,25 +60,23 @@ export const mockedOnboardingApi = {
                 },
               ],
             },
-          ])
-        );
+          ], // Metodo json() che restituisce i dati mockati
+        } as Response;
+
+        return new Promise((resolve) => resolve(mockResponse));
+
       default:
-        return new Promise(() => {
-          const error = new Error(`Unexpected mocked HTTP status! Expected 200 obtained 404`);
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          // eslint-disable-next-line functional/immutable-data
-          error.httpStatus = 404;
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          // eslint-disable-next-line functional/immutable-data
-          error.httpBody = {
+        // Simuliamo un errore con status 404 per il caso di codice fiscale sconosciuto
+        const errorResponse = {
+          ok: false,
+          status: 404,
+          statusText: 'Not Found',
+          json: async () => ({
             statusCode: 404,
             description: 'Not Found',
-          };
-          console.error(JSON.stringify(error));
-          throw error;
-        });
+          }),
+        } as Response;
+        return new Promise((resolve) => resolve(errorResponse));
     }
   },
 
@@ -95,33 +97,67 @@ export const mockedOnboardingApi = {
   ): Promise<VerifyManagerResponse> => {
     switch (companyTaxCode) {
       case '12323231321':
-        return new Promise((resolve) =>
-          resolve({
+        // Mock con risposta corretta
+        const validResponse = {
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          json: async () => ({
             companyName: 'Business retrieved from IC',
             origin: 'INFOCAMERE',
-          })
-        );
+          }),
+        } as Response;
+        return new Promise((resolve) => resolve(validResponse));
+
       case '24242424243':
-        return new Promise((resolve) =>
-          resolve({
+        // Mock con risposta corretta ma con dati diversi
+        const genericErrorResponse = {
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          json: async () => ({
             companyName: 'Business genericError',
             origin: 'INFOCAMERE',
-          })
-        );
+          }),
+        } as Response;
+        return new Promise((resolve) => resolve(genericErrorResponse));
+
       case '22334455667':
       case '22222222222':
-        return new Promise((resolve) =>
-          resolve({
+        // Mock senza companyName
+        const noCompanyNameResponse = {
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          json: async () => ({
             origin: 'ADE',
-          })
-        );
-      // not LR (404)
+          }),
+        } as Response;
+        return new Promise((resolve) => resolve(noCompanyNameResponse));
+
+      // Simula un errore 404 per un codice fiscale non trovato
       case '11223344556':
-        return new Promise((_, reject) =>
-          reject({  httpStatus: 404, message: 'Not Found' })
-        );
-      default: 
-        return new Promise((_, reject) => reject({ status: '404', message: 'Not Found' }));
+        const notFoundErrorResponse = {
+          ok: false,
+          status: 404,
+          statusText: 'Not Found',
+          json: async () => ({
+            message: 'Not Found',
+          }),
+        } as Response;
+        return new Promise((resolve) => resolve(notFoundErrorResponse));
+
+      default:
+        // Mock con errore 404 per codice fiscale sconosciuto
+        const defaultErrorResponse = {
+          ok: false,
+          status: 404,
+          statusText: 'Not Found',
+          json: async () => ({
+            message: 'Not Found',
+          }),
+        } as Response;
+        return new Promise((resolve) => resolve(defaultErrorResponse));
     }
   },
 };
