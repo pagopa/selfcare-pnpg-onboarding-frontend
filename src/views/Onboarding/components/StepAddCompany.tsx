@@ -1,6 +1,6 @@
 import { Grid, Typography, Card, TextField } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import {
   storageTokenOps,
@@ -38,7 +38,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
 
   const [typedInput, setTypedInput] = useState<string>('');
   const [outcome, setOutcome] = useState<Outcome>();
-  const [_retrievedCompanyData, setRetrievedCompanyData] = useState<Company>({
+  const [retrievedCompanyData, setRetrievedCompanyData] = useState<Company>({
     companyTaxCode: '',
     institutionId: undefined,
     onboardings: [],
@@ -53,14 +53,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   const fieldError = !!typedInput.match(/[A-Za-z]/);
   const sessionToken = storageTokenOps.read();
   const addError = useErrorDispatcher();
-  const retrievedCompanyDataRef = useRef<Company>({
-    companyTaxCode: '',
-    institutionId: undefined,
-    onboardings: [],
-    companyName: '',
-    companyEmail: '',
-    origin: '',
-  });
 
   useEffect(() => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
@@ -83,21 +75,18 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
 
       if (Array.isArray(businesses) && businesses.length > 0) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
-
-        const companyData = {
+        
+        setRetrievedCompanyData((prevData) => ({
+          ...prevData,
           institutionId: businesses[0].institutionId,
           onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
-        };
+        }));
 
-        // eslint-disable-next-line functional/immutable-data
-        retrievedCompanyDataRef.current = { ...retrievedCompanyDataRef.current, ...companyData };
-        setRetrievedCompanyData((prevData) => ({ ...prevData, ...companyData }));
-        
         await checkManager(loggedUser, typedInput).then(async (res) => {
           if (res.result) {
             setOutcome('alreadyOnboarded');
           } else {
-            await verifyCompanyManager(typedInput, loggedUser.taxCode);
+            await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
           }
         });
       } else {
@@ -118,7 +107,11 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     }
   };
 
-  const verifyCompanyManager = async (typedInput: string, managerTaxCode: string) => {
+  const verifyCompanyManager = async (
+    typedInput: string,
+    managerTaxCode: string,
+    businesses?: Array<InstitutionOnboardingResource>
+  ) => {
     try {
       const response = (await verifyManager(typedInput, managerTaxCode, sessionToken)) as Response;
 
@@ -134,18 +127,14 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
       const verifyManagerResponse = (await response.json()) as VerifyManagerResponse;
 
       if (response) {
-        
-        const companyData = {
+        setRetrievedCompanyData((prevData) => ({
+          ...prevData,
           companyTaxCode: typedInput,
           companyName: verifyManagerResponse?.companyName,
           origin: verifyManagerResponse?.origin,
-        };
+        }));
 
-        // eslint-disable-next-line functional/immutable-data
-        retrievedCompanyDataRef.current = { ...retrievedCompanyDataRef.current, ...companyData };
-        setRetrievedCompanyData((prevData) => ({ ...prevData, ...companyData }));
-
-        if (retrievedCompanyDataRef.current.institutionId) {
+        if (businesses && businesses[0].institutionId) {
           // business already registered but the loggedUser isn't manager
           setOutcome('notManagerButLR');
         } else {
@@ -158,7 +147,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
       }
     } catch (reason: any) {
       if (reason.status >= 400 && reason.status <= 499) {
-        if (retrievedCompanyDataRef.current.institutionId) {
+        if (businesses && businesses[0].institutionId) {
           setOutcome('requestAdminAccess');
         } else {
           setOutcome('matchedButNotLR');
@@ -181,7 +170,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
   };
 
   const handleOnboardingUsersSubmit = async () => {
-    if (!retrievedCompanyDataRef.current) {
+    if (!retrievedCompanyData) {
       return;
     }
 
@@ -195,8 +184,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
 
         case 'notManagerButLR':
           const onboardingResult = await onboardingUsersSubmit(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            retrievedCompanyDataRef.current.companyTaxCode,
+            retrievedCompanyData.companyTaxCode,
             true,
             loggedUser
           );
@@ -246,7 +234,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     <OutcomeHandler
       outcome={outcome}
       setOutcome={setOutcome}
-      companyData={retrievedCompanyDataRef.current}
+      companyData={retrievedCompanyData}
       setActiveStep={setActiveStep}
       setLoading={setLoading}
       handleOnboardingUsersSubmit={handleOnboardingUsersSubmit}

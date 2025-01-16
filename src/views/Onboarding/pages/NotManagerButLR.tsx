@@ -1,7 +1,8 @@
 import { Trans } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
-import { Grid, Typography, Box, Button } from '@mui/material';
+import { Grid, Typography, Box, Button, Card } from '@mui/material';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import { theme } from '@pagopa/mui-italia';
 import { Company } from '../../../types';
 
 type Props = {
@@ -71,6 +72,33 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData }: Props) {
             </Typography>
           </Grid>
         </Grid>
+        <Grid container item justifyContent={'center'} mb={4}>
+          <Card
+            variant="outlined"
+            sx={{
+              display: 'grid',
+              alignItems: 'center',
+              justifyItems: 'left',
+              width: { xs: 'calc(100% - 96px)', sm: '480px' },
+              minWidth: '200px',
+              borderRadius: theme.spacing(2),
+              border: '2px solid',
+              borderColor: theme.palette.primary.main,
+              backgroundColor: '#0073E614',
+            }}
+          >
+            <Grid item xs={6} ml={2} my={1}>
+              <Typography variant='body1' fontWeight={'bold'}>
+                {companyData?.companyName}
+              </Typography>
+            </Grid>
+            <Grid item xs={6} ml={2} mb={1}>
+            <Typography variant='body1'>
+                {companyData?.companyTaxCode}
+              </Typography>
+            </Grid>
+          </Card>
+        </Grid>
         <Grid container item justifyContent="center">
           <Grid item xs={4}>
             <Button
@@ -78,12 +106,7 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData }: Props) {
               sx={{ alignSelf: 'center' }}
               onClick={() => handleOnboardingUsersSubmit()}
             >
-              {
-                <Trans i18nKey="onboarding.notManagerButLR.signIn"
-                >
-                  {`Accedi`}
-                </Trans>
-              }
+              {<Trans i18nKey="onboarding.notManagerButLR.signIn">{`Accedi`}</Trans>}
             </Button>
           </Grid>
         </Grid>
