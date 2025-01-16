@@ -9,6 +9,8 @@ import { Provider } from 'react-redux';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Router } from 'react-router';
 import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
+import React from 'react';
+import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
 
 jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
@@ -79,7 +81,7 @@ const renderComponent = () => {
           }}
         >
           <UserContext.Provider
-            value={{ user, setUser, requiredLogin: false, setRequiredLogin: () => {} }}
+            value={{ user: loggedUser, setUser: () => {}, requiredLogin: false, setRequiredLogin: () => {} }}
           >
             <Provider store={store}>
               <Onboarding />
@@ -139,6 +141,17 @@ test('Test: NOT success onboarding with data retrieved from AdE', async () => {
 
   const closeButton = screen.getByText('Chiudi');
   fireEvent.click(closeButton);
+});
+
+test('Test: Success access to dashboard with the business already on send and a loggedUser that isn’t manager but it’s LR', async () => {
+  renderComponent();
+  await executeStepAddCompany('51515151511');
+  // await executeStepBusinessData(false);
+
+  await waitFor(() => screen.getByText('L’impresa ha già un profilo su SEND'));
+
+  const signInButton = screen.getByText('Accedi');
+  fireEvent.click(signInButton);
 });
 
 const executeStepAddCompany = async (typedFiscalCode: string) => {

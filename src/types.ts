@@ -54,4 +54,4 @@ export type Company = {
   origin?: string;
 };
 
-export type Outcome = 'firstRegistration' | 'matchedButNotLR' | 'alreadyOnboarded' | 'requestAdminAccess' | 'genericError';
+export type Outcome = 'firstRegistration' | 'matchedButNotLR' | 'alreadyOnboarded' | 'requestAdminAccess' | 'notManagerButLR' | 'genericError';
