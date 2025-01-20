@@ -3,7 +3,10 @@ import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/stora
 import { Grid, Typography, Box, Button, Card } from '@mui/material';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { theme } from '@pagopa/mui-italia';
-import { Company } from '../../../types';
+import { useContext } from 'react';
+import { Company, User } from '../../../types';
+import { MOCK_USER } from '../../../utils/constants';
+import { UserContext } from '../../../lib/context';
 
 type Props = {
   handleOnboardingUsersSubmit: () => Promise<void>;
@@ -11,7 +14,8 @@ type Props = {
 };
 
 function NotManagerButLR({ handleOnboardingUsersSubmit, companyData }: Props) {
-  const loggedUser = storageUserOps.read();
+  const { user } = useContext(UserContext);
+  const loggedUser = MOCK_USER ? user as User : storageUserOps.read();
 
   const createdAt = companyData?.onboardings
     ? (companyData?.onboardings[0].createdAt as unknown as string)

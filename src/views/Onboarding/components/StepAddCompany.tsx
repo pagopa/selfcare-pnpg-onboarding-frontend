@@ -23,6 +23,7 @@ import { MOCK_USER } from '../../../utils/constants';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
 import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
+import { ENV } from '../../../utils/env';
 import OutcomeHandler from './OutcomeHandler';
 
 type Props = {
@@ -75,7 +76,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
 
       if (Array.isArray(businesses) && businesses.length > 0) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
-        
         setRetrievedCompanyData((prevData) => ({
           ...prevData,
           institutionId: businesses[0].institutionId,
@@ -179,26 +179,31 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
     try {
       switch (outcome) {
         case 'alreadyOnboarded':
-          forward();
+          window.location.assign(
+            ENV.URL_FE.DASHBOARD + '/' + `${retrievedCompanyData.institutionId}`
+          );
           break;
 
         case 'notManagerButLR':
-          const onboardingResult = await onboardingUsersSubmit(
-            retrievedCompanyData.companyTaxCode,
-            true,
-            loggedUser
-          );
-
-          if (onboardingResult) {
-            forward();
-          } else {
-            addError({
-              id: 'ONBOARDING_PNPG_ONBOARDING_USERS_ERROR',
-              blocking: false,
-              error: new Error('Onboarding API call failed'),
-              techDescription: 'Error during onboarding user submission',
-              toNotify: true,
-            });
+          if (retrievedCompanyData.companyTaxCode) {
+            setLoading(true);
+            const certified = retrievedCompanyData.origin === 'INFOCAMERE';
+            await onboardingUsersSubmit(retrievedCompanyData.companyTaxCode, certified, loggedUser)
+              .then(() =>
+                window.location.assign(
+                  ENV.URL_FE.DASHBOARD + '/' + `${retrievedCompanyData.institutionId}`
+                )
+              )
+              .catch((reason) => {
+                addError({
+                  id: 'ONBOARDING_USER_ERROR',
+                  blocking: true,
+                  error: reason as Error,
+                  techDescription: `An error occurred while onboarding user for business ${retrievedCompanyData.companyTaxCode}`,
+                  toNotify: true,
+                });
+              })
+              .finally(() => setLoading(false));
           }
           break;
 
