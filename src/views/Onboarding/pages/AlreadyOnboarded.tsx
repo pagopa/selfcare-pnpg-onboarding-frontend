@@ -5,18 +5,16 @@ import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/stora
 import { useState } from 'react';
 import { ENV } from '../../../utils/env';
 import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
-import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { checkManager, onboardingUsersSubmit } from '../../../services/onboardingService';
-import { Business } from '../../../types';
+import { Company } from '../../../types';
 
 type Props = {
-  onboardingData: InstitutionOnboardingResource;
+  companyData?: Company;
   back: () => void;
-  business?: Business;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function AlreadyOnboarded({ onboardingData, business, setLoading, back }: Props) {
+export default function AlreadyOnboarded({ companyData, setLoading, back }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
 
@@ -24,18 +22,18 @@ export default function AlreadyOnboarded({ onboardingData, business, setLoading,
 
   const [addManagerModal, setAddManagerModal] = useState<boolean>();
 
-  const createdAt = onboardingData.onboardings
-    ? (onboardingData.onboardings[0].createdAt as unknown as string)
+  const createdAt = companyData?.onboardings
+    ? (companyData?.onboardings[0].createdAt as unknown as string)
     : undefined;
 
   const date = createdAt?.split('T')[0];
   const time = createdAt?.split('T')[1].split('.')[0];
 
   const verifyManager = async () => {
-    await checkManager(loggedUser, business?.businessTaxId)
+    await checkManager(loggedUser, companyData?.companyTaxCode)
       .then((res) => {
         if (res.result) {
-          window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${onboardingData.institutionId}`);
+          window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`);
         } else {
           setAddManagerModal(true);
         }
@@ -44,18 +42,19 @@ export default function AlreadyOnboarded({ onboardingData, business, setLoading,
   };
 
   const addManager = async () => {
-    if (business?.businessTaxId) {
+    if (companyData?.companyTaxCode) {
       setLoading(true);
-      await onboardingUsersSubmit(business.businessTaxId, business?.certified, loggedUser)
+      const certified = companyData?.origin === 'INFOCAMERE';
+      await onboardingUsersSubmit(companyData?.companyTaxCode, certified, loggedUser)
         .then(() =>
-          window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${onboardingData.institutionId}`)
+          window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`)
         )
         .catch((reason) => {
           addError({
             id: 'ONBOARDING_USER_ERROR',
             blocking: true,
             error: reason as Error,
-            techDescription: `An error occurred while onboarding user for business ${business.businessTaxId}`,
+            techDescription: `An error occurred while onboarding user for business ${companyData?.companyTaxCode}`,
             toNotify: true,
           });
         });

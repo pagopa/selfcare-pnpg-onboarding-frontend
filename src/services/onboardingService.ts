@@ -1,61 +1,63 @@
-import { Business, LegalEntity, User } from '../types';
+import { Company, User } from '../types';
 import { OnboardingApi } from '../api/OnboardingApiClient';
 import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
-import { mockedLegalEntity } from '../api/__mocks__/OnboardingApiClient';
-import { MatchInfoResultResource } from '../api/generated/b4f-onboarding/MatchInfoResultResource';
-import { InstitutionLegalAddressResource } from '../api/generated/b4f-onboarding/InstitutionLegalAddressResource';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/InstitutionOnboardingResource';
-import { ManagerResultResource } from '../api/generated/b4f-onboarding/ManagerResultResource';
+import { CheckManagerResponse } from '../api/generated/b4f-onboarding/CheckManagerResponse';
+import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyManagerResponse';
+import { ENV } from '../utils/env';
 
-export const getBusinessesByUser = (): Promise<LegalEntity> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return new Promise((resolve) => resolve(mockedLegalEntity));
-  } else {
-    return OnboardingApi.getBusinessesByUser();
-  }
-};
-
-export const matchBusinessAndUser = (
-  businessId: string,
-  loggedUser: User
-): Promise<MatchInfoResultResource> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingApi.matchBusinessAndUser(businessId, loggedUser);
-  } else {
-    return OnboardingApi.matchBusinessAndUser(businessId, loggedUser);
-  }
-};
-
-export const getBusinessLegalAddress = (
-  businessId: string
-): Promise<InstitutionLegalAddressResource | null> => {
-  /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
-    return mockedOnboardingApi.getBusinessLegalAddress(businessId);
-  } else {
-    return OnboardingApi.getBusinessLegalAddress(businessId);
-  }
-};
-
-export const getInstitutionOnboardingInfo = (
+export const getInstitutionOnboardingInfo = async (
   taxCode: string,
-  productId: string
-): Promise<Array<InstitutionOnboardingResource>> => {
+  productId: string,
+  sessionToken?: string
+): Promise<Array<InstitutionOnboardingResource> | Response> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);
   } else {
-    return OnboardingApi.getInstitutionOnboardingInfo(taxCode, productId);
+    return fetch(
+      `${ENV.URL_API.ONBOARDING_V2}/v2/institutions/onboarding/active?taxCode=${taxCode}&productId=${productId}`,
+      {
+        headers: {
+          accept: '*/*',
+          'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+          authorization: `Bearer ${sessionToken}`,
+        },
+        method: 'GET',
+        mode: 'cors',
+      }
+    );
+  }
+};
+
+export const verifyManager = async (
+  companyTaxCode: string,
+  userTaxCode: string,
+  sessionToken: string
+): Promise<VerifyManagerResponse> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingApi.verifyManager(companyTaxCode, userTaxCode);
+  } else {
+    return fetch(`${ENV.URL_API.ONBOARDING_V2}/v2/institutions/company/verify-manager`, {
+      headers: {
+        accept: '*/*',
+        'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+        Authorization: `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({ taxCode: userTaxCode, companyTaxCode }),
+    });
   }
 };
 
 export const checkManager = async (
   loggedUser: User,
   taxCode?: string
-): Promise<ManagerResultResource> => {
+): Promise<CheckManagerResponse> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.checkManager(taxCode);
@@ -68,7 +70,7 @@ export const onboardingPGSubmit = (
   businessId: string,
   productId: string,
   loggedUser: CompanyUserDto,
-  selectedInstitution: Business,
+  selectedInstitution: Company,
   digitalAddress: string
 ): Promise<boolean> => {
   /* istanbul ignore if */

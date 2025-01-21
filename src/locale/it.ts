@@ -1,45 +1,57 @@
 export default {
   loadingText: 'Stiamo verificando i tuoi dati',
-  chooseBusiness: {
-    selectFromBusinessList: {
-      title: 'Che impresa vuoi registrare?',
+  onboarding: {
+    insertFiscalCode: {
+      title: 'Inserisci il Codice Fiscale',
+      subTitle: `Il Codice Fiscale dell’impresa ci serve per verificare se è già <1 />presente un profilo su SEND - Servizio Notifiche Digitali`,
+      label: 'Codice Fiscale dell’impresa',
+      inputError: {
+        invalidFormat: 'Formato non corretto, controlla il dato e riprova',
+      },
+      action: {
+        forward: 'Continua',
+        back: 'Indietro',
+      },
+      outcome: {
+        found: {
+          companyFirstRegistration: {
+            title: 'L’impresa non ha ancora un profilo <1 />su SEND',
+            description:
+              'Per leggere le notifiche devi prima di tutto creare un profilo <1 />SEND per l’impresa. L’operazione può essere completata solo <3 />da un Legale Rappresentante.',
+            start: 'Inizia',
+          },
+        },
+      },
+    },
+    insertBusinessData: {
+      title: 'Completa i dati dell’impresa',
       subTitle:
-        'Queste sono le imprese di cui risulti essere Legale Rappresentante. <1 /> Seleziona quella che vuoi registrare.',
+        'Inserisci i dati richiesti per completare la registrazione dell’impresa su <1 />SEND - Servizio Notifiche Digitali',
+      businessNameLabel: 'Ragione sociale',
+      pecEmailLabel: 'PEC istituzionale',
+      invalidEmail: "L'indirizzo e-mail inserito non è corretto",
+      invalidBusinessName: 'Inserisci una ragione sociale',
+      backAction: 'Indietro',
+      forwardAction: 'Registra impresa',
     },
-    selectReleatedBusiness: {
-      title: 'Registra la tua impresa',
-      subTitle: 'Questa è l’impresa cui risulti essere Legale Rappresentante. ',
-    },
-    registerBusiness: 'Registra impresa',
-    registerBusinessByTaxCodeLink:
-      'Non trovi la tua impresa? <1>Cercala tramite Codice Fiscale</1>',
   },
-  addCompany: {
-    title: 'Che impresa vuoi registrare?',
-    subTitle: 'Inserisci il Codice Fiscale dell’impresa che vuoi <1 />registrare.',
-    textfieldLabel: 'Codice Fiscale',
-    forwardAction: 'Continua',
+  notManagerButLR: {
+    title: 'L’impresa ha già un profilo su SEND',
+    description1:
+      '{{ name }} {{ surname }}, in qualità di Legale Rappresentante, ha registrato questa impresa su SEND in data {{ date }}.',
+    description2:
+      'Se necessario, puoi revocare l’accesso di {{ name }} {{ surname }} dalla sezione Utenti all’interno dell’area riservata.',
+    signIn: 'Accedi',
   },
-  insertBusinessEmail: {
-    title: 'Qual è l’indirizzo PEC dell’impresa?',
-    subTitle: 'Inserisci l’indirizzo PEC dell’impresa che vuoi registrare.',
-    pecLabel: 'Indirizzo PEC',
-  },
-  insertBusinessData: {
-    title: 'Inserisci i dati della tua impresa',
-    subTitle:
-      'Inserisci la ragione sociale e l’indirizzo PEC dell’impresa che vuoi <1 />registrare.',
-    businessNameLabel: 'Ragione sociale',
-    pecEmailLabel: 'Indirizzo PEC',
-    invalidEmail: "L'indirizzo e-mail inserito non è corretto",
-    invalidBusinessName: 'Inserisci una ragione sociale',
-    backAction: 'Indietro',
-    forwardAction: 'Continua',
+  requestAdminAccess: {
+    title: 'Richiedi l’accesso a un <1 /> amministratore',
+    description:
+      'L’impresa ha già un profilo su SEND, ma non disponi dei permessi <1 />necessari per accedervi. Per richiedere l’accesso, contatta <1 />uno degli Amministratori.',
   },
   cannotRegisterBusiness: {
-    title: 'Non puoi registrare <1/>questa impresa',
+    title: 'Ci dispiace, non puoi registrare <1 />l’impresa su SEND',
     description:
-      'Dal tuo SPID non risulti essere Legale Rappresentante <1 />dell’impresa associata a questo Codice Fiscale. Puoi <3 />registrare solo le imprese di cui sei Legale Rappresentante.',
+      'L’impresa non ha ancora un profilo su SEND, ma non puoi <1 />registrarla perché non risulti essere Legale Rappresentante <3 />oppure perché l’impresa non è presente nei <5>registri pubblici</5>.',
     close: 'Chiudi',
   },
   alreadyOnboarded: {
@@ -55,19 +67,15 @@ export default {
       'A causa di un problema tecnico, non riusciamo a registrare <1 /> l’impresa. Riprova più tardi.',
     close: 'Chiudi',
   },
-  invalidInputFormat: {
-    title: 'Il Codice Fiscale/Partita IVA non è corretto',
-    message: 'Torna indietro, assicurati che sia corretto e inseriscilo di <1 /> nuovo.',
-    goBack: 'Torna indietro',
-  },
   outcome: {
     success: {
       title: 'Impresa registrata!',
-      description: 'Accedi per leggere le notifiche e aggiungere altri utenti.',
-      signIn: 'Accedi',
+      description:
+        'Ora puoi leggere le notifiche e aggiungere altri utenti <1 />nell’area riservata di SEND.',
+      signIn: 'Continua su SEND',
     },
     error: {
-      title: 'Impresa non registrata',
+      title: 'Si è verificato un errore',
       description:
         "A causa di un problema tecnico, non riusciamo a registrare <1 />l'impresa. Riprova più tardi.",
       close: 'Chiudi',
