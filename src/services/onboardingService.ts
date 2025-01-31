@@ -66,6 +66,30 @@ export const checkManager = async (
   }
 };
 
+export const getManagerOfOnboarding = async (
+  onboardingId: string,
+  sessionToken: string
+): Promise<Response | any> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return {
+      name: 'Nome',
+      surname: 'Cognome',
+    };
+  } else {
+    return fetch(`${ENV.URL_API.ONBOARDING}/users/onboarding/${onboardingId}/manager`, {
+      headers: {
+        accept: '*/*',
+        'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+        Authorization: `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+      mode: 'cors'
+    });
+  }
+};
+
 export const onboardingPGSubmit = (
   businessId: string,
   productId: string,
