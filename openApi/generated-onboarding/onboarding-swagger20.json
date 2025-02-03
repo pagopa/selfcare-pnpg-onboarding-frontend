@@ -1281,6 +1281,80 @@
         "summary": "onboardingAggregator"
       }
     },
+    "/v1/users/onboarding/{onboardingId}/manager": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "description": "onboardingId",
+            "in": "path",
+            "name": "onboardingId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ManagerInfoResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Problem"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "description": "Returns true if current manager and previous one are the same",
+        "operationId": "checkManager_1",
+        "summary": "getManagerInfo"
+      }
+    },
     "/v1/users/validate": {
       "post": {
         "consumes": [
@@ -3656,6 +3730,24 @@
         "reason"
       ],
       "title": "InvalidParam",
+      "type": "object"
+    },
+    "ManagerInfoResponse": {
+      "properties": {
+        "name": {
+          "description": "User's name",
+          "type": "string"
+        },
+        "surname": {
+          "description": "User's surname",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "surname"
+      ],
+      "title": "ManagerInfoResponse",
       "type": "object"
     },
     "MatchInfoResultResource": {

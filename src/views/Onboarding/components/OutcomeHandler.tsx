@@ -72,6 +72,7 @@ export default function OutcomeHandler({
     <NotManagerButLR
       handleOnboardingUsersSubmit={handleOnboardingUsersSubmit}
       companyData={companyData}
+      setLoading={setLoading}
     />
   ) : outcome === 'genericError' ? (
     <EndingPage

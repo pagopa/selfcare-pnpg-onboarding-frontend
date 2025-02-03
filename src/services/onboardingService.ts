@@ -66,6 +66,18 @@ export const checkManager = async (
   }
 };
 
+export const getManagerOfOnboarding = async (onboardingId: string): Promise<Response | any> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return {
+      name: 'Nome',
+      surname: 'Cognome',
+    };
+  } else {
+    return OnboardingApi.getManagerInfo(onboardingId);
+  }
+};
+
 export const onboardingPGSubmit = (
   businessId: string,
   productId: string,
