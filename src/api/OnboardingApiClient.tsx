@@ -14,6 +14,7 @@ import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding/CompanyUser
 import { InstitutionOnboardingResource } from './generated/b4f-onboarding/InstitutionOnboardingResource';
 import { VerifyManagerResponse } from './generated/b4f-onboarding/VerifyManagerResponse';
 import { CheckManagerResponse } from './generated/b4f-onboarding/CheckManagerResponse';
+import { ManagerInfoResponse } from './generated/b4f-onboarding/ManagerInfoResponse';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -52,6 +53,11 @@ export const OnboardingApi = {
     const result = await apiClient.verifyManagerUsingPOST({
       body: { companyTaxCode, userTaxCode },
     });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getManagerInfo: async (onboardingId: string): Promise<ManagerInfoResponse> => {
+    const result = await apiClient.checkManager_1({ onboardingId });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 

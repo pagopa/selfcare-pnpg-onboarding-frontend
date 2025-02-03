@@ -1,8 +1,5 @@
 import { Trans } from 'react-i18next';
-import {
-  storageTokenOps,
-  storageUserOps,
-} from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { Grid, Typography, Box, Button, Card } from '@mui/material';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { theme } from '@pagopa/mui-italia';
@@ -23,7 +20,6 @@ type Props = {
 function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading }: Props) {
   const { user } = useContext(UserContext);
   const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
-  const sessionToken = storageTokenOps.read();
   const createdAt = companyData?.onboardings
     ? (companyData?.onboardings[0].createdAt as unknown as string)
     : undefined;
@@ -35,41 +31,27 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading 
   });
   const addError = useErrorDispatcher();
 
-  const getFirstManagerInfo = async (tokenId: string, sessionToken: string) => {
+  const getFirstManagerInfo = async (tokenId: string) => {
     setLoading(true);
-    try {
-      if (tokenId) {
-        const response = await getManagerOfOnboarding(
-          '94c39ab1-e8ff-4608-8343-6c18eff720a1',
-          sessionToken
-        );
-
-        if (!response.ok) {
-          console.error('API call failed:', response.status, response.statusText);
-        }
-
-        const firstManagerResponse = await response.json();
-        console.log('firstManagerResponse', firstManagerResponse);
-        if (firstManagerResponse) {
-          setFirstManagerInfo(firstManagerResponse);
-        }
-      }
-    } catch (reason: any) {
-      addError({
-        id: 'ONBOARDING_PNPG_GETTING_FIRST_MANAGER_INFO_ERROR',
-        blocking: false,
-        error: reason,
-        techDescription: `An error occurred while getting first manager info: ${reason.message}`,
-        toNotify: true,
+    getManagerOfOnboarding(tokenId)
+      .then((res) => setFirstManagerInfo(res))
+      .catch((reason: any) => {
+        addError({
+          id: 'ONBOARDING_PNPG_GETTING_FIRST_MANAGER_INFO_ERROR',
+          blocking: false,
+          error: reason,
+          techDescription: `An error occurred while getting first manager info: ${reason.message}`,
+          toNotify: true,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    } finally {
-      setLoading(false);
-    }
   };
 
   useEffect(() => {
     if (Array.isArray(companyData?.onboardings) && companyData?.onboardings[0].tokenId) {
-      void getFirstManagerInfo(companyData?.onboardings[0].tokenId, sessionToken);
+      void getFirstManagerInfo(companyData?.onboardings[0].tokenId);
     }
   }, [companyData?.institutionId]);
 
