@@ -3,26 +3,57 @@ import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/stora
 import { Grid, Typography, Box, Button, Card } from '@mui/material';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { theme } from '@pagopa/mui-italia';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { Company, User } from '../../../types';
 import { MOCK_USER } from '../../../utils/constants';
 import { UserContext } from '../../../lib/context';
+import { getManagerOfOnboarding } from '../../../services/onboardingService';
+import { FirstManagerInfo } from '../../../utils/models/VerificationResult';
 
 type Props = {
   handleOnboardingUsersSubmit: () => Promise<void>;
   companyData?: Company;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function NotManagerButLR({ handleOnboardingUsersSubmit, companyData }: Props) {
+function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading }: Props) {
   const { user } = useContext(UserContext);
-  const loggedUser = MOCK_USER ? user as User : storageUserOps.read();
-
+  const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
   const createdAt = companyData?.onboardings
     ? (companyData?.onboardings[0].createdAt as unknown as string)
     : undefined;
-
   const date = createdAt?.split('T')[0] ?? '';
   const formattedDate = new Date(date).toLocaleDateString('it-IT');
+  const [firstManagerInfo, setFirstManagerInfo] = useState<FirstManagerInfo>({
+    name: '',
+    surname: '',
+  });
+  const addError = useErrorDispatcher();
+
+  const getFirstManagerInfo = async (tokenId: string) => {
+    setLoading(true);
+    getManagerOfOnboarding(tokenId)
+      .then((res) => setFirstManagerInfo(res))
+      .catch((reason: any) => {
+        addError({
+          id: 'ONBOARDING_PNPG_GETTING_FIRST_MANAGER_INFO_ERROR',
+          blocking: false,
+          error: reason,
+          techDescription: `An error occurred while getting first manager info: ${reason.message}`,
+          toNotify: true,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(companyData?.onboardings) && companyData?.onboardings[0].tokenId) {
+      void getFirstManagerInfo(companyData?.onboardings[0].tokenId);
+    }
+  }, [companyData?.institutionId]);
 
   return (
     <Box sx={{ minHeight: '52vh', position: 'static' }} display="flex" flexGrow={1}>
@@ -66,8 +97,8 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData }: Props) {
                 <Trans
                   i18nKey="onboarding.notManagerButLR.description2"
                   values={{
-                    name: loggedUser.name,
-                    surname: loggedUser.surname,
+                    name: firstManagerInfo.name ?? '',
+                    surname: firstManagerInfo.surname ?? '',
                   }}
                 >
                   {`Se necessario, puoi revocare l’accesso di {{ name }} {{ surname }} dalla sezione Utenti all’interno dell’area riservata.`}
@@ -92,14 +123,12 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData }: Props) {
             }}
           >
             <Grid item xs={6} ml={2} my={1}>
-              <Typography variant='body1' fontWeight={'bold'}>
+              <Typography variant="body1" fontWeight={'bold'}>
                 {companyData?.companyName}
               </Typography>
             </Grid>
             <Grid item xs={6} ml={2} mb={1}>
-            <Typography variant='body1'>
-                {companyData?.companyTaxCode}
-              </Typography>
+              <Typography variant="body1">{companyData?.companyTaxCode}</Typography>
             </Grid>
           </Card>
         </Grid>
