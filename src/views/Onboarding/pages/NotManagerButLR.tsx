@@ -79,8 +79,8 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading 
                 <Trans
                   i18nKey="onboarding.notManagerButLR.description1"
                   values={{
-                    name: loggedUser.name,
-                    surname: loggedUser.surname,
+                    name: firstManagerInfo.name,
+                    surname: firstManagerInfo.name,
                     date: formattedDate,
                   }}
                 >
