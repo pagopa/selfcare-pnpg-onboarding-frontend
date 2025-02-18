@@ -1,13 +1,10 @@
 import { Trans } from 'react-i18next';
-// import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { Grid, Typography, Box, Button, Card } from '@mui/material';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { theme } from '@pagopa/mui-italia';
-import { /* useContext */ useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
-import { Company, /* User */ } from '../../../types';
-// import { MOCK_USER } from '../../../utils/constants';
-// import { UserContext } from '../../../lib/context';
+import { Company } from '../../../types';
 import { getManagerOfOnboarding } from '../../../services/onboardingService';
 import { FirstManagerInfo } from '../../../utils/models/VerificationResult';
 
@@ -18,8 +15,6 @@ type Props = {
 };
 
 function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading }: Props) {
-  // const { user } = useContext(UserContext);
-  // const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
   const createdAt = companyData?.onboardings
     ? (companyData?.onboardings[0].createdAt as unknown as string)
     : undefined;
