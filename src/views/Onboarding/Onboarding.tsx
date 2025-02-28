@@ -35,10 +35,6 @@ function OnboardingComponent() {
     setActiveStep(activeStep + 1);
   };
 
-  const back = () => {
-    setActiveStep(activeStep - 1);
-  };
-
   const steps: Array<StepperStep> = [
     {
       label: 'Add company',
@@ -49,7 +45,6 @@ function OnboardingComponent() {
           forward: (companyInfo: Company) => {
             forwardWithData(companyInfo);
           },
-          back,
         }),
     },
     {

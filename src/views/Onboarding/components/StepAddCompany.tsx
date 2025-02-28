@@ -30,11 +30,10 @@ type Props = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   forward: any;
-  back: () => void;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
+function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
   const { t } = useTranslation();
 
   const [typedInput, setTypedInput] = useState<string>('');
@@ -294,7 +293,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward, back }: Props) {
         <Grid container my={4}>
           <OnboardingStepActions
             back={{
-              action: () => back,
+              action: () => window.location.assign(ENV.URL_FE.DASHBOARD),
               label: t('onboarding.insertFiscalCode.action.back'),
               disabled: false,
             }}
