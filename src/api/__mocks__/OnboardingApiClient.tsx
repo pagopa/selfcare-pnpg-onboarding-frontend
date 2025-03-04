@@ -50,6 +50,7 @@ export const mockedOnboardingApi = {
           json: async () => [
             {
               institutionId: 'retrievedPartyId01',
+              businessName: 'mockedBusinessName',
               onboardings: [
                 {
                   billing: 'mockedBilling',
