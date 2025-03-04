@@ -43,6 +43,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
     institutionId: undefined,
     onboardings: [],
     companyName: '',
+    businessName: '',
     companyEmail: '',
     origin: '',
   });
@@ -71,13 +72,14 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
         console.error('API call failed:', response.status, response.statusText);
         throw new Error('API call failed');
       }
-      const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+      const businesses = (await response.json()) as Array<InstitutionOnboardingResource | any>;
 
       if (Array.isArray(businesses) && businesses.length > 0) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
         setRetrievedCompanyData((prevData) => ({
           ...prevData,
           institutionId: businesses[0].institutionId,
+          businessName: businesses[0].businessName as string,
           onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
         }));
 
