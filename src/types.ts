@@ -49,6 +49,7 @@ export type Company = {
   companyTaxCode: string;
   institutionId?: string;
   onboardings?: Array<InstitutionOnboarding>;
+  businessName?: string;
   companyName?: string;
   companyEmail?: string;
   origin?: string;

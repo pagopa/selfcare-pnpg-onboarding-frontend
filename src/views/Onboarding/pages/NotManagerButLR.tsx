@@ -119,7 +119,7 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading 
           >
             <Grid item xs={6} ml={2} my={1}>
               <Typography variant="body1" fontWeight={'bold'}>
-                {companyData?.companyName}
+                {companyData?.companyName ?? companyData?.businessName}
               </Typography>
             </Grid>
             <Grid item xs={6} ml={2} mb={1}>

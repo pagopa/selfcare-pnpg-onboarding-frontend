@@ -24,13 +24,6 @@ function OnboardingComponent() {
     forward();
   };
 
-  const forwardWithInstitutionId = (institutionId?: string) => {
-    if (companyData) {
-      setCompanyData({ ...companyData, institutionId });
-    }
-    forward();
-  };
-
   const forward = () => {
     setActiveStep(activeStep + 1);
   };
@@ -67,14 +60,12 @@ function OnboardingComponent() {
         StepSubmit({
           setLoading,
           companyData,
-          forward: (institutionId?: string) => {
-            forwardWithInstitutionId(institutionId);
-          },
+          forward,
         }),
     },
     {
       label: 'Success',
-      Component: () => StepSuccess({ retrievedPartyId: companyData?.institutionId }),
+      Component: () => StepSuccess({ setLoading, companyData }),
     },
   ];
 

@@ -2,17 +2,13 @@ import { useContext, useEffect, useState } from 'react';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation, Trans } from 'react-i18next';
-import {
-  storageTokenOps,
-  storageUserOps,
-} from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
 import { uniqueId } from 'lodash';
 import { Company, StepperStepComponentProps, User } from '../../../types';
 import { ENV } from '../../../utils/env';
 import { onboardingPGSubmit } from '../../../services/onboardingService';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding/CompanyUserDto';
-import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
 import { UserContext } from '../../../lib/context';
 import { MOCK_USER } from '../../../utils/constants';
 
@@ -22,32 +18,18 @@ type Props = StepperStepComponentProps & {
   companyData?: Company;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 function StepSubmit({ setLoading, forward, companyData }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
   const { user } = useContext(UserContext);
   const [error, setError] = useState<boolean>();
-
+  const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
   const requestId = uniqueId();
 
-  const productId = 'prod-pn-pg';
-
   useEffect(() => {
-    const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
-    if (!error && companyData && loggedUser) {
+    if (companyData && loggedUser) {
       setLoading(true);
-      submit(companyData.companyTaxCode, productId, companyData, loggedUser)
-        .catch((reason) => {
-          addError({
-            id: 'ONBOARDING_PNPG_SUBMIT_ERROR',
-            blocking: false,
-            error: reason,
-            techDescription: `An error occurred while submit onboarding of ${companyData}`,
-            toNotify: true,
-          });
-        })
-        .finally(() => setLoading(false));
+      void submit(companyData.companyTaxCode, 'prod-pn-pg', companyData, loggedUser);
     }
   }, []);
 
@@ -57,7 +39,6 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
     selectedBusiness: Company,
     loggedUser: User
   ) => {
-    const sessionToken = storageTokenOps.read();
     setLoading(true);
     await onboardingPGSubmit(
       businessTaxCode,
@@ -78,46 +59,23 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
           productId,
         });
         setLoading(true);
-        if (process.env.REACT_APP_MOCK_API === 'true') {
-          forward();
-        } else {
-          try {
-            const response = await fetch(
-              `${ENV.URL_API.ONBOARDING}/v2/institutions/onboarding/active?taxCode=${selectedBusiness.companyTaxCode}&productId=${productId}`,
-              {
-                headers: {
-                  accept: '*/*',
-                  'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
-                  authorization: `Bearer ${sessionToken}`,
-                },
-                method: 'GET',
-                mode: 'cors',
-              }
-            );
-            const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
-            if (businesses[0]) {
-              forward(businesses[0].institutionId);
-            }
-          } catch (reason) {
-            addError({
-              id: 'RETRIEVING_ONBOARDED_PARTY_ERROR',
-              blocking: false,
-              error: reason as Error,
-              techDescription: `An error occurred while retrieving onboarded party of ${selectedBusiness}`,
-              toNotify: true,
-            });
-          }
-          setLoading(false);
-        }
+        forward();
       })
-      .catch(() => {
+      .catch((reason) => {
         setError(true);
         trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', {
           requestId,
           productId,
         });
-      });
-    setLoading(false);
+        addError({
+          id: 'ONBOARDING_PNPG_SUBMIT_ERROR',
+          blocking: false,
+          error: reason,
+          techDescription: `An error occurred while submit onboarding of ${companyData}`,
+          toNotify: true,
+        });
+      })
+      .finally(() => setLoading(false));
   };
 
   return error ? (

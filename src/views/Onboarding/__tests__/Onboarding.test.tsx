@@ -81,7 +81,12 @@ const renderComponent = () => {
           }}
         >
           <UserContext.Provider
-            value={{ user: loggedUser, setUser: () => {}, requiredLogin: false, setRequiredLogin: () => {} }}
+            value={{
+              user: loggedUser,
+              setUser: () => {},
+              requiredLogin: false,
+              setRequiredLogin: () => {},
+            }}
           >
             <Provider store={store}>
               <Onboarding />
@@ -103,22 +108,14 @@ test('Test: Success onboarding with data retrieved from IC', async () => {
   renderComponent();
   await executeStepAddCompany('12323231321');
   await executeStepBusinessData(false);
-
-  await waitFor(() => screen.getByText('Impresa registrata!'));
-
-  const signInButton = screen.getByText('Continua su SEND');
-  fireEvent.click(signInButton);
+  await executeStepSuccess();
 });
 
 test('Test: Success onboarding with data retrieved from AdE', async () => {
   renderComponent();
   await executeStepAddCompany('22334455667');
   await executeStepBusinessData(true);
-
-  await waitFor(() => screen.getByText('Impresa registrata!'));
-
-  const signInButton = screen.getByText('Continua su SEND');
-  fireEvent.click(signInButton);
+  await executeStepSuccess();
 });
 
 test('Test: NOT success onboarding with data retrieved from IC', async () => {
@@ -226,4 +223,36 @@ const executeStepBusinessData = async (notCertified?: boolean) => {
     expect(continueButton).toBeEnabled();
   }
   fireEvent.click(continueButton);
+};
+
+const executeStepSuccess = async () => {
+  const mockResponse = {
+    ok: true,
+    status: 200,
+    statusText: 'OK',
+    json: async () => [
+      {
+        institutionId: 'retrievedPartyId01',
+        businessName: 'mockedBusinessName',
+        onboardings: [
+          {
+            billing: 'mockedBilling',
+            createdAt: new Date('2024-10-15T03:24:00').toISOString(),
+            productId: 'prod-pn-pg',
+            status: 'ACTIVE',
+          },
+        ],
+      },
+    ],
+  } as Response;
+  let getInstitutionOnboardingInfoMock: jest.SpyInstance;
+  getInstitutionOnboardingInfoMock = jest.spyOn(
+    require('../../../services/onboardingService.ts'),
+    'getInstitutionOnboardingInfo'
+  );
+  getInstitutionOnboardingInfoMock.mockResolvedValueOnce(mockResponse);
+
+  await waitFor(() => screen.getByText('Impresa registrata!'));
+  const signInButton = screen.getByText('Continua su SEND');
+  fireEvent.click(signInButton);
 };
