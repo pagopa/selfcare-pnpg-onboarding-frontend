@@ -1,57 +1,25 @@
-import { RoleEnum } from '../../api/generated/b4f-onboarding-pnpg/PnPGUserDto';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { loggedUser } from '../../api/__mocks__/OnboardingApiClient';
-import { mockedBusinesses } from '../../api/__mocks__/OnboardingApiClient';
+import { RoleEnum } from '../../api/generated/b4f-onboarding/CompanyUserDto';
 import {
-  getBusinessLegalAddress,
+  checkManager,
+  getInstitutionOnboardingInfo,
   onboardingPGSubmit,
-  matchBusinessAndUser,
-  getBusinessesByUser,
+  onboardingUsersSubmit,
+  verifyManager,
 } from '../onboardingService';
 
 beforeEach(() => {
-  jest.spyOn(require('../onboardingService'), 'getBusinessesByUser');
-  jest.spyOn(require('../onboardingService'), 'getBusinessLegalAddress');
   jest.spyOn(require('../onboardingService'), 'onboardingPGSubmit');
-  jest.spyOn(require('../onboardingService'), 'matchBusinessAndUser');
-});
-
-test('Test: getBusinessesByUser', async () => {
-  const fetchGetBusinessesByUser = await getBusinessesByUser({
-    uid: loggedUser.uid,
-    email: loggedUser.email,
-    name: loggedUser.name,
-    surname: loggedUser.surname,
-    taxCode: loggedUser.taxCode,
-  });
-
-  expect(fetchGetBusinessesByUser).toMatchObject({
-    businesses: [
-      { businessName: 'BusinessName success', businessTaxId: '01113570442' },
-      { businessName: 'BusinessName alreadyOnboarded', businessTaxId: '01501320442' },
-      { businessName: 'BusinessName genericError', businessTaxId: '22222222222' },
-    ],
-    legalTaxId: '1234567',
-    requestDateTime: 'x',
-  });
-
-  expect(getBusinessesByUser).toBeCalledTimes(1);
-});
-
-test('Test: getBusinessLegalAddress', async () => {
-  const fetchGetBusinessLegalAddress = await getBusinessLegalAddress('77777777777');
-
-  expect(fetchGetBusinessLegalAddress).toMatchObject({
-    taxCode: '77777777777',
-    address: 'Via retrievedInstitutionLegalAddress1',
-    zipCode: '98765',
-  });
-
-  expect(getBusinessLegalAddress).toBeCalledTimes(1);
+  jest.spyOn(require('../onboardingService'), 'verifyManager');
+  jest.spyOn(require('../onboardingService'), 'checkManager');
+  jest.spyOn(require('../onboardingService'), 'onboardingUsersSubmit');
+  jest.spyOn(require('../onboardingService'), 'getInstitutionOnboardingInfo');
 });
 
 test('Test: onboardingPGSubmit', async () => {
   const fetchOnboardingPGSubmit = await onboardingPGSubmit(
-    mockedBusinesses[0].businessTaxId,
+    '35467654543',
     'prod-pn-pg',
     {
       taxCode: loggedUser.taxCode,
@@ -61,9 +29,9 @@ test('Test: onboardingPGSubmit', async () => {
       email: loggedUser.email,
     },
     {
-      businessName: mockedBusinesses[0].businessName,
-      businessTaxId: mockedBusinesses[0].businessTaxId,
-      certified: false,
+      companyName: 'mockedBusiness1',
+      companyTaxCode: '35467654543',
+      origin: 'INFOCAMERE',
     },
     'mockedemail@mock.it'
   );
@@ -73,10 +41,32 @@ test('Test: onboardingPGSubmit', async () => {
   expect(onboardingPGSubmit).toBeCalledTimes(1);
 });
 
-test('Test: matchBusinessAndUser', async () => {
-  const fetchMatchBusinessAndUser = await matchBusinessAndUser('55555555555', loggedUser);
+test('Test: verifyManager', async () => {
+  const fetchVerifyManager = await verifyManager('12323231321', loggedUser.taxCode, storageTokenOps.read()) as Response;
+  const result = await fetchVerifyManager.json();
+  expect(result).toMatchObject(
+    expect.objectContaining({ companyName: 'Business retrieved from IC', origin: 'INFOCAMERE' })
+  );
 
-  expect(fetchMatchBusinessAndUser).toBeTruthy();
+  expect(verifyManager).toBeCalledTimes(1);
+});
 
-  expect(matchBusinessAndUser).toBeCalledTimes(1);
+test('Test: checkManager', async () => {
+  const fetchCheckManager1 = await checkManager(loggedUser, '12323231321');
+
+  expect(fetchCheckManager1).toMatchObject({ result: true });
+
+  expect(checkManager).toBeCalledTimes(1);
+
+  const fetchCheckManager2 = await checkManager(loggedUser, '55555555555');
+
+  expect(fetchCheckManager2).toMatchObject({ result: false });
+
+  expect(checkManager).toBeCalledTimes(2);
+});
+
+test('Test: onboardingUsersSubmit', async () => {
+  const fetchOnboardingUsersSubmit = await onboardingUsersSubmit('11223344523', true, loggedUser);
+
+  expect(fetchOnboardingUsersSubmit).toBeTruthy();
 });

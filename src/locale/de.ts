@@ -1,5 +1,5 @@
 export default {
-  loadingText: 'Wir überprüfen deine Daten',
+  loadingText: 'Wir prüfen gerade deine Daten',
   chooseBusiness: {
     selectFromBusinessList: {
       title: 'Welches Unternehmen möchtest du registrieren?',
@@ -8,7 +8,7 @@ export default {
     },
     selectReleatedBusiness: {
       title: 'Registriere dein Unternehmen',
-      subTitle: 'Dies ist das Unternehmen, dessen gesetzlicher Vertreter du bist. ',
+      subTitle: 'Dies ist das Unternehmen, dessen Rechtsvertreter du bist. ',
     },
     registerBusiness: 'Unternehmen registrieren',
     registerBusinessByTaxCodeLink:
@@ -18,7 +18,7 @@ export default {
     title: 'Welches Unternehmen möchtest du registrieren?',
     subTitle: 'Gib die Steuernummer des Unternehmens ein, das du <1 />registrieren möchtest.',
     textfieldLabel: 'Steuernummer',
-    forwardAction: 'Fortfahren',
+    forwardAction: 'Weiter',
   },
   insertBusinessEmail: {
     title: 'Wie lautet die PEC-Adresse des Unternehmens?',
@@ -26,15 +26,15 @@ export default {
     pecLabel: 'PEC-Adresse',
   },
   insertBusinessData: {
-    title: 'Bitte gib deine Firmendaten ein',
+    title: 'Gib die Daten deines Unternehmens ein.',
     subTitle:
       'Gib den Firmennamen und die PEC-Adresse des Unternehmens ein, das du <1 />registrieren möchtest.',
     businessNameLabel: 'Firmenname',
     pecEmailLabel: 'PEC-Adresse',
     invalidEmail: 'Die eingegebene E-Mail-Adresse ist falsch',
-    invalidBusinessName: 'Bitte gib einen Firmennamen ein',
+    invalidBusinessName: 'Eine Firmenbezeichnung eingeben',
     backAction: 'Zurück',
-    forwardAction: 'Fortfahren',
+    forwardAction: 'Weiter',
   },
   cannotRegisterBusiness: {
     title: 'Du kannst dieses Unternehmen nicht registrieren <1/>',
@@ -55,27 +55,27 @@ export default {
     close: 'Schließen',
   },
   invalidInputFormat: {
-    title: 'Die Steuernummer/USt-IdNr. ist nicht korrekt',
-    message: 'Gehe zurück, stelle sicher, dass es korrekt ist, und gib sie erneut <1 /> ein.',
+    title: 'Die Steuernummer/USt-IdNr. ist falsch',
+    message: 'Gehe zurück, vergewissere dich, dass sie richtig ist und gib sie <1 /> erneut ein.',
     goBack: 'Zurück',
   },
   outcome: {
     success: {
-      title: 'Unternehmen bereits registriert!',
-      description: 'Melde dich an, um die Bescheide aufzurufen und andere Benutzer hinzuzufügen.',
+      title: 'Unternehmen registriert!',
+      description: 'Melde dich an, um die Zustellungen zu lesen und andere Benutzer hinzuzufügen.',
       signIn: 'Anmelden',
     },
     error: {
       title: 'Unternehmen nicht registriert',
       description:
-        'Aufgrund eines technischen Problems können wir das Unternehmen nicht <1 /> registrieren. Versuche es später noch einmal.',
-      close: 'Schließen',
+        'Aufgrund eines technischen Problems können wir das Unternehmen <1 /> nicht registrieren. Bitte später erneut versuchen.',
+      close: 'Beenden',
     },
   },
   app: {
     sessionModal: {
       title: 'Sitzung abgelaufen',
-      message: 'Du wirst zur Login-Seite weitergeleitet...',
+      message: 'Du wirst zur Anmeldeseite weitergeleitet...',
     },
   },
 };

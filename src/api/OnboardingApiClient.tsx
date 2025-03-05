@@ -6,14 +6,15 @@ import {
 import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
 import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import { ENV } from '../utils/env';
-import { Business, LegalEntity, User } from '../types';
+import { Company, User } from '../types';
 import { store } from '../redux/store';
-import { createClient, WithDefaultsT } from './generated/b4f-onboarding-pnpg/client';
-import { InstitutionTypeEnum } from './generated/b4f-onboarding-pnpg/CompanyOnboardingDto';
-import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding-pnpg/CompanyUserDto';
-import { MatchInfoResultResource } from './generated/b4f-onboarding-pnpg/MatchInfoResultResource';
-import { InstitutionLegalAddressResource } from './generated/b4f-onboarding-pnpg/InstitutionLegalAddressResource';
-import { InstitutionOnboardingInfoResource } from './generated/b4f-onboarding-pnpg/InstitutionOnboardingInfoResource';
+import { createClient, WithDefaultsT } from './generated/b4f-onboarding/client';
+import { InstitutionTypeEnum } from './generated/b4f-onboarding/CompanyOnboardingDto';
+import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding/CompanyUserDto';
+import { InstitutionOnboardingResource } from './generated/b4f-onboarding/InstitutionOnboardingResource';
+import { VerifyManagerResponse } from './generated/b4f-onboarding/VerifyManagerResponse';
+import { CheckManagerResponse } from './generated/b4f-onboarding/CheckManagerResponse';
+import { ManagerInfoResponse } from './generated/b4f-onboarding/ManagerInfoResponse';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -25,7 +26,7 @@ const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   };
 
 const apiClient = createClient({
-  baseUrl: ENV.URL_API.ONBOARDING,
+  baseUrl: ENV.URL_API.ONBOARDING_V2,
   basePath: '',
   fetchApi: buildFetchApi(),
   withDefaults: withBearerAndInstitutionId,
@@ -45,8 +46,48 @@ const onRedirectToLogin = () =>
   );
 
 export const OnboardingApi = {
-  getBusinessesByUser: async (): Promise<LegalEntity> => {
-    const result = await apiClient.getInstitutionsFromInfocamereUsingGET({});
+  verifyManager: async (
+    companyTaxCode: string,
+    userTaxCode: string
+  ): Promise<VerifyManagerResponse> => {
+    const result = await apiClient.verifyManagerUsingPOST({
+      body: { companyTaxCode, userTaxCode },
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getManagerInfo: async (onboardingId: string): Promise<ManagerInfoResponse> => {
+    const result = await apiClient.checkManager_1({ onboardingId });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getInstitutionOnboardingInfo: async (
+    taxCode: string,
+    productId: string
+  ): Promise<Array<InstitutionOnboardingResource>> => {
+    const result = await apiClient.getActiveOnboardingUsingGET({
+      taxCode,
+      productId,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  checkManager: async (loggedUser: User, taxCode?: string): Promise<CheckManagerResponse> => {
+    const result = await apiClient.checkManager({
+      body: {
+        institutionType: 'PG' as InstitutionTypeEnum,
+        productId: 'prod-pn-pg',
+        taxCode,
+        users: [
+          {
+            name: loggedUser.name,
+            surname: loggedUser.surname,
+            taxCode: loggedUser.taxCode,
+            role: 'MANAGER' as RoleEnum,
+          },
+        ],
+      },
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
@@ -54,16 +95,16 @@ export const OnboardingApi = {
     businessId: string,
     productId: string,
     loggedUser: CompanyUserDto,
-    selectedBusiness: Business,
+    selectedBusiness: Company,
     digitalAddress: string
   ): Promise<boolean> => {
     const result = await apiClient.onboardingUsingPOST_2({
       body: {
         productId,
         billingData: {
-          certified: selectedBusiness.certified,
-          businessName: selectedBusiness.businessName,
-          taxCode: selectedBusiness.businessTaxId,
+          certified: selectedBusiness.origin === 'INFOCAMERE',
+          businessName: selectedBusiness.companyName ?? '',
+          taxCode: selectedBusiness.companyTaxCode,
           digitalAddress,
         },
         institutionType: 'PG' as InstitutionTypeEnum,
@@ -82,40 +123,15 @@ export const OnboardingApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  getBusinessLegalAddress: async (businessId: string): Promise<InstitutionLegalAddressResource> => {
-    const result = await apiClient.postVerificationLegalAddressUsingPOST({
+  onboardingUsers: async (taxCode: string, certified: boolean, user: User): Promise<boolean> => {
+    const result = await apiClient.onboardingUsersUsingPOST({
       body: {
-        taxCode: businessId,
+        certified,
+        institutionType: 'PG' as InstitutionTypeEnum,
+        productId: 'prod-pn-pg',
+        taxCode,
+        users: [{ ...user, role: 'MANAGER' as RoleEnum }],
       },
-    });
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
-
-  matchBusinessAndUser: async (
-    businessId: string,
-    loggedUser: User
-  ): Promise<MatchInfoResultResource> => {
-    const result = await apiClient.postVerificationMatchUsingPOST({
-      body: {
-        taxCode: businessId,
-        userDto: {
-          taxCode: loggedUser.taxCode,
-          name: loggedUser.name,
-          surname: loggedUser.surname,
-          role: 'MANAGER' as RoleEnum,
-        },
-      },
-    });
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
-
-  getInstitutionOnboardingInfo: async (
-    taxCode: string,
-    productId: string
-  ): Promise<InstitutionOnboardingInfoResource> => {
-    const result = await apiClient.getInstitutionOnboardingInfoUsingGET_1({
-      externalInstitutionId: taxCode,
-      productId,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

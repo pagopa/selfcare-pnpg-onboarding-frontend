@@ -1,5 +1,5 @@
 export default {
-  loadingText: 'Pregledujemo vaše podatke',
+  loadingText: 'Preverjamo vaše podatke',
   chooseBusiness: {
     selectFromBusinessList: {
       title: 'Katero podjetje želite registrirati?',
@@ -8,7 +8,7 @@ export default {
     },
     selectReleatedBusiness: {
       title: 'Registrirajte svoje podjetje',
-      subTitle: 'To je podjetje, za katerega ste zakoniti zastopnik. ',
+      subTitle: 'To je podjetje, za katerega je navedeno, da ste njegov pravni zastopnik. ',
     },
     registerBusiness: 'Registrirajte podjetje',
     registerBusinessByTaxCodeLink:
@@ -18,22 +18,22 @@ export default {
     title: 'Katero podjetje želite registrirati?',
     subTitle: 'Vnesite davčno številko podjetja, ki ga želite <1 />registrirati.',
     textfieldLabel: 'Davčna številka',
-    forwardAction: 'Nadaljujte',
+    forwardAction: 'Nadaljuj',
   },
   insertBusinessEmail: {
-    title: 'Kakšen je PEC podjetja?',
-    subTitle: 'Vnesite PEC podjetja, ki ga želite registrirati.',
-    pecLabel: 'PEC',
+    title: 'Kakšen je naslov PEC podjetja?',
+    subTitle: 'Vnesite naslov PEC podjetja, ki ga želite registrirati.',
+    pecLabel: 'Naslov PEC',
   },
   insertBusinessData: {
-    title: 'Vnesite podatke o vašem podjetju',
+    title: 'Vnesite podatke o podjetju',
     subTitle: 'Vnesite ime podjetja in PEC podjetja, ki ga želite <1 />registrirati.',
-    businessNameLabel: 'Ime podjetja',
-    pecEmailLabel: 'PEC',
+    businessNameLabel: 'Naziv podjetja',
+    pecEmailLabel: 'Naslov PEC',
     invalidEmail: 'Vneseni e-poštni naslov ni pravilen',
-    invalidBusinessName: 'Vnesite ime podjetja',
+    invalidBusinessName: 'Vnesite naziv svojega podjetja',
     backAction: 'Nazaj',
-    forwardAction: 'Nadaljujte',
+    forwardAction: 'Nadaljuj',
   },
   cannotRegisterBusiness: {
     title: 'Tega podjetja ne morete registrirati <1/>',
@@ -55,13 +55,13 @@ export default {
   },
   invalidInputFormat: {
     title: 'Davčna številka/številka za DDV ni pravilna',
-    message: 'Vrnite se nazaj, preverite, ali je pravilna in jo vnesite <1 /> znova.',
-    goBack: 'Vrni se nazaj',
+    message: 'Vrnite se nazaj in se prepričajte, da je pravilna, in jo znova <1 /> vnesite.',
+    goBack: 'Pojdi nazaj',
   },
   outcome: {
     success: {
-      title: 'Podjetje je že registrirano!',
-      description: 'Prijavite se, če želite prebrati obvestila in dodati več uporabnikov.',
+      title: 'Podjetje je registrirano!',
+      description: 'Prijavite se za branje obvestil in dodajanje drugih uporabnikov.',
       signIn: 'Prijava',
     },
     error: {
