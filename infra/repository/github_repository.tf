@@ -41,4 +41,6 @@ module "repository" {
   github = {
     repository = "selfcare-pnpg-onboarding-frontend"
   }
+
+  identity_component = "fe"
 }
