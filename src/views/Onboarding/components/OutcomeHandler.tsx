@@ -56,10 +56,16 @@ export default function OutcomeHandler({
                 style={{ color: theme.palette.primary.main }}
               />
             ),
+            7: (
+              <a
+                href="https://www.agenziaentrate.gov.it/portale/home"
+                style={{ color: theme.palette.primary.main }}
+              />
+            ),
           }}
         >
           {
-            'L’impresa non ha ancora un profilo su SEND, ma non puoi <1 />registrarla perché non risulti essere Legale Rappresentante <3 />oppure perché l’impresa non è presente nei <5>registri pubblici</5>.'
+            'Non puoi creare un profilo dell’impresa su SEND perché non <1 />risulti suo Legale Rappresentante o perché l’impresa non è <3 />presente né nel <5>Registro delle Imprese di InfoCamere</5> o - per gli <1 />enti non tenuti ad iscriversi al predetto registro - nell’archivio <3 /> dell’Anagrafe Tributaria dell’ <7>Agenzia delle Entrate.</7>'
           }
         </Trans>
       }
