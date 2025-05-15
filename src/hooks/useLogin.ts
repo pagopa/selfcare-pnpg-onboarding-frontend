@@ -9,7 +9,7 @@ import { ENV } from '../utils/env';
 import { UserContext } from '../lib/context';
 
 export const testToken =
-  'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imp3dF9hZDowYToxMTowNDozMjo4Mjo4MTo3Mjo5OTozNTozODpjNzo5NTo2YzpjNjo2NCJ9.eyJlbWFpbCI6ImRhbnRlLmFsaWdoaWVyaUBkaXZpbmEuY28iLCJmYW1pbHlfbmFtZSI6IkFsaWdoaWVyaSIsImZpc2NhbF9udW1iZXIiOiJMR0hETlQwMFAxNEQ2MTJEIiwibmFtZSI6IkRhbnRlIiwiZnJvbV9hYSI6ZmFsc2UsInVpZCI6IjkxY2U3NTU3LTlkMzEtNDI3MC1hZmIzLTVlMGM0MmIzMDJmZCIsImxldmVsIjoiTDIiLCJpYXQiOjE2ODI1ODAzOTAsImV4cCI6MTY4MjYxMjc5MCwiYXVkIjoiYXBpLXBucGcuZGV2LnNlbGZjYXJlLnBhZ29wYS5pdCIsImlzcyI6IlNQSUQiLCJqdGkiOiJfMDk0MWNiZDczOWU5MWE5Yzg3ZmIifQ.P9Bzg9nv5aQz1keCioGR_mDnW8rJ43gAm3kdd_aiiT9pgtth18oynYgupADlCqeF-OSeq3YTNIBcWVtMY9-WdjNFwPreEaXYtg7fBww4MZ8QjUGBSWzfuPWYeafBmT8ROz4u82q8G4o4ki6bAqb2Rk2oha4jTkCEvPXzfA-Z2W5bVXunk0HttnFEMppoCSWBUfjbiA5JIccKoo_Yx_mQbC9glY2b1YFds1R-Ii7uTs5CBXBMKAux6cvvzurn2mJ0MjRTTXW8YAEy8-mjK9xE-vhSxAWiVlrYsdp98eTiWDOOdkRwsPCwTYMvlERxWeGyXbc9ZWBjlmoyebiU282BIA';
+  'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Imp3dF9iNjowMjozMzowMzpjYTpmZTo1MzowODoyNjpmMTpjYzpiZTo1ZTowNjplNzowYyJ9.eyJmYW1pbHlfbmFtZSI6IkNhdG9uZSIsImZpc2NhbF9udW1iZXIiOiJDVE5NQ1A4MEEwMUg1MDFNIiwibmFtZSI6Ik1hcmNvIFBvcmNpbyIsInNwaWRfbGV2ZWwiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9TcGlkTDIiLCJmcm9tX2FhIjpmYWxzZSwidWlkIjoiNzFkMWZjMzUtZGViZi00NzYzLTg3OWUtMTkzMjllNzdjYTgzIiwibGV2ZWwiOiJMMiIsImlhdCI6MTc0NzMxMzIyNCwiZXhwIjoxNzQ3MzQ1NjI0LCJhdWQiOiJhcGktcG5wZy5kZXYuc2VsZmNhcmUucGFnb3BhLml0IiwiaXNzIjoiU1BJRCIsImp0aSI6Il9hZGU2MzVjYWYyMzA3M2YxZTBjZiJ9.nN3Yy_qisssa2mwEj_xXhxFFNbZsLQnVEj6gi15c93KJQDJYz3nN8VtGGFFQQ7QTBBVlVM4AyOiIV7NhCWT_HxOi3OUGPPZ9LyaMovqL25vdxrWaBKKGtImVyd_rebJCNrrNeC6cibebINumhBsy4R6ysaLhXdXeSJnzjwGgjnpnqsU8nHfuV27uwZ3le9qA9LJSRxSKfUXzVEoZd4-xK9Bp6mu4-YUw40iF8_fO7XMKjy7ELNty2SwEL9jbBpwVMA1BJOsaM5q7ZEIorsBDbdtKesIvStczqpeSDAycH61f1QSe-Oj0mkfGR_kOeMS1ifANoXZo9Hibvvy4fUtraQ';
 
 export const useLogin = () => {
   const { setUser } = useContext(UserContext);
@@ -22,11 +22,10 @@ export const useLogin = () => {
   const attemptSilentLogin = async () => {
     if (MOCK_USER) {
       setUser({
-        uid: '0',
-        taxCode: 'LGGLGD00A00A000A',
-        name: 'loggedName',
-        surname: 'loggedSurname',
-        email: 'loggedEmail@aa.aa',
+        uid: '71d1fc35-debf-4763-879e-19329e77ca83',
+        taxCode: 'CTNMCP80A01H501M',
+        name: 'Marco Porcio',
+        surname: 'Catone'
       });
       storageTokenOps.write(testToken);
       return;

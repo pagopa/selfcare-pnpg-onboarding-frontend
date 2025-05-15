@@ -5,7 +5,11 @@ import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/stora
 import { useState } from 'react';
 import { ENV } from '../../../utils/env';
 import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
-import { checkManager, onboardingUsersSubmit } from '../../../services/onboardingService';
+import {
+  checkManager,
+  onboardingUsersSubmit,
+  searchUser,
+} from '../../../services/onboardingService';
 import { Company } from '../../../types';
 
 type Props = {
@@ -17,7 +21,7 @@ type Props = {
 export default function AlreadyOnboarded({ companyData, setLoading, back }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
-
+  // const [userId, setUserId] = useState<string>();
   const loggedUser = storageUserOps.read();
 
   const [addManagerModal, setAddManagerModal] = useState<boolean>();
@@ -30,15 +34,17 @@ export default function AlreadyOnboarded({ companyData, setLoading, back }: Prop
   const time = createdAt?.split('T')[1].split('.')[0];
 
   const verifyManager = async () => {
-    await checkManager(loggedUser, companyData?.companyTaxCode)
-      .then((res) => {
-        if (res.result) {
-          window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`);
-        } else {
-          setAddManagerModal(true);
-        }
-      })
-      .catch((reason) => reason);
+    await searchUser({ taxCode: loggedUser.taxCode }).then((res: any) => {
+      checkManager(res, companyData?.companyTaxCode)
+        .then((res) => {
+          if (res.result) {
+            window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`);
+          } else {
+            setAddManagerModal(true);
+          }
+        })
+        .catch((reason) => reason);
+    });
   };
 
   const addManager = async () => {

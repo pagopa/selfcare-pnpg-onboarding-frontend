@@ -6,6 +6,8 @@ import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/I
 import { CheckManagerResponse } from '../api/generated/b4f-onboarding/CheckManagerResponse';
 import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyManagerResponse';
 import { ENV } from '../utils/env';
+import { UserTaxCodeDto } from '../api/generated/b4f-onboarding/UserTaxCodeDto';
+import { UserId } from '../api/generated/b4f-onboarding/UserId';
 
 export const getInstitutionOnboardingInfo = async (
   taxCode: string,
@@ -54,15 +56,24 @@ export const verifyManager = async (
   }
 };
 
+export const searchUser = async (taxCode: UserTaxCodeDto): Promise<UserId> => {
+  /* istanbul ignore if */
+  if (process.env.REACT_APP_MOCK_API === 'true') {
+    return mockedOnboardingApi.searchUserId(taxCode);
+  } else {
+    return OnboardingApi.searchUser(taxCode);
+  }
+};
+
 export const checkManager = async (
-  loggedUser: User,
+  userId: UserId,
   taxCode?: string
 ): Promise<CheckManagerResponse> => {
   /* istanbul ignore if */
   if (process.env.REACT_APP_MOCK_API === 'true') {
     return mockedOnboardingApi.checkManager(taxCode);
   } else {
-    return OnboardingApi.checkManager(loggedUser, taxCode);
+    return OnboardingApi.checkManager(userId.id, taxCode);
   }
 };
 

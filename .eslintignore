@@ -7,3 +7,5 @@ Dangerfile.ts
 src/reportWebVitals.ts
 index.d.ts
 **/generated/**
+openApi/scripts/api-b4f-onboarding_fixPreGen.js
+openApi/scripts/api-b4f-onboarding_fixPostGen.js

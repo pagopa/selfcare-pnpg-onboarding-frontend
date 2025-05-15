@@ -30,7 +30,7 @@ export type User = {
   taxCode: string;
   name: string;
   surname: string;
-  email: string;
+  email?: string;
 };
 
 export type AlertDialogActions = {

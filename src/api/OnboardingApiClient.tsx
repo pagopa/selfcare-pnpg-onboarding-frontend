@@ -15,13 +15,15 @@ import { InstitutionOnboardingResource } from './generated/b4f-onboarding/Instit
 import { VerifyManagerResponse } from './generated/b4f-onboarding/VerifyManagerResponse';
 import { CheckManagerResponse } from './generated/b4f-onboarding/CheckManagerResponse';
 import { ManagerInfoResponse } from './generated/b4f-onboarding/ManagerInfoResponse';
+import { UserTaxCodeDto } from './generated/b4f-onboarding/UserTaxCodeDto';
+import { UserId } from './generated/b4f-onboarding/UserId';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
     const token = storageTokenOps.read();
     return wrappedOperation({
       ...params,
-      bearerAuth: `${token}`,
+      bearerAuth: `Bearer ${token}`,
     });
   };
 
@@ -46,18 +48,15 @@ const onRedirectToLogin = () =>
   );
 
 export const OnboardingApi = {
-  verifyManager: async (
-    companyTaxCode: string,
-    userTaxCode: string
-  ): Promise<VerifyManagerResponse> => {
+  verifyManager: async (companyTaxCode: string): Promise<VerifyManagerResponse> => {
     const result = await apiClient.verifyManagerUsingPOST({
-      body: { companyTaxCode, userTaxCode },
+      body: { companyTaxCode },
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
   getManagerInfo: async (onboardingId: string): Promise<ManagerInfoResponse> => {
-    const result = await apiClient.checkManager_1({ onboardingId });
+    const result = await apiClient.getManagerInfo({ onboardingId });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
@@ -72,20 +71,18 @@ export const OnboardingApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  checkManager: async (loggedUser: User, taxCode?: string): Promise<CheckManagerResponse> => {
+  searchUser: async (taxCode: UserTaxCodeDto): Promise<UserId> => {
+    const result = await apiClient.searchUserId({ body: taxCode });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  checkManager: async (userId: string, taxCode?: string): Promise<CheckManagerResponse> => {
     const result = await apiClient.checkManager({
       body: {
         institutionType: 'PG' as InstitutionTypeEnum,
         productId: 'prod-pn-pg',
         taxCode,
-        users: [
-          {
-            name: loggedUser.name,
-            surname: loggedUser.surname,
-            taxCode: loggedUser.taxCode,
-            role: 'MANAGER' as RoleEnum,
-          },
-        ],
+        userId,
       },
     });
     return extractResponse(result, 200, onRedirectToLogin);
@@ -98,7 +95,7 @@ export const OnboardingApi = {
     selectedBusiness: Company,
     digitalAddress: string
   ): Promise<boolean> => {
-    const result = await apiClient.onboardingUsingPOST_2({
+    const result = await apiClient.institutionOnboardingCompany({
       body: {
         productId,
         billingData: {
@@ -124,7 +121,7 @@ export const OnboardingApi = {
   },
 
   onboardingUsers: async (taxCode: string, certified: boolean, user: User): Promise<boolean> => {
-    const result = await apiClient.onboardingUsersUsingPOST({
+    const result = await apiClient.onboardingUsersPgUsingPOST({
       body: {
         certified,
         institutionType: 'PG' as InstitutionTypeEnum,
