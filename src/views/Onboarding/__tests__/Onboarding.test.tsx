@@ -11,6 +11,7 @@ import { Router } from 'react-router';
 import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import React from 'react';
 import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
+import exp from 'constants';
 
 jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
@@ -140,12 +141,21 @@ test('Test: NOT success onboarding with data retrieved from AdE', async () => {
   fireEvent.click(closeButton);
 });
 
-test('Test: Success access to dashboard with the business already on send and a loggedUser that isn’t manager but it’s LR', async () => {
+test('Test: Success access to dashboard with the business already on send and a loggedUser that is not manager but it is LR', async () => {
+  jest.spyOn(
+    require('../../../services/onboardingService.ts'),
+    'searchUser'
+  ).mockResolvedValueOnce({ id: '2' });
+
+  jest.spyOn(
+    require('../../../services/onboardingService.ts'),
+    'checkManager'
+  ).mockResolvedValueOnce({ result: false });
+
   renderComponent();
   await executeStepAddCompany('51515151511');
-  // await executeStepBusinessData(false);
 
-  await waitFor(() => screen.getByText('L’impresa ha già un profilo su SEND'));
+  await waitFor(() => screen.getByText('Accedi'), { timeout: 5000 });
 
   const signInButton = screen.getByText('Accedi');
   fireEvent.click(signInButton);

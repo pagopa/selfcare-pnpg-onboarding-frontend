@@ -40,8 +40,7 @@
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "generate": "npm-run-all generate:*",
     "clean:api-b4f-onboarding": "rimraf src/api/generated/b4f-onboarding && rimraf openApi/generated-onboarding",
-    "generate:api-b4f-onboarding": "yarn run clean:api-b4f-onboarding && mkdirp openApi/generated-onboarding && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/onboarding-api-docs.json > openApi/generated-onboarding/onboarding-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated-onboarding/onboarding-swagger20.json && gen-api-models --api-spec openApi/onboarding-api-docs.json --out-dir src/api/generated/b4f-onboarding --no-strict --request-types --response-decoders --client && node openApi/scripts/api-b4f-onboarding_fixPostGen.js"
-  },
+"generate:api-b4f-onboarding": "yarn run clean:api-b4f-onboarding && mkdirp openApi/generated-onboarding && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/onboarding-api-docs.json > openApi/generated-onboarding/onboarding-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated-onboarding/onboarding-swagger20.json && node openApi/scripts/api-b4f-onboarding_fixPreGen.js && gen-api-models --api-spec openApi/generated-onboarding/onboarding-swagger20.json --out-dir src/api/generated/b4f-onboarding --no-strict --request-types --response-decoders --client && node openApi/scripts/api-b4f-onboarding_fixPostGen.js"  },
   "eslintConfig": {
     "extends": [
       "react-app",

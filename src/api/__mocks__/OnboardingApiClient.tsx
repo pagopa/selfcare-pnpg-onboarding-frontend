@@ -2,6 +2,8 @@ import { User } from '../../types';
 import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
 import { VerifyManagerResponse } from '../generated/b4f-onboarding/VerifyManagerResponse';
 import { CheckManagerResponse } from '../generated/b4f-onboarding/CheckManagerResponse';
+import { UserId } from '../generated/b4f-onboarding/UserId';
+import { UserTaxCodeDto } from '../generated/b4f-onboarding/UserTaxCodeDto';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -76,6 +78,15 @@ export const mockedOnboardingApi = {
           }),
         } as Response;
         return new Promise((resolve) => resolve(errorResponse));
+    }
+  },
+
+  searchUserId: async (taxCode: UserTaxCodeDto): Promise<UserId> => {
+    switch (taxCode.taxCode) {
+      case 'CTNMCP80A01H501M':
+        return new Promise((resolve) => resolve({ id: '2' }));
+      default:
+        throw new Error(`Unexpected mocked HTTP status! Expected 201 obtained 404`);
     }
   },
 

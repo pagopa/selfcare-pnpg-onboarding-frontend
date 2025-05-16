@@ -16,6 +16,7 @@ import {
   checkManager,
   getInstitutionOnboardingInfo,
   onboardingUsersSubmit,
+  searchUser,
   verifyManager,
 } from '../../../services/onboardingService';
 import { UserContext } from '../../../lib/context';
@@ -24,7 +25,9 @@ import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboar
 import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
 import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import { ENV } from '../../../utils/env';
+import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
 import OutcomeHandler from './OutcomeHandler';
+// import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
 
 type Props = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -47,6 +50,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
     companyEmail: '',
     origin: '',
   });
+  // const [userId, setUserId] = useState<string>();
   const { user } = useContext(UserContext);
   const requestId = uniqueId();
   const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
@@ -83,13 +87,18 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
           onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
         }));
 
-        await checkManager(loggedUser, typedInput).then(async (res) => {
-          if (res.result) {
-            setOutcome('alreadyOnboarded');
-          } else {
-            await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
-          }
-        });
+        void searchUser({ taxCode: loggedUser.taxCode })
+          .then((res: UserId) => {
+            console.log('res', res);
+            void checkManager(res, typedInput).then(async (res) => {
+              if (res.result) {
+                setOutcome('alreadyOnboarded');
+              } else {
+                await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+              }
+            });
+          })
+          .catch((err: Error) => console.error(err));
       } else {
         console.warn('No businesses found in response');
         await verifyCompanyManager(typedInput, loggedUser.taxCode);
