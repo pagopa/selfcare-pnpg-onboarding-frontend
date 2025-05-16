@@ -82,6 +82,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
         trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
         setRetrievedCompanyData((prevData) => ({
           ...prevData,
+          companyTaxCode: taxCode,
           institutionId: businesses[0].institutionId,
           businessName: businesses[0].businessName as string,
           onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
