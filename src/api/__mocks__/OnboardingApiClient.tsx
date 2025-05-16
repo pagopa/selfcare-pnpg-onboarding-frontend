@@ -83,9 +83,7 @@ export const mockedOnboardingApi = {
 
   searchUserId: async (taxCode: UserTaxCodeDto): Promise<UserId> => {
     switch (taxCode.taxCode) {
-      case '12323231321':
-        return new Promise((resolve) => resolve({ id: '1' }));
-      case '55555555555':
+      case 'CTNMCP80A01H501M':
         return new Promise((resolve) => resolve({ id: '2' }));
       default:
         throw new Error(`Unexpected mocked HTTP status! Expected 201 obtained 404`);
