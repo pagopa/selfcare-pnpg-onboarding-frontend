@@ -90,16 +90,39 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
 
         void searchUser({ taxCode: loggedUser.taxCode })
           .then((res: UserId) => {
-            console.log('res', res);
-            void checkManager(res, typedInput).then(async (res) => {
-              if (res.result) {
-                setOutcome('alreadyOnboarded');
-              } else {
-                await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
-              }
-            });
+            if (res.id) {
+              void checkManager(res, typedInput)
+                .then(async (res) => {
+                  if (res.result) {
+                    setOutcome('alreadyOnboarded');
+                  } else {
+                    await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+                  }
+                })
+                .catch((error) => {
+                  void verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+                  addError({
+                    id: 'CHECK_MANAGER_ERROR',
+                    blocking: false,
+                    error: error as Error,
+                    techDescription: 'Failed to check manager status',
+                    toNotify: true,
+                  });
+                });
+            } else {
+              void verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+            }
           })
-          .catch((err: Error) => console.error(err));
+          .catch((reason) => {
+            void verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+            addError({
+              id: 'SEARCH_USER_ERROR',
+              blocking: false, // Cambiato a false per permettere all'interfaccia di continuare a funzionare
+              error: reason as Error,
+              techDescription: `An error occurred while searching the user with the taxCode ${loggedUser.taxCode}`,
+              toNotify: true,
+            });
+          });
       } else {
         console.warn('No businesses found in response');
         await verifyCompanyManager(typedInput, loggedUser.taxCode);
