@@ -34,17 +34,39 @@ export default function AlreadyOnboarded({ companyData, setLoading, back }: Prop
   const time = createdAt?.split('T')[1].split('.')[0];
 
   const verifyManager = async () => {
-    await searchUser({ taxCode: loggedUser.taxCode }).then((res: any) => {
-      checkManager(res, companyData?.companyTaxCode)
-        .then((res) => {
-          if (res.result) {
-            window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`);
-          } else {
-            setAddManagerModal(true);
-          }
-        })
-        .catch((reason) => reason);
-    });
+    await searchUser({ taxCode: loggedUser.taxCode })
+      .then((res: any) => {
+        if (res.id) {
+          checkManager(res, companyData?.companyTaxCode)
+            .then((res) => {
+              if (res.result) {
+                window.location.assign(
+                  ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`
+                );
+              } else {
+                setAddManagerModal(true);
+              }
+            })
+            .catch((reason) => {
+              addError({
+                id: 'CHECK_MANAGER_ERROR',
+                blocking: false,
+                error: reason as Error,
+                techDescription: 'Failed to check manager status',
+                toNotify: true,
+              });
+            });
+        }
+      })
+      .catch((reason) => {
+        addError({
+          id: 'SEARCH_USER_ERROR',
+          blocking: false,
+          error: reason as Error,
+          techDescription: `An error occurred while searching the user with the taxCode ${loggedUser.taxCode}`,
+          toNotify: true,
+        });
+      });
   };
 
   const addManager = async () => {
