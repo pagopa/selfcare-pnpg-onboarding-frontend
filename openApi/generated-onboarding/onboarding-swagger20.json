@@ -3920,6 +3920,9 @@
         "isAggregator": {
           "type": "boolean"
         },
+        "istatCode": {
+          "type": "string"
+        },
         "origin": {
           "type": "string"
         },

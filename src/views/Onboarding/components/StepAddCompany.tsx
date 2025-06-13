@@ -27,7 +27,6 @@ import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/Ver
 import { ENV } from '../../../utils/env';
 import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
 import OutcomeHandler from './OutcomeHandler';
-// import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
 
 type Props = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,7 +49,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
     companyEmail: '',
     origin: '',
   });
-  // const [userId, setUserId] = useState<string>();
   const { user } = useContext(UserContext);
   const requestId = uniqueId();
   const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
@@ -64,7 +62,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
   }, []);
 
   const getActiveOnboarding = async (taxCode: string, productId: string) => {
-    setLoading(true);
     try {
       const response = (await getInstitutionOnboardingInfo(
         taxCode,
@@ -88,41 +85,40 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
           onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
         }));
 
-        void searchUser({ taxCode: loggedUser.taxCode })
-          .then((res: UserId) => {
-            if (res.id) {
-              void checkManager(res, typedInput)
-                .then(async (res) => {
-                  if (res.result) {
-                    setOutcome('alreadyOnboarded');
-                  } else {
-                    await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
-                  }
-                })
-                .catch((error) => {
-                  void verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
-                  addError({
-                    id: 'CHECK_MANAGER_ERROR',
-                    blocking: false,
-                    error: error as Error,
-                    techDescription: 'Failed to check manager status',
-                    toNotify: true,
-                  });
-                });
-            } else {
-              void verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+        try {
+          const res: UserId = await searchUser({ taxCode: loggedUser.taxCode });
+          
+          if (res.id) {
+            try {
+              const managerCheckRes = await checkManager(res, typedInput);
+              if (managerCheckRes.result) {
+                setOutcome('alreadyOnboarded');
+              } else {
+                await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+              }
+            } catch (error) {
+              await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+              addError({
+                id: 'CHECK_MANAGER_ERROR',
+                blocking: false,
+                error: error as Error,
+                techDescription: 'Failed to check manager status',
+                toNotify: true,
+              });
             }
-          })
-          .catch((reason) => {
-            void verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
-            addError({
-              id: 'SEARCH_USER_ERROR',
-              blocking: false, // Cambiato a false per permettere all'interfaccia di continuare a funzionare
-              error: reason as Error,
-              techDescription: `An error occurred while searching the user with the taxCode ${loggedUser.taxCode}`,
-              toNotify: true,
-            });
+          } else {
+            await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+          }
+        } catch (reason) {
+          await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+          addError({
+            id: 'SEARCH_USER_ERROR',
+            blocking: false,
+            error: reason as Error,
+            techDescription: `An error occurred while searching the user with the taxCode ${loggedUser.taxCode}`,
+            toNotify: true,
           });
+        }
       } else {
         console.warn('No businesses found in response');
         await verifyCompanyManager(typedInput, loggedUser.taxCode);
@@ -136,8 +132,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
         toNotify: true,
       });
       await verifyCompanyManager(typedInput, loggedUser.taxCode);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -200,7 +194,12 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
   };
 
   const getManagerBusinessData = async (taxCode: string, productId: string) => {
-    void getActiveOnboarding(taxCode, productId);
+    setLoading(true);
+    try {
+      await getActiveOnboarding(taxCode, productId);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOnboardingUsersSubmit = async () => {
@@ -220,24 +219,21 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
 
         case 'notManagerButLR':
           if (retrievedCompanyData.companyTaxCode) {
-            setLoading(true);
             const certified = retrievedCompanyData.origin === 'INFOCAMERE';
-            await onboardingUsersSubmit(retrievedCompanyData.companyTaxCode, certified, loggedUser)
-              .then(() =>
-                window.location.assign(
-                  ENV.URL_FE.DASHBOARD + '/' + `${retrievedCompanyData.institutionId}`
-                )
-              )
-              .catch((reason) => {
-                addError({
-                  id: 'ONBOARDING_USER_ERROR',
-                  blocking: true,
-                  error: reason as Error,
-                  techDescription: `An error occurred while onboarding user for business ${retrievedCompanyData.companyTaxCode}`,
-                  toNotify: true,
-                });
-              })
-              .finally(() => setLoading(false));
+            try {
+              await onboardingUsersSubmit(retrievedCompanyData.companyTaxCode, certified, loggedUser);
+              window.location.assign(
+                ENV.URL_FE.DASHBOARD + '/' + `${retrievedCompanyData.institutionId}`
+              );
+            } catch (reason) {
+              addError({
+                id: 'ONBOARDING_USER_ERROR',
+                blocking: true,
+                error: reason as Error,
+                techDescription: `An error occurred while onboarding user for business ${retrievedCompanyData.companyTaxCode}`,
+                toNotify: true,
+              });
+            }
           }
           break;
 
@@ -266,7 +262,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
 
   const handleSubmit = async (typedInput: string) => {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_CONFIRMED', { requestId, productId });
-    void getManagerBusinessData(typedInput, 'prod-pn-pg');
+    await getManagerBusinessData(typedInput, 'prod-pn-pg');
   };
 
   return outcome ? (
