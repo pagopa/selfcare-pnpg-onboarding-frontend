@@ -1,11 +1,8 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
-import '../src/locale';
+import './locale';
+import { vi } from 'vitest';
 
 beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => { });
-    jest.spyOn(console, 'warn').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
+    vi.spyOn(console, 'warn').mockImplementation(() => { });
 });

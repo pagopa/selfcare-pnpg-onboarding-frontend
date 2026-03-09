@@ -33,15 +33,6 @@ export default defineConfig(({ mode }) => {
     // process.env viene polyfillato per compatibilità con env-var
     define: {
       'process.env': JSON.stringify(processEnvVars),
-    },
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: './src/setupTests.ts',
-      coverage: {
-        provider: 'v8',
-        exclude: ['src/index.tsx', 'src/reportWebVitals.ts', 'src/api/generated/**'],
-      },
-    },
+    }
   };
 });
