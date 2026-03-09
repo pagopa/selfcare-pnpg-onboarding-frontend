@@ -1,20 +1,20 @@
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import { vi } from 'vitest';
 import { loggedUser } from '../../api/__mocks__/OnboardingApiClient';
 import { RoleEnum } from '../../api/generated/b4f-onboarding/CompanyUserDto';
 import {
   checkManager,
-  getInstitutionOnboardingInfo,
   onboardingPGSubmit,
   onboardingUsersSubmit,
-  verifyManager,
+  verifyManager
 } from '../onboardingService';
 
 beforeEach(() => {
-  jest.spyOn(require('../onboardingService'), 'onboardingPGSubmit');
-  jest.spyOn(require('../onboardingService'), 'verifyManager');
-  jest.spyOn(require('../onboardingService'), 'checkManager');
-  jest.spyOn(require('../onboardingService'), 'onboardingUsersSubmit');
-  jest.spyOn(require('../onboardingService'), 'getInstitutionOnboardingInfo');
+  vi.spyOn(require('../onboardingService'), 'onboardingPGSubmit');
+  vi.spyOn(require('../onboardingService'), 'verifyManager');
+  vi.spyOn(require('../onboardingService'), 'checkManager');
+  vi.spyOn(require('../onboardingService'), 'onboardingUsersSubmit');
+  vi.spyOn(require('../onboardingService'), 'getInstitutionOnboardingInfo');
 });
 
 test('Test: onboardingPGSubmit', async () => {
@@ -38,31 +38,35 @@ test('Test: onboardingPGSubmit', async () => {
 
   expect(fetchOnboardingPGSubmit).toBeTruthy();
 
-  expect(onboardingPGSubmit).toBeCalledTimes(1);
+  expect(onboardingPGSubmit).toHaveBeenCalledTimes(1);
 });
 
 test('Test: verifyManager', async () => {
-  const fetchVerifyManager = await verifyManager('12323231321', loggedUser.taxCode, storageTokenOps.read()) as Response;
+  const fetchVerifyManager = (await verifyManager(
+    '12323231321',
+    loggedUser.taxCode,
+    storageTokenOps.read()
+  )) as Response;
   const result = await fetchVerifyManager.json();
   expect(result).toMatchObject(
     expect.objectContaining({ companyName: 'Business retrieved from IC', origin: 'INFOCAMERE' })
   );
 
-  expect(verifyManager).toBeCalledTimes(1);
+  expect(verifyManager).toHaveBeenCalledTimes(1);
 });
 
 test('Test: checkManager', async () => {
-  const fetchCheckManager1 = await checkManager(loggedUser, '12323231321');
+  const fetchCheckManager1 = await checkManager({ id: loggedUser.uid }, '12323231321');
 
   expect(fetchCheckManager1).toMatchObject({ result: true });
 
-  expect(checkManager).toBeCalledTimes(1);
+  expect(checkManager).toHaveBeenCalledTimes(1);
 
-  const fetchCheckManager2 = await checkManager(loggedUser, '55555555555');
+  const fetchCheckManager2 = await checkManager({ id: loggedUser.uid }, '55555555555');
 
   expect(fetchCheckManager2).toMatchObject({ result: false });
 
-  expect(checkManager).toBeCalledTimes(2);
+  expect(checkManager).toHaveBeenCalledTimes(2);
 });
 
 test('Test: onboardingUsersSubmit', async () => {

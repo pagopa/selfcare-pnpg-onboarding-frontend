@@ -1,3 +1,4 @@
+import { vi, MockInstance } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useEffect, useState } from 'react';
 import { User } from '../../../types';
@@ -13,7 +14,7 @@ import React from 'react';
 import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
 import exp from 'constants';
 
-jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
+vi.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
     read: () => ({
       uid: 'mockUid',
@@ -28,18 +29,18 @@ jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   },
 }));
 
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   useHistory: () => ({
-    push: jest.fn(),
+    push: vi.fn(),
     location: mockedLocation,
     state: undefined,
-    replace: (nextLocation) => Object.assign(mockedLocation, nextLocation),
+    replace: (nextLocation: any) => Object.assign(mockedLocation, nextLocation),
   }),
 }));
 
 const oldWindowLocation = global.window.location;
 const initialLocation = {
-  assign: jest.fn(),
+  assign: vi.fn(),
   pathname: '/onboarding',
   origin: '',
   search: '',
@@ -142,12 +143,12 @@ test('Test: NOT success onboarding with data retrieved from AdE', async () => {
 });
 
 test('Test: Success access to dashboard with the business already on send and a loggedUser that is not manager but it is LR', async () => {
-  jest.spyOn(
+  vi.spyOn(
     require('../../../services/onboardingService.ts'),
     'searchUser'
   ).mockResolvedValueOnce({ id: '2' });
 
-  jest.spyOn(
+  vi.spyOn(
     require('../../../services/onboardingService.ts'),
     'checkManager'
   ).mockResolvedValueOnce({ result: false });
@@ -255,8 +256,8 @@ const executeStepSuccess = async () => {
       },
     ],
   } as Response;
-  let getInstitutionOnboardingInfoMock: jest.SpyInstance;
-  getInstitutionOnboardingInfoMock = jest.spyOn(
+  let getInstitutionOnboardingInfoMock: MockInstance;
+  getInstitutionOnboardingInfoMock = vi.spyOn(
     require('../../../services/onboardingService.ts'),
     'getInstitutionOnboardingInfo'
   );
