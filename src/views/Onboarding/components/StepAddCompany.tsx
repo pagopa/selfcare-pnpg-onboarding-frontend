@@ -1,17 +1,21 @@
-import { Grid, Typography, Card, TextField } from '@mui/material';
+import { Card, Grid, TextField, Typography } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
-import React, { useContext, useEffect, useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import {
   storageTokenOps,
   storageUserOps,
 } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
-import { Company, Outcome, User } from '../../../types';
+import React, { useContext, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
+import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
+import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
+import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { withLogin } from '../../../components/withLogin';
+import { UserContext } from '../../../lib/context';
 import {
   checkManager,
   getInstitutionOnboardingInfo,
@@ -19,13 +23,9 @@ import {
   searchUser,
   verifyManager,
 } from '../../../services/onboardingService';
-import { UserContext } from '../../../lib/context';
+import { Company, Outcome, User } from '../../../types';
 import { MOCK_USER } from '../../../utils/constants';
-import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
-import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
-import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import { ENV } from '../../../utils/env';
-import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
 import OutcomeHandler from './OutcomeHandler';
 
 type Props = {
@@ -87,7 +87,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
 
         try {
           const res: UserId = await searchUser({ taxCode: loggedUser.taxCode });
-          
+
           if (res.id) {
             try {
               const managerCheckRes = await checkManager(res, typedInput);
@@ -212,18 +212,20 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
     try {
       switch (outcome) {
         case 'alreadyOnboarded':
-          window.location.assign(
-            ENV.URL_FE.DASHBOARD + '/' + `${retrievedCompanyData.institutionId}`
-          );
+          window.location.assign(`${ENV.URL_FE.DASHBOARD}/'${retrievedCompanyData.institutionId}`);
           break;
 
         case 'notManagerButLR':
           if (retrievedCompanyData.companyTaxCode) {
             const certified = retrievedCompanyData.origin === 'INFOCAMERE';
             try {
-              await onboardingUsersSubmit(retrievedCompanyData.companyTaxCode, certified, loggedUser);
+              await onboardingUsersSubmit(
+                retrievedCompanyData.companyTaxCode,
+                certified,
+                loggedUser
+              );
               window.location.assign(
-                ENV.URL_FE.DASHBOARD + '/' + `${retrievedCompanyData.institutionId}`
+                `${ENV.URL_FE.DASHBOARD}/'${retrievedCompanyData.institutionId}`
               );
             } catch (reason) {
               addError({
