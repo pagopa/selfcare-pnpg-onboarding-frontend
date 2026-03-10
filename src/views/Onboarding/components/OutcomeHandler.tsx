@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import React from 'react';
 import { Company, Outcome } from '../../../types';
 import { ENV } from '../../../utils/env';
-import { ReactComponent as NotFound } from '../assets/notfound.svg';
+import NotFound from '../assets/notfound.svg?react';
 import AlreadyOnboarded from '../pages/AlreadyOnboarded';
 import CompanyFirstRegistration from '../pages/CompanyFirstRegistration';
 import NotManagerButLR from '../pages/NotManagerButLR';
