@@ -16,22 +16,23 @@
     <meta name="description" content="Modulo di Onboarding per la piattaforma SEND di PagoPA" />
 
     <meta name="theme-color" content="#00a1b0" />
-    <link rel="manifest" 	href="manifest.webmanifest" crossorigin="anonymous" />
+    <link rel="manifest" href="manifest.webmanifest" crossorigin="anonymous" />
     <link rel="icon" href="favicon-32x32.png" type="image/png" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon-16x16.png" type="image/png" />
+    <link rel="icon" href="favicon-16x16.png" type="image/png" />
     <link rel="apple-touch-icon" sizes="48x48" href="icons/apple-touch-icon.png" />
 
-    <link href="%REACT_APP_URL_CDN%/assets/font/selfhostedfonts.css" rel="stylesheet" />
+    <link href="%VITE_URL_CDN%/assets/font/selfhostedfonts.css" rel="stylesheet" />
 
     <script
-      src="%REACT_APP_ONE_TRUST_BASE_URL%/scripttemplates/otSDKStub.js"
+      src="%VITE_ONE_TRUST_BASE_URL%/scripttemplates/otSDKStub.js"
       type="text/javascript"
       charset="UTF-8"
-      data-domain-script="%REACT_APP_ONETRUST_DOMAIN_ID%"
+      data-domain-script="%VITE_ONETRUST_DOMAIN_ID%"
     ></script>
   </head>
   <body style="margin: 0px">
     <noscript>Abilita JavaScript per utilizzare quest'applicazione</noscript>
+    <script type="module" src="/src/index.tsx"></script>
     <div id="root"></div>
   </body>
 </html>

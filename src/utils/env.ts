@@ -1,50 +1,42 @@
-import * as env from 'env-var';
-
-const PUBLIC_URL_INNER: string | undefined = env.get('PUBLIC_URL').asString() || '/onboarding';
+const PUBLIC_URL_INNER: string | undefined = import.meta.env.VITE_PUBLIC_URL || '/onboarding';
 
 export const ENV = {
-  ENV: env.get('REACT_APP_ENV').required().asString(),
+  ENV: import.meta.env.VITE_ENV,
   PUBLIC_URL: PUBLIC_URL_INNER,
 
   URL_INSTITUTION_LOGO: {
-    PREFIX: env.get('REACT_APP_URL_INSTITUTION_LOGO_PREFIX').required().asString(),
-    SUFFIX: env.get('REACT_APP_URL_INSTITUTION_LOGO_SUFFIX').required().asString(),
+    PREFIX: import.meta.env.VITE_URL_INSTITUTION_LOGO_PREFIX,
+    SUFFIX: import.meta.env.VITE_URL_INSTITUTION_LOGO_SUFFIX,
   },
 
   ASSISTANCE: {
-    ENABLE: env.get('REACT_APP_ENABLE_ASSISTANCE').required().asBool(),
-    EMAIL: env.get('REACT_APP_PAGOPA_HELP_EMAIL').required().asString(),
+    ENABLE: import.meta.env.VITE_ASSISTANCE_ENABLE === 'true',
+    EMAIL: import.meta.env.VITE_ASSISTANCE_EMAIL,
   },
 
   URL_FE: {
-    LOGIN: env.get('REACT_APP_URL_FE_LOGIN').required().asString(),
-    LOGOUT: env.get('REACT_APP_URL_FE_LOGOUT').required().asString(),
-    DASHBOARD: env.get('REACT_APP_URL_FE_DASHBOARD').required().asString(),
-    LANDING: env.get('REACT_APP_URL_FE_LANDING').required().asString(),
-    ASSISTANCE: env.get('REACT_APP_URL_FE_ASSISTANCE').required().asString(),
+    LOGIN: import.meta.env.VITE_URL_FE_LOGIN,
+    LOGOUT: import.meta.env.VITE_URL_FE_LOGOUT,
+    DASHBOARD: import.meta.env.VITE_URL_FE_DASHBOARD,
+    LANDING: import.meta.env.VITE_URL_FE_LANDING,
+    ASSISTANCE: import.meta.env.VITE_URL_FE_ASSISTANCE,
   },
 
   URL_API: {
-    ONBOARDING: env.get('REACT_APP_URL_API_ONBOARDING').required().asString(),
-    ONBOARDING_V2: env.get('REACT_APP_URL_API_ONBOARDING_V2').required().asString(),
-    PARTY_REGISTRY_PROXY: env.get('REACT_APP_URL_API_PARTY_REGISTRY_PROXY').required().asString(),
+    ONBOARDING: import.meta.env.VITE_URL_API_ONBOARDING,
+    ONBOARDING_V2: import.meta.env.VITE_URL_API_ONBOARDING_V2,
+    PARTY_REGISTRY_PROXY: import.meta.env.VITE_URL_API_PARTY_REGISTRY_PROXY,
   },
 
-  MAX_INSTITUTIONS_FETCH: env.get('REACT_APP_MAX_INSTITUTIONS_FETCH').required().asIntPositive(),
+  MAX_INSTITUTIONS_FETCH: import.meta.env.VITE_MAX_INSTITUTIONS_FETCH,
 
-  UPLOAD_CONTRACT_MAX_LOOP_ERROR: env
-    .get('REACT_APP_UPLOAD_CONTRACT_MAX_LOOP_ERROR')
-    .required()
-    .asIntPositive(),
+  UPLOAD_CONTRACT_MAX_LOOP_ERROR: import.meta.env.VITE_UPLOAD_CONTRACT_MAX_LOOP_ERROR,
 
   ANALYTCS: {
-    ENABLE: env.get('REACT_APP_ANALYTICS_ENABLE').default('false').asBool(),
-    MOCK: env.get('REACT_APP_ANALYTICS_MOCK').default('false').asBool(),
-    DEBUG: env.get('REACT_APP_ANALYTICS_DEBUG').default('false').asBool(),
-    TOKEN: env.get('REACT_APP_MIXPANEL_TOKEN').required().asString(),
-    API_HOST: env
-      .get('REACT_APP_MIXPANEL_API_HOST')
-      .default('https://api-eu.mixpanel.com')
-      .asString(),
+    ENABLE: import.meta.env.VITE_ANALYTICS_ENABLE === 'true',
+    MOCK: import.meta.env.VITE_ANALYTICS_MOCK === 'true',
+    DEBUG: import.meta.env.VITE_ANALYTICS_DEBUG === 'true',
+    TOKEN: import.meta.env.VITE_ANALYTICS_TOKEN,
+    API_HOST: import.meta.env.VITE_ANALYTICS_API_HOST,
   },
 };
