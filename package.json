@@ -22,30 +22,24 @@
     "react-router-dom": "^5.2.0",
     "react-router-hash-link": "^2.4.3",
     "react-use-scrollspy": "^3.0.1",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "vite-plugin-svgr": "^4.5.0"
   },
   "scripts": {
     "clean": "npm-run-all clean:*",
-    "start": "start",
+    "start": "vite",
     "prebuild": "npm run generate",
     "build": "vite build",
     "clean:build": "rimraf build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "clean:coverage": "rimraf coverage",
-    "eject": "react-scripts eject",
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx ",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "generate": "npm-run-all generate:*",
     "clean:api-b4f-onboarding": "rimraf src/api/generated/b4f-onboarding && rimraf openApi/generated-onboarding",
     "generate:api-b4f-onboarding": "yarn run clean:api-b4f-onboarding && mkdirp openApi/generated-onboarding && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/onboarding-api-docs.json > openApi/generated-onboarding/onboarding-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated-onboarding/onboarding-swagger20.json && node openApi/scripts/api-b4f-onboarding_fixPreGen.js && gen-api-models --api-spec openApi/generated-onboarding/onboarding-swagger20.json --out-dir src/api/generated/b4f-onboarding --no-strict --request-types --response-decoders --client && node openApi/scripts/api-b4f-onboarding_fixPostGen.js"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -102,15 +96,5 @@
     "z-schema": "^4.2.4",
     "body-parser": "^1.20.3",
     "node-fetch": "^2.7.0"
-  },
-  "jest": {
-    "restoreMocks": true,
-    "clearMocks": true,
-    "resetMocks": true,
-    "coveragePathIgnorePatterns": [
-      "src/index.tsx",
-      "src/reportWebVitals.ts",
-      "src/api/generated"
-    ]
   }
 }
