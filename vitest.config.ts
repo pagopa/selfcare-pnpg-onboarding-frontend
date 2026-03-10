@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: './src/setupTests.ts',
       coverage: {
         provider: 'v8',
-        exclude: ['src/index.tsx', 'src/reportWebVitals.ts', 'src/api/generated/**'],
+        exclude: ['src/index.tsx', 'src/api/generated/**'],
       },
     },
     define: {
