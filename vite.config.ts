@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
     ],
     base: '/onboarding',
     build: {
-      outDir: 'build',
+      outDir: 'dist',
     },
     envPrefix: 'VITE_',
     define: {
