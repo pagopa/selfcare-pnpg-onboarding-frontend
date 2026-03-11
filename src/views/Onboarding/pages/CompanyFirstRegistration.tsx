@@ -1,6 +1,6 @@
 import { EndingPage } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation, Trans } from 'react-i18next';
-import { ReactComponent as CompanyIcon } from '../assets/company-icon.svg';
+import CompanyIcon from '../assets/company-icon.svg?react';
 
 type Props = {
   forward: () => void;

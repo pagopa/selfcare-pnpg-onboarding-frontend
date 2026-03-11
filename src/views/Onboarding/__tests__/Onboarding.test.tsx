@@ -1,19 +1,19 @@
+import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { useEffect, useState } from 'react';
-import { User } from '../../../types';
+import { createMemoryHistory, MemoryHistory } from 'history';
+import { useState } from 'react';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router';
+import { vi } from 'vitest';
+import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
 import { HeaderContext, UserContext } from '../../../lib/context';
-import Onboarding from '../Onboarding';
 import '../../../locale';
 import { createStore } from '../../../redux/store';
-import { Provider } from 'react-redux';
-import { createMemoryHistory, MemoryHistory } from 'history';
-import { Router } from 'react-router';
-import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
-import React from 'react';
-import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
-import exp from 'constants';
+import * as onboardingService from '../../../services/onboardingService';
+import { executeStepAddCompany, executeStepBusinessData, executeStepSuccess } from '../../../utils/test-utils';
+import Onboarding from '../Onboarding';
 
-jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
+vi.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   storageUserOps: {
     read: () => ({
       uid: 'mockUid',
@@ -28,18 +28,18 @@ jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   },
 }));
 
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   useHistory: () => ({
-    push: jest.fn(),
+    push: vi.fn(),
     location: mockedLocation,
     state: undefined,
-    replace: (nextLocation) => Object.assign(mockedLocation, nextLocation),
+    replace: (nextLocation: any) => Object.assign(mockedLocation, nextLocation),
   }),
 }));
 
 const oldWindowLocation = global.window.location;
 const initialLocation = {
-  assign: jest.fn(),
+  assign: vi.fn(),
   pathname: '/onboarding',
   origin: '',
   search: '',
@@ -48,9 +48,9 @@ const initialLocation = {
 };
 const mockedLocation = Object.assign({}, initialLocation);
 
-beforeAll(() => {
+beforeAll(async () => {
   Object.defineProperty(window, 'location', { value: mockedLocation });
-  i18n.changeLanguage('it');
+  await i18n.changeLanguage('it');
 });
 
 beforeEach(() => Object.assign(mockedLocation, initialLocation));
@@ -63,8 +63,6 @@ const renderComponent = () => {
   const Component = () => {
     const history = createMemoryHistory() as MemoryHistory;
     const store = createStore();
-
-    const [user, setUser] = useState<User | null>();
     const [subHeaderVisible, setSubHeaderVisible] = useState<boolean>(false);
     const [onExit, setOnExit] = useState<(exitAction: () => void) => void | undefined>();
     const [enableLogin, setEnableLogin] = useState<boolean>(true);
@@ -142,15 +140,9 @@ test('Test: NOT success onboarding with data retrieved from AdE', async () => {
 });
 
 test('Test: Success access to dashboard with the business already on send and a loggedUser that is not manager but it is LR', async () => {
-  jest.spyOn(
-    require('../../../services/onboardingService.ts'),
-    'searchUser'
-  ).mockResolvedValueOnce({ id: '2' });
+  vi.spyOn(onboardingService, 'searchUser').mockResolvedValueOnce({ id: '2' });
 
-  jest.spyOn(
-    require('../../../services/onboardingService.ts'),
-    'checkManager'
-  ).mockResolvedValueOnce({ result: false });
+  vi.spyOn(onboardingService, 'checkManager').mockResolvedValueOnce({ result: false });
 
   renderComponent();
   await executeStepAddCompany('51515151511');
@@ -160,109 +152,3 @@ test('Test: Success access to dashboard with the business already on send and a 
   const signInButton = screen.getByText('Accedi');
   fireEvent.click(signInButton);
 });
-
-const executeStepAddCompany = async (typedFiscalCode: string) => {
-  await waitFor(() => screen.getByText('Inserisci il Codice Fiscale'));
-
-  const continueButton = screen.getByText('Continua');
-  expect(continueButton).toBeDisabled();
-
-  const fiscalCodeInputField = document.getElementById('fiscalCode-textfield');
-
-  fireEvent.change(fiscalCodeInputField as Element, { target: { value: '1234563' } });
-  expect(continueButton).toBeDisabled();
-
-  fireEvent.change(fiscalCodeInputField as Element, { target: { value: '123456323A' } });
-  screen.getByText('Formato non corretto, controlla il dato e riprova');
-  expect(continueButton).toBeDisabled();
-
-  fireEvent.change(fiscalCodeInputField as Element, { target: { value: typedFiscalCode } });
-  expect(continueButton).toBeEnabled();
-
-  fireEvent.click(continueButton);
-};
-
-const executeStepBusinessData = async (notCertified?: boolean) => {
-  await waitFor(() => screen.getByText(/L’impresa non ha ancora un profilo su SEND/));
-  fireEvent.click(screen.getByText('Inizia'));
-
-  await waitFor(() => screen.getByText('Completa i dati dell’impresa'));
-
-  const continueButton = screen.getByRole('button', { name: 'Registra impresa' });
-  expect(continueButton).toBeDisabled();
-
-  const businessEmailInputField = document.getElementById('email-textfield');
-  await waitFor(() =>
-    fireEvent.change(businessEmailInputField as HTMLElement, {
-      target: { value: 'test@' },
-    })
-  );
-  expect(continueButton).toBeDisabled();
-  await waitFor(() => screen.getByText("L'indirizzo e-mail inserito non è corretto"));
-
-  fireEvent.change(businessEmailInputField as HTMLElement, {
-    target: { value: 'mockemail@email.com' },
-  });
-
-  if (notCertified) {
-    await waitFor(() =>
-      screen.getByText(
-        'La verifica dei dati precompilati è stata effettuata tramite il Registro Imprese di Agenzia delle Entrate'
-      )
-    );
-    expect(continueButton).toBeDisabled();
-    const businessNameInputField = document.getElementById('businessname-textfield');
-    await waitFor(() =>
-      fireEvent.change(businessNameInputField as HTMLElement, {
-        target: { value: '   ' },
-      })
-    );
-    screen.getByText('Inserisci una ragione sociale');
-    expect(continueButton).toBeDisabled();
-
-    await waitFor(() =>
-      fireEvent.change(businessNameInputField as HTMLElement, {
-        target: { value: 'testBusinessName1' },
-      })
-    );
-    expect(continueButton).toBeEnabled();
-  } else {
-    screen.getByText(
-      'La verifica dei dati precompilati è stata effettuata tramite il Registro Imprese di InfoCamere'
-    );
-    expect(continueButton).toBeEnabled();
-  }
-  fireEvent.click(continueButton);
-};
-
-const executeStepSuccess = async () => {
-  const mockResponse = {
-    ok: true,
-    status: 200,
-    statusText: 'OK',
-    json: async () => [
-      {
-        institutionId: 'retrievedPartyId01',
-        businessName: 'mockedBusinessName',
-        onboardings: [
-          {
-            billing: 'mockedBilling',
-            createdAt: new Date('2024-10-15T03:24:00').toISOString(),
-            productId: 'prod-pn-pg',
-            status: 'ACTIVE',
-          },
-        ],
-      },
-    ],
-  } as Response;
-  let getInstitutionOnboardingInfoMock: jest.SpyInstance;
-  getInstitutionOnboardingInfoMock = jest.spyOn(
-    require('../../../services/onboardingService.ts'),
-    'getInstitutionOnboardingInfo'
-  );
-  getInstitutionOnboardingInfoMock.mockResolvedValueOnce(mockResponse);
-
-  await waitFor(() => screen.getByText('Impresa registrata!'));
-  const signInButton = screen.getByText('Continua su SEND');
-  fireEvent.click(signInButton);
-};

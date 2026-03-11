@@ -15,7 +15,7 @@ export const getInstitutionOnboardingInfo = async (
   sessionToken?: string
 ): Promise<Array<InstitutionOnboardingResource> | Response> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return mockedOnboardingApi.getInstitutionOnboardingInfo(taxCode);
   } else {
     return fetch(
@@ -39,7 +39,7 @@ export const verifyManager = async (
   sessionToken: string
 ): Promise<VerifyManagerResponse> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return mockedOnboardingApi.verifyManager(companyTaxCode, userTaxCode);
   } else {
     return fetch(`${ENV.URL_API.ONBOARDING_V2}/v2/institutions/company/verify-manager`, {
@@ -58,7 +58,7 @@ export const verifyManager = async (
 
 export const searchUser = async (taxCode: UserTaxCodeDto): Promise<UserId> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return mockedOnboardingApi.searchUserId(taxCode);
   } else {
     return OnboardingApi.searchUser(taxCode);
@@ -70,7 +70,7 @@ export const checkManager = async (
   taxCode?: string
 ): Promise<CheckManagerResponse> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return mockedOnboardingApi.checkManager(taxCode);
   } else {
     return OnboardingApi.checkManager(userId.id, taxCode);
@@ -79,7 +79,7 @@ export const checkManager = async (
 
 export const getManagerOfOnboarding = async (onboardingId: string): Promise<Response | any> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return {
       name: 'Nome',
       surname: 'Cognome',
@@ -97,7 +97,7 @@ export const onboardingPGSubmit = (
   digitalAddress: string
 ): Promise<boolean> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return mockedOnboardingApi.onboardingPGSubmit(businessId);
   } else {
     return OnboardingApi.onboardingPGSubmit(
@@ -122,7 +122,7 @@ export const onboardingUsersSubmit = (
   user: User
 ): Promise<boolean> => {
   /* istanbul ignore if */
-  if (process.env.REACT_APP_MOCK_API === 'true') {
+  if (process.env.VITE_MOCK_API === 'true') {
     return mockedOnboardingApi.onboardingUsersSubmit();
   } else {
     return OnboardingApi.onboardingUsers(taxCode, certified, user);

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { useState } from 'react';
 import { ENV } from '../../../utils/env';
-import { ReactComponent as AlreadyOnboardedIcon } from '../../../assets/alreadyOnboarded.svg';
+import AlreadyOnboardedIcon from '../../../assets/alreadyOnboarded.svg?react';
 import {
   checkManager,
   onboardingUsersSubmit,
@@ -40,9 +40,7 @@ export default function AlreadyOnboarded({ companyData, setLoading, back }: Prop
           checkManager(res, companyData?.companyTaxCode)
             .then((res) => {
               if (res.result) {
-                window.location.assign(
-                  ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`
-                );
+                window.location.assign(`${ENV.URL_FE.DASHBOARD}/${companyData?.institutionId}`);
               } else {
                 setAddManagerModal(true);
               }
@@ -75,7 +73,7 @@ export default function AlreadyOnboarded({ companyData, setLoading, back }: Prop
       const certified = companyData?.origin === 'INFOCAMERE';
       await onboardingUsersSubmit(companyData?.companyTaxCode, certified, loggedUser)
         .then(() =>
-          window.location.assign(ENV.URL_FE.DASHBOARD + '/' + `${companyData?.institutionId}`)
+          window.location.assign(`${ENV.URL_FE.DASHBOARD}/${companyData?.institutionId}`)
         )
         .catch((reason) => {
           addError({
