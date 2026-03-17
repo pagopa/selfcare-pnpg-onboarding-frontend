@@ -21,24 +21,28 @@ function StepSuccess({ setLoading, companyData }: Props) {
   const retrievedCompanyData = async () => {
     if (companyData) {
       setLoading(true);
-      const response = (await getInstitutionOnboardingInfo(
-        companyData.companyTaxCode,
-        'prod-pn-pg',
-        sessionToken
-      )) as Response;
+      try {
+        const response = (await getInstitutionOnboardingInfo(
+          companyData.companyTaxCode,
+          'prod-pn-pg',
+          sessionToken
+        )) as Response;
 
-      if (!response.ok) {
-        console.error('API call failed:', response.status, response.statusText);
-        throw new Error('API call failed');
+        if (!response.ok) {
+          console.error('API call failed:', response.status, response.statusText);
+          return;
+        }
+
+        const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+
+        if (businesses[0]) {
+          setRetrievedPartyId(businesses[0].institutionId);
+        }
+      } catch (e) {
+        console.error('Error retrieving institution data:', e);
+      } finally {
+        setLoading(false);
       }
-
-      const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
-
-      if (businesses[0]) {
-        setRetrievedPartyId(businesses[0].institutionId);
-      }
-
-      setLoading(false);
     }
   };
 
