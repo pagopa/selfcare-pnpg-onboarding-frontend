@@ -1,5 +1,7 @@
+/* eslint-disable functional/no-let */
 import { IllusCompleted } from '@pagopa/mui-italia';
 import EndingPage from '@pagopa/selfcare-common-frontend/lib/components/EndingPage';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -17,37 +19,60 @@ function StepSuccess({ setLoading, companyData }: Props) {
   const { t } = useTranslation();
   const sessionToken = storageTokenOps.read();
   const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
+  const addError = useErrorDispatcher();
 
-  const retrievedCompanyData = async () => {
-    if (companyData) {
-      setLoading(true);
-      try {
-        const response = (await getInstitutionOnboardingInfo(
-          companyData.companyTaxCode,
-          'prod-pn-pg',
-          sessionToken
-        )) as Response;
+  const retrievedCompanyData = async (): Promise<string | undefined> => {
+    if (!companyData) {
+      return undefined;
+    }
+    try {
+      const response = (await getInstitutionOnboardingInfo(
+        companyData.companyTaxCode,
+        'prod-pn-pg',
+        sessionToken
+      )) as Response;
 
-        if (!response.ok) {
-          console.error('API call failed:', response.status, response.statusText);
-          return;
-        }
-
-        const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
-
-        if (businesses[0]) {
-          setRetrievedPartyId(businesses[0].institutionId);
-        }
-      } catch (e) {
-        console.error('Error retrieving institution data:', e);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        return undefined;
       }
+
+      const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
+      return businesses[0]?.institutionId;
+    } catch (error: any) {
+      addError({
+        id: 'ONBOARDING_PNPG_ACCESS_ERROR',
+        blocking: false,
+        error,
+        techDescription: `Error during access process: ${error.message}`,
+        toNotify: true,
+      });
+      return undefined;
     }
   };
 
   useEffect(() => {
-    void retrievedCompanyData();
+    const POLL_INTERVAL_MS = 3000;
+    const MAX_ATTEMPTS = 3;
+    let attempts = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const poll = async () => {
+      attempts += 1;
+      const partyId = await retrievedCompanyData();
+      if (partyId) {
+        setRetrievedPartyId(partyId);
+        setLoading(false);
+      } else if (attempts < MAX_ATTEMPTS) {
+        timeoutId = setTimeout(() => void poll(), POLL_INTERVAL_MS);
+      } else {
+        setLoading(false);
+      }
+    };
+
+    setLoading(true);
+    void poll();
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -65,7 +90,11 @@ function StepSuccess({ setLoading, companyData }: Props) {
       variantTitle={'h4'}
       variantDescription={'body1'}
       buttonLabel={t('outcome.success.signIn')}
-      onButtonClick={() => window.location.assign(`${ENV.URL_FE.DASHBOARD}/${retrievedPartyId}`)}
+      onButtonClick={
+        retrievedPartyId
+          ? () => window.location.assign(`${ENV.URL_FE.DASHBOARD}/${retrievedPartyId}`)
+          : undefined
+      }
     />
   );
 }

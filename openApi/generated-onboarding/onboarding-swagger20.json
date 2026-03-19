@@ -6,10 +6,11 @@
       "url": "https://www.pagopa.gov.it"
     },
     "description": "Self Care OnBoarding API documentation",
-    "title": "selc-onboarding",
+    "title": "${openapi_title}",
     "version": "0.1.0-SNAPSHOT"
   },
-  "basePath": "localhost:80%7BbasePath%7D",
+  "host": "localhost",
+  "basePath": "/",
   "schemes": [
     "http"
   ],
@@ -74,9 +75,9 @@
         "tags": [
           "institution-controller"
         ],
-        "description": "The service retrieves all the onboarded institutions related to the logged user and product's identifier.  ",
+        "description": "The service retrieves all the onboarded institutions related to the logged user and product's identifier.",
         "operationId": "getInstitutionsUsingGET",
-        "summary": "The service retrieves all the onboarded institutions related to the logged user and product's identifier.  "
+        "summary": "The service retrieves all the onboarded institutions related to the logged user and product's identifier."
       }
     },
     "/v1/institutions/company/onboarding": {
@@ -209,7 +210,7 @@
         "summary": "Get Legal Representative's PN PG institution List"
       }
     },
-    "/v1/institutions/geographicTaxonomies": {
+    "/v1/institutions/geographic-taxonomies": {
       "get": {
         "produces": [
           "application/json",
@@ -319,6 +320,12 @@
           {
             "in": "query",
             "name": "vatNumber",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "institutionType",
             "required": false,
             "type": "string"
           },
@@ -668,7 +675,7 @@
         "summary": "MatchLegal Representative and inserted Institution by querying on Agenzia delle Entrate"
       }
     },
-    "/v1/institutions/{externalInstitutionId}/geographicTaxonomy": {
+    "/v1/institutions/{externalInstitutionId}/geographic-taxonomy": {
       "get": {
         "produces": [
           "application/json",
@@ -904,7 +911,9 @@
               "REC",
               "CON",
               "PRV",
-              "GPU"
+              "PRV_PF",
+              "GPU",
+              "SCEC"
             ],
             "in": "query",
             "name": "institutionType",
@@ -2135,6 +2144,142 @@
         "summary": "The service allows the onboarding of Users to a PG Institution"
       }
     },
+    "/v2/institutions/onboardings": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "taxCode",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/OnboardingResultArray"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "institution-v-2-controller"
+        ],
+        "description": "Returns a list of onboarding processes associated with the institution identified by the provided tax code. The results can be filtered by the onboarding status. Each item in the response contains key details such as the onboarding ID, related product, and current status.",
+        "operationId": "getOnboardingInfo",
+        "summary": "Retrieve onboarding information for an institution filtered by tax code and status"
+      }
+    },
+    "/v2/product": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "productId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/OriginResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "product-v-2-controller"
+        ],
+        "description": "Retrieve the list of institution origins for the given product.",
+        "operationId": "getOrigins",
+        "summary": "Get product origins by productId"
+      }
+    },
     "/v2/tokens/{onboardingId}": {
       "get": {
         "produces": [
@@ -2334,6 +2479,157 @@
         "description": "Service to download a specific onboarding attachment",
         "operationId": "getAttachmentUsingGET",
         "summary": "Service to download a specific onboarding attachment"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "onboardingId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "attachment": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "attachment"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "token-v-2-controller"
+        ],
+        "description": "Upload a signed attachment",
+        "operationId": "uploadAttachmentUsingPOST",
+        "summary": "Upload a signed attachment"
+      }
+    },
+    "/v2/tokens/{onboardingId}/attachment/status": {
+      "head": {
+        "produces": [
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "onboardingId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "token-v-2-controller"
+        ],
+        "description": "Service to check the existence of a specific onboarding attachment",
+        "operationId": "headAttachmentUsingGET",
+        "summary": "Service to check the existence of a specific onboarding attachment"
       }
     },
     "/v2/tokens/{onboardingId}/complete": {
@@ -2771,6 +3067,81 @@
         "summary": "Service to reject a specific onboarding request"
       }
     },
+    "/v2/tokens/{onboardingId}/template-attachment": {
+      "get": {
+        "produces": [
+          "application/octet-stream",
+          "application/problem+json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "onboardingId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "items": {
+                "format": "byte",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "description": "Generic problem response",
+              "type": "object"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [
+              "global"
+            ]
+          }
+        ],
+        "tags": [
+          "token-v-2-controller"
+        ],
+        "description": "Service to download a specific template attachment",
+        "operationId": "getTemplateAttachmentUsingGET",
+        "summary": "Service to download a specific template attachment"
+      }
+    },
     "/v2/tokens/{onboardingId}/verify": {
       "post": {
         "produces": [
@@ -2838,6 +3209,12 @@
     }
   },
   "definitions": {
+    "OnboardingResultArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OnboardingResult"
+      }
+    },
     "InstitutionOnboardingResourceArray": {
       "type": "array",
       "items": {
@@ -3138,6 +3515,9 @@
         "digitalAddress": {
           "type": "string"
         },
+        "legalForm": {
+          "type": "string"
+        },
         "publicServices": {
           "type": "boolean"
         },
@@ -3225,7 +3605,9 @@
             "REC",
             "CON",
             "PRV",
-            "GPU"
+            "PRV_PF",
+            "GPU",
+            "SCEC"
           ],
           "type": "string"
         },
@@ -3335,7 +3717,9 @@
             "REC",
             "CON",
             "PRV",
-            "GPU"
+            "PRV_PF",
+            "GPU",
+            "SCEC"
           ],
           "type": "string"
         },
@@ -3379,7 +3763,9 @@
             "REC",
             "CON",
             "PRV",
-            "GPU"
+            "PRV_PF",
+            "GPU",
+            "SCEC"
           ],
           "type": "string"
         },
@@ -3593,7 +3979,9 @@
             "REC",
             "CON",
             "PRV",
-            "GPU"
+            "PRV_PF",
+            "GPU",
+            "SCEC"
           ],
           "type": "string"
         },
@@ -3882,6 +4270,12 @@
         "assistanceContacts": {
           "$ref": "#/definitions/AssistanceContactsDto"
         },
+        "atecoCodes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "billingData": {
           "$ref": "#/definitions/BillingDataDto"
         },
@@ -3913,7 +4307,9 @@
             "REC",
             "CON",
             "PRV",
-            "GPU"
+            "PRV_PF",
+            "GPU",
+            "SCEC"
           ],
           "type": "string"
         },
@@ -3928,6 +4324,9 @@
         },
         "originId": {
           "type": "string"
+        },
+        "payment": {
+          "$ref": "#/definitions/PaymentDto"
         },
         "pricingPlan": {
           "type": "string"
@@ -3946,6 +4345,9 @@
         },
         "taxCode": {
           "type": "string"
+        },
+        "userRequester": {
+          "$ref": "#/definitions/UserRequestDto"
         },
         "users": {
           "items": {
@@ -4005,6 +4407,20 @@
       ],
       "type": "object"
     },
+    "OnboardingResult": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
     "OnboardingUserDto": {
       "properties": {
         "institutionType": {
@@ -4020,7 +4436,9 @@
             "REC",
             "CON",
             "PRV",
-            "GPU"
+            "PRV_PF",
+            "GPU",
+            "SCEC"
           ],
           "type": "string"
         },
@@ -4038,6 +4456,9 @@
         },
         "taxCode": {
           "type": "string"
+        },
+        "toAddOnAggregates": {
+          "type": "boolean"
         },
         "users": {
           "items": {
@@ -4068,6 +4489,70 @@
       "required": [
         "status"
       ],
+      "type": "object"
+    },
+    "OriginEntry": {
+      "properties": {
+        "institutionType": {
+          "enum": [
+            "PA",
+            "PG",
+            "GSP",
+            "SA",
+            "PT",
+            "SCP",
+            "PSP",
+            "AS",
+            "REC",
+            "CON",
+            "PRV",
+            "PRV_PF",
+            "GPU",
+            "SCEC",
+            "DEFAULT"
+          ],
+          "type": "string"
+        },
+        "labelKey": {
+          "type": "string"
+        },
+        "origin": {
+          "enum": [
+            "MOCK",
+            "IPA",
+            "SELC",
+            "ANAC",
+            "UNKNOWN",
+            "ADE",
+            "INFOCAMERE",
+            "IVASS",
+            "PDND_INFOCAMERE"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "OriginResponse": {
+      "properties": {
+        "origins": {
+          "items": {
+            "$ref": "#/definitions/OriginEntry"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "PaymentDto": {
+      "properties": {
+        "holder": {
+          "type": "string"
+        },
+        "iban": {
+          "type": "string"
+        }
+      },
       "type": "object"
     },
     "PaymentServiceProvider": {
@@ -4295,6 +4780,25 @@
         "email",
         "fiscalCode",
         "id",
+        "name",
+        "surname"
+      ],
+      "type": "object"
+    },
+    "UserRequestDto": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
         "name",
         "surname"
       ],

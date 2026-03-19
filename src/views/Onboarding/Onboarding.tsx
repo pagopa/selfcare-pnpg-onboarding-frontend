@@ -26,6 +26,7 @@ function OnboardingComponent() {
 
   const forward = () => {
     setActiveStep(activeStep + 1);
+    setLoading(false);
   };
 
   const steps: Array<StepperStep> = [
