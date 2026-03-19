@@ -1,4 +1,4 @@
-const IS_DEVELOP = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+const IS_DEVELOP = process.env.NODE_ENV === 'development';
 
 export const DISPLAY_LOGS: boolean = IS_DEVELOP;
 export const MOCK_USER: boolean = IS_DEVELOP;
