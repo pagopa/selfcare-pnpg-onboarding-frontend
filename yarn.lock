@@ -1251,10 +1251,10 @@
   resolved "https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.28.0.tgz#337fb2bca0453d0726696e745f50064411f646d6"
   integrity sha512-lp4qAiMTD4sNWW4DbKLBkfiMZ4jbAboJIGOQr5DvciMRI494OapieI9qiODpOt0XBr1LjIDy1xAGAnVs5supTA==
 
-"@pagopa/mui-italia@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/@pagopa/mui-italia/-/mui-italia-1.5.0.tgz#05be80c5c8f03c9dffcd6e583a415006b31c7b76"
-  integrity sha512-rBPd0SzVARcB5zmeviavmOK1Cih60yZ6gkZHAYqhlrrlpZnNVKW0c4K++3b3f4O4xvJNtpT0fSriKL/pM6HIoQ==
+"@pagopa/mui-italia@^1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@pagopa/mui-italia/-/mui-italia-1.11.1.tgz#d224a554af066280474bb1e7491c310e0327cca9"
+  integrity sha512-9T5/REmA4aZo7HC01EtPyKxtFdeEOx/KR7cwpnG3BOQnS+BeDe+Oye4dmHBs7xTO0ksFvuFrGQVRiFhZj9Qvqw==
   dependencies:
     "@fontsource/dm-mono" "^4.5.10"
     "@fontsource/titillium-web" "^4.5.9"
