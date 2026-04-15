@@ -33,7 +33,7 @@ function StepBusinessData({ companyData, forward, back }: Props) {
   }, []);
 
   useEffect(() => {
-    setIsDisabled(!completeCompanyData?.companyEmail || !completeCompanyData?.companyName);
+    setIsDisabled(!completeCompanyData?.companyName);
   }, [completeCompanyData?.companyEmail, completeCompanyData?.companyName]);
 
   const onForwardAction = () => {

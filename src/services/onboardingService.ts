@@ -1,4 +1,4 @@
-import { Company, User } from '../types';
+import { Company } from '../types';
 import { OnboardingApi } from '../api/OnboardingApiClient';
 import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/CompanyUserDto';
@@ -8,6 +8,7 @@ import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyMan
 import { ENV } from '../utils/env';
 import { UserTaxCodeDto } from '../api/generated/b4f-onboarding/UserTaxCodeDto';
 import { UserId } from '../api/generated/b4f-onboarding/UserId';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 
 export const getInstitutionOnboardingInfo = async (
   taxCode: string,
