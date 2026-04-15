@@ -1,14 +1,14 @@
-import { Company } from '../types';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { OnboardingApi } from '../api/OnboardingApiClient';
 import { mockedOnboardingApi } from '../api/__mocks__/OnboardingApiClient';
+import { CheckManagerResponse } from '../api/generated/b4f-onboarding/CheckManagerResponse';
 import { CompanyUserDto, RoleEnum } from '../api/generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from '../api/generated/b4f-onboarding/InstitutionOnboardingResource';
-import { CheckManagerResponse } from '../api/generated/b4f-onboarding/CheckManagerResponse';
-import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyManagerResponse';
-import { ENV } from '../utils/env';
-import { UserTaxCodeDto } from '../api/generated/b4f-onboarding/UserTaxCodeDto';
 import { UserId } from '../api/generated/b4f-onboarding/UserId';
-import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
+import { UserTaxCodeDto } from '../api/generated/b4f-onboarding/UserTaxCodeDto';
+import { VerifyManagerResponse } from '../api/generated/b4f-onboarding/VerifyManagerResponse';
+import { Company } from '../types';
+import { ENV } from '../utils/env';
 
 export const getInstitutionOnboardingInfo = async (
   taxCode: string,

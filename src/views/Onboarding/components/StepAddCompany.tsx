@@ -1,6 +1,7 @@
 import { Card, Grid, TextField, Typography } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import {
   storageTokenOps,
@@ -27,7 +28,6 @@ import { Company, Outcome } from '../../../types';
 import { MOCK_USER } from '../../../utils/constants';
 import { ENV } from '../../../utils/env';
 import OutcomeHandler from './OutcomeHandler';
-import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 
 type Props = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
