@@ -1,16 +1,17 @@
-import { useContext, useEffect, useState } from 'react';
-import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
-import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
-import { useTranslation, Trans } from 'react-i18next';
-import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
+import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
+import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
+import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { uniqueId } from 'lodash';
-import { Company, StepperStepComponentProps, User } from '../../../types';
-import { ENV } from '../../../utils/env';
-import { onboardingPGSubmit } from '../../../services/onboardingService';
+import { useContext, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RoleEnum } from '../../../api/generated/b4f-onboarding/CompanyUserDto';
 import { UserContext } from '../../../lib/context';
+import { onboardingPGSubmit } from '../../../services/onboardingService';
+import { Company, StepperStepComponentProps } from '../../../types';
 import { MOCK_USER } from '../../../utils/constants';
+import { ENV } from '../../../utils/env';
 
 type Props = StepperStepComponentProps & {
   setLoading: (loading: boolean) => void;
@@ -44,9 +45,9 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
       businessTaxCode,
       productId,
       {
-        taxCode: loggedUser.taxCode,
-        name: loggedUser.name,
-        surname: loggedUser.surname,
+        taxCode: loggedUser.taxCode ?? '',
+        name: loggedUser.name ?? '',
+        surname: loggedUser.surname ?? '',
         email: loggedUser.email,
         role: 'MANAGER' as RoleEnum,
       },

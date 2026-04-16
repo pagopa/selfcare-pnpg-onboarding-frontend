@@ -4,7 +4,7 @@ import { createMemoryHistory, MemoryHistory } from 'history';
 import { useState } from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, test, vi } from 'vitest';
 import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
 import { HeaderContext, UserContext } from '../../../lib/context';
 import '../../../locale';
@@ -26,6 +26,7 @@ vi.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
     read: () => 'testToken',
     write: () => 'testToken',
   },
+  isPagoPaUser: () => false,
 }));
 
 vi.mock('react-router-dom', () => ({
@@ -57,6 +58,10 @@ beforeEach(() => Object.assign(mockedLocation, initialLocation));
 
 afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 const renderComponent = () => {

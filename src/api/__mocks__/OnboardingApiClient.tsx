@@ -1,9 +1,9 @@
-import { User } from '../../types';
-import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
-import { VerifyManagerResponse } from '../generated/b4f-onboarding/VerifyManagerResponse';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { CheckManagerResponse } from '../generated/b4f-onboarding/CheckManagerResponse';
+import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
 import { UserId } from '../generated/b4f-onboarding/UserId';
 import { UserTaxCodeDto } from '../generated/b4f-onboarding/UserTaxCodeDto';
+import { VerifyManagerResponse } from '../generated/b4f-onboarding/VerifyManagerResponse';
 
 export const loggedUser: User = {
   uid: '00123',

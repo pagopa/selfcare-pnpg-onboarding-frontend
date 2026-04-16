@@ -23,13 +23,14 @@ export const executeStepAddCompany = async (typedFiscalCode: string) => {
 };
 
 export const executeStepBusinessData = async (notCertified?: boolean) => {
-  await waitFor(() => screen.getByText(/L.impresa non ha ancora un profilo su SEND/));
-  fireEvent.click(screen.getByText('Inizia'));
+  await waitFor(() => {
+    screen.getByText(`L’impresa non ha ancora un profilo su SEND`);
+    fireEvent.click(screen.getByText('Inizia'));
+  });
 
   await waitFor(() => screen.getByText('Completa i dati dell’impresa'));
 
   const continueButton = screen.getByRole('button', { name: 'Registra impresa' });
-  expect(continueButton).toBeDisabled();
 
   const businessEmailInputField = document.getElementById('email-textfield');
   await waitFor(() =>

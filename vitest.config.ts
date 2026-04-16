@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitest/config';
-import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import { loadEnv } from 'vite';
 import svgr from 'vite-plugin-svgr';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode ?? 'test', process.cwd(), '');
@@ -15,6 +15,11 @@ export default defineConfig(({ mode }) => {
       coverage: {
         provider: 'v8',
         exclude: ['src/index.tsx', 'src/api/generated/**'],
+      },
+      server: {
+        deps: {
+          inline: [/@pagopa\/selfcare-common-frontend/, /@pagopa\/mui-italia/],
+        },
       },
     },
     define: {
