@@ -25,14 +25,6 @@ export type StepperStep = {
   Component: React.FunctionComponent<StepperStepComponentProps>;
 };
 
-export type User = {
-  uid: string;
-  taxCode: string;
-  name: string;
-  surname: string;
-  email?: string;
-};
-
 export type AlertDialogActions = {
   setDialogTitle: (t: string) => void;
   setDialogDescription: (t: string) => void;

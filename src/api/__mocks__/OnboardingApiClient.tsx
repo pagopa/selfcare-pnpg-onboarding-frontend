@@ -1,9 +1,9 @@
-import { User } from '../../types';
-import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
-import { VerifyManagerResponse } from '../generated/b4f-onboarding/VerifyManagerResponse';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { CheckManagerResponse } from '../generated/b4f-onboarding/CheckManagerResponse';
+import { InstitutionOnboardingResource } from '../generated/b4f-onboarding/InstitutionOnboardingResource';
 import { UserId } from '../generated/b4f-onboarding/UserId';
 import { UserTaxCodeDto } from '../generated/b4f-onboarding/UserTaxCodeDto';
+import { VerifyManagerResponse } from '../generated/b4f-onboarding/VerifyManagerResponse';
 
 export const loggedUser: User = {
   uid: '00123',
@@ -45,6 +45,7 @@ export const mockedOnboardingApi = {
       case '01501320442':
       case '51515151511':
       case '11223344556':
+      case '09876543210':
         const mockResponse = {
           ok: true,
           status: 200,
@@ -93,6 +94,7 @@ export const mockedOnboardingApi = {
   checkManager: async (taxCode?: string): Promise<CheckManagerResponse> => {
     switch (taxCode) {
       case '12323231321':
+      case '09876543210':
         return new Promise((resolve) => resolve({ result: true }));
       case '55555555555':
         return new Promise((resolve) => resolve({ result: false }));

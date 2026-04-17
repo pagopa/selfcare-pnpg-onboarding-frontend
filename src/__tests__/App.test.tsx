@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore } from '../redux/store';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
+import { expect, test } from 'vitest';
 
 const renderApp = (
   injectedStore?: ReturnType<typeof createStore>,

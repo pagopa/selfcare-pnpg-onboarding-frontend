@@ -1,22 +1,23 @@
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
+import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
 import {
   buildFetchApi,
   extractResponse,
 } from '@pagopa/selfcare-common-frontend/lib/utils/api-utils';
-import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
-import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
-import { ENV } from '../utils/env';
-import { Company, User } from '../types';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { store } from '../redux/store';
+import { Company } from '../types';
+import { ENV } from '../utils/env';
+import { CheckManagerResponse } from './generated/b4f-onboarding/CheckManagerResponse';
 import { createClient, WithDefaultsT } from './generated/b4f-onboarding/client';
 import { InstitutionTypeEnum } from './generated/b4f-onboarding/CompanyOnboardingDto';
-import { RoleEnum, CompanyUserDto } from './generated/b4f-onboarding/CompanyUserDto';
+import { CompanyUserDto, RoleEnum } from './generated/b4f-onboarding/CompanyUserDto';
 import { InstitutionOnboardingResource } from './generated/b4f-onboarding/InstitutionOnboardingResource';
-import { VerifyManagerResponse } from './generated/b4f-onboarding/VerifyManagerResponse';
-import { CheckManagerResponse } from './generated/b4f-onboarding/CheckManagerResponse';
 import { ManagerInfoResponse } from './generated/b4f-onboarding/ManagerInfoResponse';
-import { UserTaxCodeDto } from './generated/b4f-onboarding/UserTaxCodeDto';
 import { UserId } from './generated/b4f-onboarding/UserId';
+import { UserTaxCodeDto } from './generated/b4f-onboarding/UserTaxCodeDto';
+import { VerifyManagerResponse } from './generated/b4f-onboarding/VerifyManagerResponse';
 
 const withBearerAndInstitutionId: WithDefaultsT<'bearerAuth'> =
   (wrappedOperation) => (params: any) => {
@@ -127,7 +128,7 @@ export const OnboardingApi = {
         institutionType: 'PG' as InstitutionTypeEnum,
         productId: 'prod-pn-pg',
         taxCode,
-        users: [{ ...user, role: 'MANAGER' as RoleEnum }],
+        users: [{ ...user, role: 'MANAGER' as RoleEnum }] as Array<CompanyUserDto>,
       },
     });
     return extractResponse(result, 200, onRedirectToLogin);

@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import SessionModal from '@pagopa/selfcare-common-frontend/lib/components/SessionModal';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User } from './types';
 import BodyLogger from './components/BodyLogger';
 import { UserContext } from './lib/context';
 

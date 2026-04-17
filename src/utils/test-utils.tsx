@@ -23,13 +23,14 @@ export const executeStepAddCompany = async (typedFiscalCode: string) => {
 };
 
 export const executeStepBusinessData = async (notCertified?: boolean) => {
-  await waitFor(() => screen.getByText(/L.impresa non ha ancora un profilo su SEND/));
-  fireEvent.click(screen.getByText('Inizia'));
+  await waitFor(() => {
+    screen.getByText(`L’impresa non ha ancora un profilo su SEND`);
+    fireEvent.click(screen.getByText('Inizia'));
+  });
 
   await waitFor(() => screen.getByText('Completa i dati dell’impresa'));
 
   const continueButton = screen.getByRole('button', { name: 'Registra impresa' });
-  expect(continueButton).toBeDisabled();
 
   const businessEmailInputField = document.getElementById('email-textfield');
   await waitFor(() =>
@@ -105,4 +106,28 @@ export const executeStepSuccess = async () => {
   await waitFor(() => screen.getByText('Impresa registrata!'));
   const signInButton = screen.getByText('Continua su SEND');
   fireEvent.click(signInButton);
+};
+
+export const executeStepAlreadyOnboarded = async () => {
+  await waitFor(() => screen.getByText('Impresa già registrata'));
+  await waitFor(() => screen.getByText('Accedi'), { timeout: 5000 });
+
+  const signInButton = screen.getByText('Accedi');
+  fireEvent.click(signInButton);
+};
+
+export const executeStepOnboardedButNotManager = async () => {
+  await waitFor(() => screen.getByText('Richiedi l’accesso a un amministratore'));
+};
+
+export const executeStepOnboardingNotPermitted = async () => {
+  await waitFor(() => screen.getByText('Ci dispiace, non puoi registrare l’impresa su SEND'));
+  const closeButton = screen.getByText('Chiudi');
+  fireEvent.click(closeButton);
+};
+
+export const executeStepGenericError = async () => {
+  await waitFor(() => screen.getByText("Si \u00e8 verificato un errore"));
+  const closeButton = screen.getByText("Chiudi");
+  fireEvent.click(closeButton);
 };

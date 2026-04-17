@@ -1,6 +1,7 @@
 import { Card, Grid, TextField, Typography } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';
 import {
   storageTokenOps,
@@ -23,7 +24,7 @@ import {
   searchUser,
   verifyManager,
 } from '../../../services/onboardingService';
-import { Company, Outcome, User } from '../../../types';
+import { Company, Outcome } from '../../../types';
 import { MOCK_USER } from '../../../utils/constants';
 import { ENV } from '../../../utils/env';
 import OutcomeHandler from './OutcomeHandler';
@@ -86,7 +87,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
         }));
 
         try {
-          const res: UserId = await searchUser({ taxCode: loggedUser.taxCode });
+          const res: UserId = await searchUser({ taxCode: loggedUser?.taxCode ?? ''});
 
           if (res.id) {
             try {
@@ -94,10 +95,10 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
               if (managerCheckRes.result) {
                 setOutcome('alreadyOnboarded');
               } else {
-                await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+                await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
               }
             } catch (error) {
-              await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+              await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
               addError({
                 id: 'CHECK_MANAGER_ERROR',
                 blocking: false,
@@ -107,21 +108,21 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
               });
             }
           } else {
-            await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+            await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
           }
         } catch (reason) {
-          await verifyCompanyManager(typedInput, loggedUser.taxCode, businesses);
+          await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
           addError({
             id: 'SEARCH_USER_ERROR',
             blocking: false,
             error: reason as Error,
-            techDescription: `An error occurred while searching the user with the taxCode ${loggedUser.taxCode}`,
+            techDescription: `An error occurred while searching the user with the taxCode ${loggedUser?.taxCode ?? ''}`,
             toNotify: true,
           });
         }
       } else {
         console.warn('No businesses found in response');
-        await verifyCompanyManager(typedInput, loggedUser.taxCode);
+        await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '');
       }
     } catch (error: any) {
       addError({
@@ -131,7 +132,7 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
         techDescription: `An error occurred while getting active onboarding: ${error.message}`,
         toNotify: true,
       });
-      await verifyCompanyManager(typedInput, loggedUser.taxCode);
+      await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '');
     }
   };
 
@@ -181,6 +182,8 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
           setOutcome('matchedButNotLR');
           setTypedInput('');
         }
+      } else {
+        setOutcome('genericError');
       }
 
       addError({

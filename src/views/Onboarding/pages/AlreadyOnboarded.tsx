@@ -1,16 +1,18 @@
 import { EndingPage, SessionModal, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
-import { Trans } from 'react-i18next';
-import { useTranslation } from 'react-i18next';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
-import { useState } from 'react';
-import { ENV } from '../../../utils/env';
+import { useContext, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import AlreadyOnboardedIcon from '../../../assets/alreadyOnboarded.svg?react';
+import { UserContext } from '../../../lib/context';
 import {
   checkManager,
   onboardingUsersSubmit,
   searchUser,
 } from '../../../services/onboardingService';
 import { Company } from '../../../types';
+import { MOCK_USER } from '../../../utils/constants';
+import { ENV } from '../../../utils/env';
 
 type Props = {
   companyData?: Company;
@@ -21,8 +23,8 @@ type Props = {
 export default function AlreadyOnboarded({ companyData, setLoading, back }: Props) {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
-  // const [userId, setUserId] = useState<string>();
-  const loggedUser = storageUserOps.read();
+  const { user } = useContext(UserContext);
+  const loggedUser = MOCK_USER ? (user as User) : storageUserOps.read();
 
   const [addManagerModal, setAddManagerModal] = useState<boolean>();
 
@@ -34,7 +36,7 @@ export default function AlreadyOnboarded({ companyData, setLoading, back }: Prop
   const time = createdAt?.split('T')[1].split('.')[0];
 
   const verifyManager = async () => {
-    await searchUser({ taxCode: loggedUser.taxCode })
+    await searchUser({ taxCode: loggedUser.taxCode ?? '' })
       .then((res: any) => {
         if (res.id) {
           checkManager(res, companyData?.companyTaxCode)
@@ -72,9 +74,7 @@ export default function AlreadyOnboarded({ companyData, setLoading, back }: Prop
       setLoading(true);
       const certified = companyData?.origin === 'INFOCAMERE';
       await onboardingUsersSubmit(companyData?.companyTaxCode, certified, loggedUser)
-        .then(() =>
-          window.location.assign(`${ENV.URL_FE.DASHBOARD}/${companyData?.institutionId}`)
-        )
+        .then(() => window.location.assign(`${ENV.URL_FE.DASHBOARD}/${companyData?.institutionId}`))
         .catch((reason) => {
           addError({
             id: 'ONBOARDING_USER_ERROR',
