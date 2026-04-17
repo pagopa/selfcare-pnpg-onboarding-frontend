@@ -14,7 +14,10 @@ export default defineConfig(({ mode }) => {
       setupFiles: './src/setupTests.ts',
       coverage: {
         provider: 'v8',
+        include: ['src/**/*.{ts,tsx}'],
         exclude: [
+          // compiled output
+          'dist/**',
           // root config files
           '*.config.{ts,js}',
           '.eslintrc.js',
