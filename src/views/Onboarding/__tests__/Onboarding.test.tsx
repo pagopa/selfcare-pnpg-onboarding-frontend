@@ -10,7 +10,15 @@ import { HeaderContext, UserContext } from '../../../lib/context';
 import '../../../locale';
 import { createStore } from '../../../redux/store';
 import * as onboardingService from '../../../services/onboardingService';
-import { executeStepAddCompany, executeStepBusinessData, executeStepSuccess } from '../../../utils/test-utils';
+import {
+  executeStepAddCompany,
+  executeStepAlreadyOnboarded,
+  executeStepBusinessData,
+  executeStepGenericError,
+  executeStepOnboardedButNotManager,
+  executeStepOnboardingNotPermitted,
+  executeStepSuccess,
+} from '../../../utils/test-utils';
 import Onboarding from '../Onboarding';
 
 vi.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
@@ -156,4 +164,33 @@ test('Test: Success access to dashboard with the business already on send and a 
 
   const signInButton = screen.getByText('Accedi');
   fireEvent.click(signInButton);
+});
+
+test('Test: Failed access to dashboard with the business already on send and a loggedUser that is manager', async () => {
+  vi.spyOn(onboardingService, 'searchUser').mockResolvedValueOnce({ id: '2' });
+  vi.spyOn(onboardingService, 'checkManager').mockResolvedValueOnce({ result: true });
+  renderComponent();
+  await executeStepAddCompany('09876543210');
+  await executeStepAlreadyOnboarded();
+});
+
+test('Test: Success access to dashboard with the business already on send and a loggedUser that is not manager', async () => {
+  vi.spyOn(onboardingService, 'searchUser').mockResolvedValueOnce({ id: '2' });
+  vi.spyOn(onboardingService, 'checkManager').mockResolvedValueOnce({ result: false });
+  renderComponent();
+  await executeStepAddCompany('09876543210');
+  await executeStepOnboardedButNotManager();
+});
+
+test('Test: Failed access to dashboard with a business that does not exist', async () => {
+  renderComponent();
+  await executeStepAddCompany('09154381910');
+  await executeStepOnboardingNotPermitted();
+});
+
+test('Test: Failed, Generic error', async () => {
+  vi.spyOn(onboardingService, 'verifyManager').mockRejectedValueOnce(new Error('Generic error'));
+  renderComponent();
+  await executeStepAddCompany('09154381910');
+  await executeStepGenericError();
 });

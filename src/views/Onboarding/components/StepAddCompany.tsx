@@ -182,6 +182,8 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
           setOutcome('matchedButNotLR');
           setTypedInput('');
         }
+      } else {
+        setOutcome('genericError');
       }
 
       addError({

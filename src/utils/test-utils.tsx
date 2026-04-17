@@ -107,3 +107,27 @@ export const executeStepSuccess = async () => {
   const signInButton = screen.getByText('Continua su SEND');
   fireEvent.click(signInButton);
 };
+
+export const executeStepAlreadyOnboarded = async () => {
+  await waitFor(() => screen.getByText('Impresa già registrata'));
+  await waitFor(() => screen.getByText('Accedi'), { timeout: 5000 });
+
+  const signInButton = screen.getByText('Accedi');
+  fireEvent.click(signInButton);
+};
+
+export const executeStepOnboardedButNotManager = async () => {
+  await waitFor(() => screen.getByText('Richiedi l’accesso a un amministratore'));
+};
+
+export const executeStepOnboardingNotPermitted = async () => {
+  await waitFor(() => screen.getByText('Ci dispiace, non puoi registrare l’impresa su SEND'));
+  const closeButton = screen.getByText('Chiudi');
+  fireEvent.click(closeButton);
+};
+
+export const executeStepGenericError = async () => {
+  await waitFor(() => screen.getByText("Si \u00e8 verificato un errore"));
+  const closeButton = screen.getByText("Chiudi");
+  fireEvent.click(closeButton);
+};

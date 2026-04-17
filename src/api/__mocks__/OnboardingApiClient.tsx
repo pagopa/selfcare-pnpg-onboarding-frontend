@@ -45,6 +45,7 @@ export const mockedOnboardingApi = {
       case '01501320442':
       case '51515151511':
       case '11223344556':
+      case '09876543210':
         const mockResponse = {
           ok: true,
           status: 200,
@@ -93,6 +94,7 @@ export const mockedOnboardingApi = {
   checkManager: async (taxCode?: string): Promise<CheckManagerResponse> => {
     switch (taxCode) {
       case '12323231321':
+      case '09876543210':
         return new Promise((resolve) => resolve({ result: true }));
       case '55555555555':
         return new Promise((resolve) => resolve({ result: false }));
