@@ -94,7 +94,7 @@ export const OnboardingApi = {
     productId: string,
     loggedUser: CompanyUserDto,
     selectedBusiness: Company,
-    digitalAddress: string
+    digitalAddress?: string
   ): Promise<boolean> => {
     const result = await apiClient.institutionOnboardingCompany({
       body: {
