@@ -2496,7 +2496,7 @@
           },
           {
             "in": "query",
-            "name": "name",
+            "name": "attachmentName",
             "required": true,
             "type": "string"
           },
@@ -3082,7 +3082,7 @@
           },
           {
             "in": "query",
-            "name": "name",
+            "name": "attachmentName",
             "required": true,
             "type": "string"
           }
@@ -3666,7 +3666,6 @@
       "required": [
         "businessName",
         "certified",
-        "digitalAddress",
         "taxCode"
       ],
       "type": "object"

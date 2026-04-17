@@ -52,7 +52,7 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
         role: 'MANAGER' as RoleEnum,
       },
       selectedBusiness,
-      selectedBusiness.companyEmail as string
+      selectedBusiness.companyEmail
     )
       .then(async () => {
         trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {

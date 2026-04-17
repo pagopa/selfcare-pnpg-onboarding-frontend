@@ -95,7 +95,7 @@ export const onboardingPGSubmit = (
   productId: string,
   loggedUser: CompanyUserDto,
   selectedInstitution: Company,
-  digitalAddress: string
+  digitalAddress?: string
 ): Promise<boolean> => {
   /* istanbul ignore if */
   if (import.meta.env.VITE_MOCK_API === 'true') {
