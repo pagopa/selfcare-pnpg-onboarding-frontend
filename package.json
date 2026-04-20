@@ -11,7 +11,7 @@
     "@mui/x-data-grid-generator": "^5.0.1",
     "@pagopa/mui-italia": "^1.11.1",
     "@pagopa/selfcare-common-frontend": "^1.34.103",
-    "axios": "^0.30.0",
+    "axios": "^0.31.0",
     "formik": "^2.2.9",
     "i18next": "^23.7.11",
     "node-fetch": "^3.3.2",
