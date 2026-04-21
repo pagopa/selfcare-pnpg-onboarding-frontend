@@ -17,7 +17,7 @@ type Props = {
   companyData?: Company;
 } & StepperStepComponentProps;
 
-function StepBusinessData({ companyData, forward, back }: Props) {
+function StepCompanyData({ companyData, forward, back }: Props) {
   const { t } = useTranslation();
   const requestId = uniqueId();
 
@@ -182,4 +182,4 @@ function StepBusinessData({ companyData, forward, back }: Props) {
   );
 }
 
-export default withLogin(StepBusinessData);
+export default withLogin(StepCompanyData);

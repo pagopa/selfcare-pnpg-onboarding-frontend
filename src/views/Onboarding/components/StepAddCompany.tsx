@@ -47,7 +47,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
     onboardings: [],
     companyName: '',
     businessName: '',
-    companyEmail: '',
     origin: '',
   });
   const { user } = useContext(UserContext);
