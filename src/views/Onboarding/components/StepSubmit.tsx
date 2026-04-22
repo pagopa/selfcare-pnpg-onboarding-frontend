@@ -41,42 +41,34 @@ function StepSubmit({ setLoading, forward, companyData }: Props) {
     loggedUser: User
   ) => {
     setLoading(true);
-    await onboardingPGSubmit(
-      businessTaxCode,
-      productId,
-      {
-        taxCode: loggedUser.taxCode ?? '',
-        name: loggedUser.name ?? '',
-        surname: loggedUser.surname ?? '',
-        email: loggedUser.email,
-        role: 'MANAGER' as RoleEnum,
-      },
-      selectedBusiness,
-      selectedBusiness.companyEmail
-    )
-      .then(async () => {
-        trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', {
-          requestId,
-          productId,
-        });
-        setLoading(true);
-        forward();
-      })
-      .catch((reason) => {
-        setError(true);
-        trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', {
-          requestId,
-          productId,
-        });
-        addError({
-          id: 'ONBOARDING_PNPG_SUBMIT_ERROR',
-          blocking: false,
-          error: reason,
-          techDescription: `An error occurred while submit onboarding of ${companyData}`,
-          toNotify: true,
-        });
-      })
-      .finally(() => setLoading(false));
+    try {
+      await onboardingPGSubmit(
+        businessTaxCode,
+        productId,
+        {
+          taxCode: loggedUser.taxCode ?? '',
+          name: loggedUser.name ?? '',
+          surname: loggedUser.surname ?? '',
+          email: loggedUser.email,
+          role: 'MANAGER' as RoleEnum,
+        },
+        selectedBusiness,
+        selectedBusiness.companyEmail
+      );
+      trackEvent('ONBOARDING_PG_SUBMIT_SUCCESS', { requestId, productId });
+      forward();
+    } catch (reason: any) {
+      setError(true);
+      setLoading(false);
+      trackEvent('ONBOARDING_PG_SUBMIT_GENERIC_ERROR', { requestId, productId });
+      addError({
+        id: 'ONBOARDING_PNPG_SUBMIT_ERROR',
+        blocking: false,
+        error: reason,
+        techDescription: `An error occurred while submit onboarding of ${companyData}`,
+        toNotify: true,
+      });
+    }
   };
 
   return error ? (

@@ -42,7 +42,7 @@ function StepSuccess({ setLoading, companyData }: Props) {
         )) as Response;
 
         if (!response.ok) {
-          return { hasError: false };
+          return { hasError: true };
         }
 
         const businesses = (await response.json()) as Array<InstitutionOnboardingResource>;
