@@ -29,7 +29,11 @@ function NotManagerButLR({ handleOnboardingUsersSubmit, companyData, setLoading 
   const getFirstManagerInfo = async (tokenId: string) => {
     setLoading(true);
     getManagerOfOnboarding(tokenId)
-      .then((res) => setFirstManagerInfo(res))
+      .then((res) => {
+        if (res) {
+          setFirstManagerInfo(res);
+        }
+      })
       .catch((reason: any) => {
         addError({
           id: 'ONBOARDING_PNPG_GETTING_FIRST_MANAGER_INFO_ERROR',

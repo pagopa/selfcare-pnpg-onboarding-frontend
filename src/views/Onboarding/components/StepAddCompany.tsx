@@ -12,7 +12,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { InstitutionOnboarding } from '../../../api/generated/b4f-onboarding/InstitutionOnboarding';
 import { InstitutionOnboardingResource } from '../../../api/generated/b4f-onboarding/InstitutionOnboardingResource';
-import { UserId } from '../../../api/generated/b4f-onboarding/UserId';
 import { VerifyManagerResponse } from '../../../api/generated/b4f-onboarding/VerifyManagerResponse';
 import { OnboardingStepActions } from '../../../components/OnboardingStepActions';
 import { withLogin } from '../../../components/withLogin';
@@ -36,7 +35,7 @@ type Props = {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
+const StepAddCompany = ({ setLoading, setActiveStep, forward }: Props) => {
   const { t } = useTranslation();
 
   const [typedInput, setTypedInput] = useState<string>('');
@@ -61,68 +60,54 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
     trackEvent('ONBOARDING_PG_BY_ENTERING_TAXCODE_INPUT', { requestId, productId });
   }, []);
 
-  const getActiveOnboarding = async (taxCode: string, productId: string) => {
+  const checkIfAlreadyManager = async (companyTaxCode: string): Promise<boolean> => {
+    try {
+      const userId = await searchUser({ taxCode: loggedUser?.taxCode ?? '' });
+      if (!userId.id) {
+        return false;
+      }
+      try {
+        const managerCheckRes = await checkManager(userId, companyTaxCode);
+        return managerCheckRes.result;
+      } catch (error) {
+        addError({
+          id: 'CHECK_MANAGER_ERROR',
+          blocking: false,
+          error: error as Error,
+          techDescription: 'Failed to check manager status',
+          toNotify: true,
+        });
+        return false;
+      }
+    } catch (error) {
+      addError({
+        id: 'SEARCH_USER_ERROR',
+        blocking: false,
+        error: error as Error,
+        techDescription: `An error occurred while searching the user with the taxCode ${
+          loggedUser?.taxCode ?? ''
+        }`,
+        toNotify: true,
+      });
+      return false;
+    }
+  };
+
+  const fetchBusinesses = async (
+    taxCode: string,
+    productId: string
+  ): Promise<Array<InstitutionOnboardingResource> | undefined> => {
     try {
       const response = (await getInstitutionOnboardingInfo(
         taxCode,
         productId,
         sessionToken
       )) as Response;
-
       if (!response.ok) {
-        console.error('API call failed:', response.status, response.statusText);
-        throw new Error('API call failed');
+        throw new Error(`API call failed: ${response.status} ${response.statusText}`);
       }
-      const businesses = (await response.json()) as Array<InstitutionOnboardingResource | any>;
-
-      if (Array.isArray(businesses) && businesses.length > 0) {
-        trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
-        setRetrievedCompanyData((prevData) => ({
-          ...prevData,
-          companyTaxCode: taxCode,
-          institutionId: businesses[0].institutionId,
-          businessName: businesses[0].businessName as string,
-          onboardings: businesses[0].onboardings as Array<InstitutionOnboarding>,
-        }));
-
-        try {
-          const res: UserId = await searchUser({ taxCode: loggedUser?.taxCode ?? ''});
-
-          if (res.id) {
-            try {
-              const managerCheckRes = await checkManager(res, typedInput);
-              if (managerCheckRes.result) {
-                setOutcome('alreadyOnboarded');
-              } else {
-                await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
-              }
-            } catch (error) {
-              await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
-              addError({
-                id: 'CHECK_MANAGER_ERROR',
-                blocking: false,
-                error: error as Error,
-                techDescription: 'Failed to check manager status',
-                toNotify: true,
-              });
-            }
-          } else {
-            await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
-          }
-        } catch (reason) {
-          await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '', businesses);
-          addError({
-            id: 'SEARCH_USER_ERROR',
-            blocking: false,
-            error: reason as Error,
-            techDescription: `An error occurred while searching the user with the taxCode ${loggedUser?.taxCode ?? ''}`,
-            toNotify: true,
-          });
-        }
-      } else {
-        console.warn('No businesses found in response');
-        await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '');
-      }
+      const result = (await response.json()) as Array<InstitutionOnboardingResource>;
+      return Array.isArray(result) && result.length > 0 ? result : undefined;
     } catch (error: any) {
       addError({
         id: 'ONBOARDING_PNPG_GET_ACTIVE_ONBOARDING_ERROR',
@@ -131,17 +116,47 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
         techDescription: `An error occurred while getting active onboarding: ${error.message}`,
         toNotify: true,
       });
-      await verifyCompanyManager(typedInput, loggedUser?.taxCode ?? '');
+      return undefined;
     }
   };
 
+  const getActiveOnboarding = async (taxCode: string, productId: string) => {
+    const businesses = await fetchBusinesses(taxCode, productId);
+
+    if (businesses) {
+      const firstBusiness = businesses[0];
+      trackEvent('ONBOARDING_PG_SUBMIT_ALREADY_ONBOARDED', { requestId, productId });
+      setRetrievedCompanyData((prevData) => ({
+        ...prevData,
+        companyTaxCode: taxCode,
+        institutionId: firstBusiness.institutionId,
+        businessName: firstBusiness.businessName as string,
+        onboardings: firstBusiness.onboardings as Array<InstitutionOnboarding>,
+      }));
+
+      const isAlreadyManager = await checkIfAlreadyManager(taxCode);
+      if (isAlreadyManager) {
+        setOutcome('alreadyOnboarded');
+        return;
+      }
+    }
+
+    await verifyCompanyManager(taxCode, loggedUser?.taxCode ?? '', businesses);
+  };
+
   const verifyCompanyManager = async (
-    typedInput: string,
+    companyTaxCode: string,
     managerTaxCode: string,
     businesses?: Array<InstitutionOnboardingResource>
   ) => {
+    const isAlreadyRegistered = !!businesses?.[0]?.institutionId;
+
     try {
-      const response = (await verifyManager(typedInput, managerTaxCode, sessionToken)) as Response;
+      const response = (await verifyManager(
+        companyTaxCode,
+        managerTaxCode,
+        sessionToken
+      )) as Response;
 
       if (!response.ok) {
         // eslint-disable-next-line no-throw-literal
@@ -154,28 +169,17 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
 
       const verifyManagerResponse = (await response.json()) as VerifyManagerResponse;
 
-      if (response) {
-        setRetrievedCompanyData((prevData) => ({
-          ...prevData,
-          companyTaxCode: typedInput,
-          companyName: verifyManagerResponse?.companyName,
-          origin: verifyManagerResponse?.origin,
-        }));
+      setRetrievedCompanyData((prevData) => ({
+        ...prevData,
+        companyTaxCode,
+        companyName: verifyManagerResponse?.companyName,
+        origin: verifyManagerResponse?.origin,
+      }));
 
-        if (businesses && businesses[0].institutionId) {
-          // business already registered but the loggedUser isn't manager
-          setOutcome('notManagerButLR');
-        } else {
-          // business not registered
-          setOutcome('firstRegistration');
-        }
-      } else {
-        setOutcome('matchedButNotLR');
-        setTypedInput('');
-      }
+      setOutcome(isAlreadyRegistered ? 'notManagerButLR' : 'firstRegistration');
     } catch (reason: any) {
       if (reason.status >= 400 && reason.status <= 499) {
-        if (businesses && businesses[0].institutionId) {
+        if (isAlreadyRegistered) {
           setOutcome('requestAdminAccess');
         } else {
           setOutcome('matchedButNotLR');
@@ -342,6 +346,6 @@ function StepAddCompany({ setLoading, setActiveStep, forward }: Props) {
       </Grid>
     </Grid>
   );
-}
+};
 
 export default withLogin(StepAddCompany);
