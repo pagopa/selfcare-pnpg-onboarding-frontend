@@ -66,7 +66,7 @@ function OnboardingComponent() {
     },
     {
       label: 'Success',
-      Component: () => StepSuccess({ loading, setLoading, companyData }),
+      Component: () => StepSuccess({ setLoading, companyData }),
     },
   ];
 

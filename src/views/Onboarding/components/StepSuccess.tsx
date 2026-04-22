@@ -11,18 +11,18 @@ import { Company } from '../../../types';
 import { ENV } from '../../../utils/env';
 
 type Props = {
-  loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
   companyData?: Company;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function StepSuccess({ loading, setLoading, companyData }: Props) {
+function StepSuccess({ setLoading, companyData }: Props) {
   const { t } = useTranslation();
   const sessionToken = storageTokenOps.read();
   const [retrievedPartyId, setRetrievedPartyId] = useState<string>();
   const addError = useErrorDispatcher();
   const [error, setError] = useState<boolean>();
+  const [isReady, setIsReady] = useState<boolean>(false);
 
   useEffect(() => {
     const POLL_INTERVAL_MS = 3000;
@@ -64,6 +64,7 @@ function StepSuccess({ loading, setLoading, companyData }: Props) {
       const { partyId, hasError } = await fetchCompanyData();
       if (partyId) {
         setRetrievedPartyId(partyId);
+        setIsReady(true);
         setLoading(false);
       } else if (hasError) {
         setError(true);
@@ -71,6 +72,7 @@ function StepSuccess({ loading, setLoading, companyData }: Props) {
       } else if (attempts < MAX_ATTEMPTS) {
         timeoutId = setTimeout(() => void poll(), POLL_INTERVAL_MS);
       } else {
+        setIsReady(true);
         setLoading(false);
       }
     };
@@ -98,7 +100,7 @@ function StepSuccess({ loading, setLoading, companyData }: Props) {
       onButtonClick={() => window.location.assign(ENV.URL_FE.LOGIN)}
     />
   ) : (
-    !loading && (
+    isReady && (
       <EndingPage
         minHeight="52vh"
         icon={<IllusCompleted size={60} />}
