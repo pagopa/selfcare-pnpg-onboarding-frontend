@@ -66,13 +66,14 @@ function StepSuccess({ setLoading, companyData }: Props) {
         setRetrievedPartyId(partyId);
         setIsReady(true);
         setLoading(false);
-      } else if (hasError) {
-        setError(true);
-        setLoading(false);
       } else if (attempts < MAX_ATTEMPTS) {
         timeoutId = setTimeout(() => void poll(), POLL_INTERVAL_MS);
       } else {
-        setIsReady(true);
+        if (hasError) {
+          setError(true);
+        } else {
+          setIsReady(true);
+        }
         setLoading(false);
       }
     };
