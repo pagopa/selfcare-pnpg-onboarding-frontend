@@ -180,6 +180,7 @@ const StepAddCompany = ({ setLoading, setActiveStep, forward }: Props) => {
     } catch (reason: any) {
       if (reason.status >= 400 && reason.status <= 499) {
         if (isAlreadyRegistered) {
+          trackEvent('ONBOARDING_PG_SUBMIT_USER_NOT_REGISTERED', { requestId, productId });
           setOutcome('requestAdminAccess');
         } else {
           setOutcome('matchedButNotLR');
