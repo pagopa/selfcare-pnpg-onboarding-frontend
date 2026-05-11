@@ -116,17 +116,45 @@ test('Test: Render test', async () => {
   renderComponent();
 });
 
+const mockSuccessOnboardingResponse = {
+  ok: true,
+  status: 200,
+  statusText: 'OK',
+  json: async () => [
+    {
+      institutionId: 'retrievedPartyId01',
+      businessName: 'mockedBusinessName',
+      onboardings: [
+        {
+          billing: 'mockedBilling',
+          createdAt: new Date('2024-10-15T03:24:00').toISOString(),
+          productId: 'prod-pn-pg',
+          status: 'ACTIVE',
+        },
+      ],
+    },
+  ],
+} as Response;
+
 test('Test: Success onboarding with data retrieved from IC', async () => {
   renderComponent();
   await executeStepAddCompany('12323231321');
-  await executeStepBusinessData(false);
+  await executeStepBusinessData(false, () => {
+    vi.spyOn(onboardingService, 'getInstitutionOnboardingInfo').mockResolvedValueOnce(
+      mockSuccessOnboardingResponse
+    );
+  });
   await executeStepSuccess();
 });
 
 test('Test: Success onboarding with data retrieved from AdE', async () => {
   renderComponent();
   await executeStepAddCompany('22334455667');
-  await executeStepBusinessData(true);
+  await executeStepBusinessData(true, () => {
+    vi.spyOn(onboardingService, 'getInstitutionOnboardingInfo').mockResolvedValueOnce(
+      mockSuccessOnboardingResponse
+    );
+  });
   await executeStepSuccess();
 });
 
