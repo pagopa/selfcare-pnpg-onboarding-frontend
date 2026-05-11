@@ -1251,21 +1251,10 @@
   resolved "https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.28.0.tgz#337fb2bca0453d0726696e745f50064411f646d6"
   integrity sha512-lp4qAiMTD4sNWW4DbKLBkfiMZ4jbAboJIGOQr5DvciMRI494OapieI9qiODpOt0XBr1LjIDy1xAGAnVs5supTA==
 
-"@pagopa/mui-italia@^1.11.1":
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@pagopa/mui-italia/-/mui-italia-1.11.1.tgz#d224a554af066280474bb1e7491c310e0327cca9"
-  integrity sha512-9T5/REmA4aZo7HC01EtPyKxtFdeEOx/KR7cwpnG3BOQnS+BeDe+Oye4dmHBs7xTO0ksFvuFrGQVRiFhZj9Qvqw==
-  dependencies:
-    "@fontsource/dm-mono" "^4.5.10"
-    "@fontsource/titillium-web" "^4.5.9"
-    clsx "^1.2.1"
-    fp-ts "^2.12.3"
-    io-ts "^2.2.18"
-
-"@pagopa/mui-italia@^2.3.0":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@pagopa/mui-italia/-/mui-italia-2.3.1.tgz#9a956291365f092bb3617071de189ef820ca1e7c"
-  integrity sha512-FCedMyLVHEtHZdh+GiW/P3lHnRKGMJmWkEd1J5vc+Q9Pvfj+uJw++MChTLY174ynaLT29EQjN82nax6mQjYDFQ==
+"@pagopa/mui-italia@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@pagopa/mui-italia/-/mui-italia-2.4.1.tgz#39d0663a85d9c2d55d5312b98757e9d8da002e1a"
+  integrity sha512-IqT7d6AWzN0xtUTRAEb/u9QGOni2Bkb0BTPPMcdZW/1j8mb9DtMk1imE+pG2XZQfV0zKp0v80L1pnAjkguF4ag==
   dependencies:
     "@fontsource/dm-mono" "^4.5.10"
     "@fontsource/titillium-web" "^4.5.9"
@@ -1288,10 +1277,10 @@
     write-yaml-file "^4.1.3"
     yargs "^15.0.1"
 
-"@pagopa/selfcare-common-frontend@^1.34.103":
-  version "1.34.103"
-  resolved "https://registry.yarnpkg.com/@pagopa/selfcare-common-frontend/-/selfcare-common-frontend-1.34.103.tgz#bf8f0b104d40f1d0ce528ce404e70bae09df4945"
-  integrity sha512-XdQ6a9+zBmHNQeTLbALblI3VR+4keLk88e09D3HmLPWTyugFru249PXzjOVpwJmB55a6IVBZKD+zUZDylr0GHw==
+"@pagopa/selfcare-common-frontend@^1.34.108":
+  version "1.34.108"
+  resolved "https://registry.yarnpkg.com/@pagopa/selfcare-common-frontend/-/selfcare-common-frontend-1.34.108.tgz#0ea60d379d26f442bd6d1f716088505825b91447"
+  integrity sha512-34TXfL06mERgiDE9Qb2yTO6Tn1Gi3M1xtlhhemLw7Ns+dYvI4znjMMsSq0urqVTr6S8stRP/HnDpUgooAcQOEQ==
   dependencies:
     "@emotion/react" "^11.11.1"
     "@emotion/styled" "^11.11.0"
@@ -1301,7 +1290,7 @@
     "@mui/material" "^5.14.1"
     "@mui/system" "^5.14.1"
     "@mui/utils" "^7.3.9"
-    "@pagopa/mui-italia" "^2.3.0"
+    "@pagopa/mui-italia" "^2.4.1"
     "@pagopa/ts-commons" "^13.1.2"
     "@reduxjs/toolkit" "^2.9.0"
     async "3.2.4"

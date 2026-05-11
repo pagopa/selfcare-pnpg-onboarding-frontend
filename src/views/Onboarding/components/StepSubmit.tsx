@@ -1,4 +1,4 @@
-import { IllusError } from '@pagopa/mui-italia/dist/illustrations/Error';
+import { IllusError } from '@pagopa/mui-italia/illustrations';
 import { EndingPage, useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/lib/services/analyticsService';

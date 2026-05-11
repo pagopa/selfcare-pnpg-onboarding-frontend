@@ -1,7 +1,5 @@
 /* eslint-disable functional/no-let */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
-import * as onboardingService from '../services/onboardingService';
 
 export const executeStepAddCompany = async (typedFiscalCode: string) => {
   await waitFor(() => screen.getByText('Inserisci il Codice Fiscale'));
@@ -22,7 +20,10 @@ export const executeStepAddCompany = async (typedFiscalCode: string) => {
   fireEvent.click(continueButton);
 };
 
-export const executeStepBusinessData = async (notCertified?: boolean) => {
+export const executeStepBusinessData = async (
+  notCertified?: boolean,
+  beforeSubmit?: () => void
+) => {
   await waitFor(() => {
     screen.getByText(`L’impresa non ha ancora un profilo su SEND`);
     fireEvent.click(screen.getByText('Inizia'));
@@ -73,36 +74,11 @@ export const executeStepBusinessData = async (notCertified?: boolean) => {
     );
     expect(continueButton).toBeEnabled();
   }
+  beforeSubmit?.();
   fireEvent.click(continueButton);
 };
 
 export const executeStepSuccess = async () => {
-  const mockResponse = {
-    ok: true,
-    status: 200,
-    statusText: 'OK',
-    json: async () => [
-      {
-        institutionId: 'retrievedPartyId01',
-        businessName: 'mockedBusinessName',
-        onboardings: [
-          {
-            billing: 'mockedBilling',
-            createdAt: new Date('2024-10-15T03:24:00').toISOString(),
-            productId: 'prod-pn-pg',
-            status: 'ACTIVE',
-          },
-        ],
-      },
-    ],
-  } as Response;
-
-  const getInstitutionOnboardingInfoMock = vi.spyOn(
-    onboardingService,
-    'getInstitutionOnboardingInfo'
-  );
-  getInstitutionOnboardingInfoMock.mockResolvedValueOnce(mockResponse);
-
   await waitFor(() => screen.getByText('Impresa registrata!'));
   const signInButton = screen.getByText('Continua su SEND');
   fireEvent.click(signInButton);
@@ -127,7 +103,7 @@ export const executeStepOnboardingNotPermitted = async () => {
 };
 
 export const executeStepGenericError = async () => {
-  await waitFor(() => screen.getByText("Si \u00e8 verificato un errore"));
-  const closeButton = screen.getByText("Chiudi");
+  await waitFor(() => screen.getByText('Si \u00e8 verificato un errore'));
+  const closeButton = screen.getByText('Chiudi');
   fireEvent.click(closeButton);
 };
