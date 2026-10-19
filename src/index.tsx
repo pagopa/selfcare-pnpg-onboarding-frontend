@@ -1,4 +1,3 @@
-import '@pagopa/selfcare-common-frontend/lib/common-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { Provider } from 'react-redux';
 import App from './App';
 import { MOCK_USER } from './utils/constants';
 import { ENV } from './utils/env';
-import './consentAndAnalyticsConfiguration.ts';
+import './consentAndAnalyticsConfiguration';
 import './locale';
 import { store } from './redux/store';
 import { testToken } from './hooks/useLogin';
