@@ -14,7 +14,7 @@ SelfCare PNPG onboarding (PagoPA): React 18 + TypeScript SPA built with Vite, MU
 
 ## Architecture
 
-- `src/routes.tsx` – route config rendered by `src/components/Main.tsx` (React Router v5); `src/views/Onboarding` – the onboarding flow.
+- `src/routes.tsx` – route config rendered by `src/components/Main.tsx` (React Router v7); `src/views/Onboarding` – the onboarding flow.
 - `src/api` – `OnboardingApiClient` wrapping the generated io-ts client (mocks in `src/api/__mocks__`); `src/services/onboardingService.ts` – service layer.
 - `src/components` – shared UI (`Main`, `LoadingOverlay`, `OnboardingStepActions`, `withLogin`, `BodyLogger`); `src/hooks` (`useLogin`); `src/lib/context.ts`; `src/redux` (Redux Toolkit store); `src/utils` (constants, `env.ts`, `models`, `test-utils.tsx`).
 - `src/locale` – i18next translations (`it`, `en`, `fr`, `de`, `sl`); every user-facing string must go through `t()` and be added to all locales.

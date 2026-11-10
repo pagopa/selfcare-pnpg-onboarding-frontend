@@ -41,5 +41,5 @@ Without `yarn generate`, `tsc` and many tests fail with missing-module errors. R
 - `src/setupTests.ts` initializes i18n with all five locales (default `it`) and silences `console.error`/`console.warn`; tests assert on Italian text.
 - `vitest.config.ts` injects `VITE_*` and `PUBLIC_URL` from the env files into `process.env`; coverage excludes constants, env, store, routes, context and locale.
 - `VITE_MOCK_API=true` switches the app to mock behavior.
-- Routing uses React Router v5; do not use v6 APIs.
+- Routing uses React Router v7 (`react-router` only, no `react-router-dom`): `Routes`/`Route element`, `useNavigate`, `useLocation`; do not use v5 APIs (`Switch`, `useHistory`).
 - Prettier: 100 cols, single quotes, semicolons, trailing commas `es5`.
