@@ -8,7 +8,6 @@ export const ROUTES: RoutesObject = {
   ONBOARDING: {
     PATH: '/onboarding',
     LABEL: 'Onboarding',
-    EXACT: true,
     COMPONENT: Onboarding,
   },
 };

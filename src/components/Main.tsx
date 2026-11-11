@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { useLocation } from 'react-router';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { ROUTES } from '../routes';
 
 export function Main() {
@@ -8,16 +7,16 @@ export function Main() {
   const productId = location.pathname.replace(/^\/prod-pn-pnpg\/([^/]+)\/?.*/, '$1');
   return (
     <Box component="main" my="auto" display="flex">
-      <Switch>
-        {Object.values(ROUTES).map(({ PATH, EXACT, COMPONENT: Component }, i) => (
-          <Route path={PATH} exact={EXACT} key={i}>
-            {Component && <Component productId={productId} />}
-          </Route>
+      <Routes>
+        {Object.values(ROUTES).map(({ PATH, COMPONENT: Component }) => (
+          <Route
+            path={PATH}
+            key={PATH}
+            element={Component && <Component productId={productId} />}
+          />
         ))}
-        <Route path="*">
-          <Redirect to={ROUTES.ONBOARDING.PATH} />
-        </Route>
-      </Switch>
+        <Route path="*" element={<Navigate replace to={ROUTES.ONBOARDING.PATH} />} />
+      </Routes>
     </Box>
   );
 }

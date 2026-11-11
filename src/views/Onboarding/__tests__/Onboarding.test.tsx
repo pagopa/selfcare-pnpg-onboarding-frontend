@@ -1,9 +1,8 @@
 import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { createMemoryHistory, MemoryHistory } from 'history';
 import { useState } from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import { afterAll, afterEach, beforeAll, beforeEach, test, vi } from 'vitest';
 import { loggedUser } from '../../../api/__mocks__/OnboardingApiClient';
 import { HeaderContext, UserContext } from '../../../lib/context';
@@ -37,15 +36,6 @@ vi.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
   isPagoPaUser: () => false,
 }));
 
-vi.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: vi.fn(),
-    location: mockedLocation,
-    state: undefined,
-    replace: (nextLocation: any) => Object.assign(mockedLocation, nextLocation),
-  }),
-}));
-
 const oldWindowLocation = global.window.location;
 const initialLocation = {
   assign: vi.fn(),
@@ -74,14 +64,13 @@ afterEach(() => {
 
 const renderComponent = () => {
   const Component = () => {
-    const history = createMemoryHistory() as MemoryHistory;
     const store = createStore();
     const [subHeaderVisible, setSubHeaderVisible] = useState<boolean>(false);
     const [onExit, setOnExit] = useState<(exitAction: () => void) => void | undefined>();
     const [enableLogin, setEnableLogin] = useState<boolean>(true);
 
     return (
-      <Router history={history}>
+      <MemoryRouter>
         <HeaderContext.Provider
           value={{
             subHeaderVisible,
@@ -105,7 +94,7 @@ const renderComponent = () => {
             </Provider>
           </UserContext.Provider>
         </HeaderContext.Provider>
-      </Router>
+      </MemoryRouter>
     );
   };
 
